@@ -82,8 +82,11 @@ GameCardPlayer.prototype.addCardsToStorage = function(toStored) {
 
 GameCardPlayer.prototype.addCardsToDeck = function(toStored, indexDeck) {
     if(this._storedDecks[indexDeck] === undefined){
-        this._storedDecks[indexDeck] = {name: toStored.name, folder: []};
-        toStored = toStored.folder;
+        this._storedDecks[indexDeck] = 
+        {
+            name: 'setName', 
+            folder: []
+        };
     }
 
     this.addCards(toStored, this._storedDecks[indexDeck].folder);
@@ -101,8 +104,8 @@ GameCardPlayer.prototype.removeCardsToDeck = function(toRemove, indexDeck) {
     this.removeCards(toRemove, this._storedDecks[indexDeck].folder);
 };
 
-GameCardPlayer.prototype.addDeck = function(newDeck) {
-    this._storedDecks.push(newDeck);
+GameCardPlayer.prototype.addDeck = function(deckNew) {
+    this._storedDecks.push(deckNew);
 };
 
 GameCardPlayer.prototype.removeDeck = function(index) {
@@ -115,4 +118,8 @@ GameCardPlayer.prototype.getNameFolder = function(index) {
 
 GameCardPlayer.prototype.setNameFolder = function(name, index) {
     this._storedDecks[index].name = name;
+};
+
+GameCardPlayer.prototype.getFoldersLength = function() {
+    return this._storedDecks.length;
 };

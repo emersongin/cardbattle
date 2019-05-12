@@ -32,13 +32,13 @@ SceneCardBattle.prototype.start = function(){
 };
 
 SceneCardBattle.prototype.update = function(){
-    console.log(this._frameCount);
     if(this._frameCount > 0){
         this._frameCount--;
     }
     Scene_Base.prototype.update.call(this);
     this._spriteset.update();
     this.updateIntroduction();
+    this.updateChooseFolder();
 };
 
 SceneCardBattle.prototype.stop = function(){
@@ -71,62 +71,55 @@ SceneCardBattle.prototype.createWindowset = function(){
 SceneCardBattle.prototype.updateIntroduction = function(){
     let spriteset = this._spriteset;
     let windowset = this._windowset;
+    let control = this._sceneController;
 
-    if(this._sceneController === 'Start'){
+    if(control === 'Start'){
         this._sceneController = 'TransitionInProgress';
         spriteset.enableBackground();
         spriteset.enableTransition();
     }
-    if(spriteset.transitionIsFinished() && this._sceneController === 'TransitionInProgress'){
+    if(spriteset.transitionIsFinished() && control === 'TransitionInProgress'){
         this._sceneController = 'ChallengerInProgress';
-        windowset.changeTextDisplayTitleIntro("Card Battle Challenge");
-        windowset.changeTextDisplayTextIntro([
+        windowset.changeTitleIntro("Card Battle Challenge");
+        windowset.changeTextIntro([
             "Lv 92",
             "Forest Deck"
         ]);
-        windowset.openTitleDisplayIntro();
-        windowset.openTextDisplayIntro();
+        windowset.openTitleIntro();
+        windowset.openTextIntro();
     }
-    if(this.confirmKey() && this._sceneController === 'ChallengerInProgress'){
-        this._sceneController = 'ChallengerClosing'
-        windowset.closeTitleDisplayIntro();
-        windowset.closeTextDisplayIntro();
+    if(this.confirmKey() && control === 'ChallengerInProgress'){
+        this._sceneController = 'ChallengerClosing';
         this._frameCount = 60;
+        windowset.closeTitleIntro();
+        windowset.closeTextIntro();
     }
-    if(this._sceneController === 'ChallengerClosing' && this._frameCount <= 0){
-        this._sceneController = 'ChooseAFolderInProgress';
-        windowset.changeTextDisplayTitleFolder("Choose a folder");
-        windowset.openTitleDisplayFolder();
-        windowset.openSelectFolder();
-    }
-};
 
-SceneCardBattle.prototype.gamePlayerTest = function(){
-    $gameCardPlayer.addCardsToStorage({id: 1, amount: 40});
-    $gameCardPlayer.addCardsToDeck(
-        {
-            name: 'Folder 1',
-            folder: [{id: 1, amount: 40}]
-        }
-    , 0);
-    $gameCardPlayer.addCardsToDeck(
-        {
-            name: 'Folder 2',
-            folder: [{id: 1, amount: 40}]
-        }
-    , 1);
-    $gameCardPlayer.addCardsToDeck(
-        {
-            name: 'Folder 3',
-            folder: [{id: 1, amount: 40}]
-        }
-    , 2);
 };
 
 SceneCardBattle.prototype.confirmKey = function(){
     return Input.isTriggered('ok') || TouchInput.isTriggered();
 };
 
+SceneCardBattle.prototype.updateChooseFolder = function(){
+    let spriteset = this._spriteset;
+    let windowset = this._windowset;
+    let control = this._sceneController;
+    let frame = this._frameCount;
+
+    if(control === 'ChallengerClosing' && frame <= 0){
+        this._sceneController = 'ChooseAFolderInProgress';
+        windowset.changeTitleFolder("Choose a folder");
+        windowset.openTitleFolder();
+        windowset.openSelectFolder();
+    }
+}
+
+SceneCardBattle.prototype.gamePlayerTest = function(){
+    $gameCardPlayer.addCardsToStorage(new GameCardStored(1, 40));
+    $gameCardPlayer.addDeck(new GameFolder('Folder 1', [new GameCardStored(1, 40)]));
+};
+
 SceneCardBattle.prototype.testeCreate = function(){
-    
+
 }

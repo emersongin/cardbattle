@@ -9,9 +9,9 @@ WindowsetCardBattle.prototype.initialize = function() {
 };
 
 WindowsetCardBattle.prototype.createWindows = function() {
-    this._titleDisplayIntro = new WindowTitle();
-    this._textDisplayIntro = new WindowText();
-    this._titleDisplayFolder = new WindowTitle();
+    this._titleIntro = new WindowTitle();
+    this._textIntro = new WindowText();
+    this._titleFolder = new WindowTitle();
     this._selectFolder = new WindowChoiceFolder();
     this.initialSetup();
 };
@@ -22,14 +22,15 @@ WindowsetCardBattle.prototype.initialSetup = function() {
 };
 
 WindowsetCardBattle.prototype.setupDisplayIntro = function() {
-    this._titleDisplayIntro.changeTextColor('#FF7F53');
-    this._titleDisplayIntro.changePosition(0, Graphics.boxHeight / 3);
-    this._textDisplayIntro.changePosition(0, Graphics.boxHeight / 2.3);
+    this._titleIntro.changeTextColor('#FF7F53');
+    this._titleIntro.changePosition(0, Graphics.boxHeight / 3);
+    this._textIntro.changePosition(0, Graphics.boxHeight / 2.3);
 };
 
 WindowsetCardBattle.prototype.setupDisplayFolder = function() {
-    this._titleDisplayFolder.changeTextColor('#FF7F53');
-    this._titleDisplayFolder.changePosition(0, Graphics.boxHeight / 8);
+    this._titleFolder.changeTextColor('#FF7F53');
+    this._titleFolder.changePosition(0, Graphics.boxHeight / 8);
+    this._selectFolder.changePosition(Graphics.boxWidth / 16, Graphics.boxHeight / 3.5);
     this._selectFolder.setHandler('folder1', null);
     this._selectFolder.setHandler('folder2', null);
     this._selectFolder.setHandler('folder3', null);
@@ -37,50 +38,50 @@ WindowsetCardBattle.prototype.setupDisplayFolder = function() {
 
 WindowsetCardBattle.prototype.layers = function() {
     return [
-        this._titleDisplayIntro,
-        this._textDisplayIntro,
-        this._titleDisplayFolder,
+        this._titleIntro,
+        this._textIntro,
+        this._titleFolder,
         this._selectFolder
     ]
 };
 
-WindowsetCardBattle.prototype.changeTextDisplayTitleIntro = function(text) {
-    this._titleDisplayIntro.addText(text);
-    this._titleDisplayIntro.renderText();
+WindowsetCardBattle.prototype.changeTitleIntro = function(text) {
+    this._titleIntro.addText(text);
+    this._titleIntro.renderText();
 };
 
-WindowsetCardBattle.prototype.changeTextDisplayTextIntro = function(text) {
-    this._textDisplayIntro.addText(text);
-    this._textDisplayIntro.renderText();
+WindowsetCardBattle.prototype.changeTextIntro = function(text) {
+    this._textIntro.addText(text);
+    this._textIntro.renderText();
 };
 
-WindowsetCardBattle.prototype.changeTextDisplayTitleFolder = function(text) {
-    this._titleDisplayFolder.addText(text);
-    this._titleDisplayFolder.renderText();
+WindowsetCardBattle.prototype.changeTitleFolder = function(text) {
+    this._titleFolder.addText(text);
+    this._titleFolder.renderText();
 };
 
-WindowsetCardBattle.prototype.openTitleDisplayIntro = function() {
-    this._titleDisplayIntro.open();
+WindowsetCardBattle.prototype.openTitleIntro = function() {
+    this._titleIntro.open();
 };
 
-WindowsetCardBattle.prototype.closeTitleDisplayIntro = function() {
-    this._titleDisplayIntro.close();
+WindowsetCardBattle.prototype.closeTitleIntro = function() {
+    this._titleIntro.close();
 };
 
-WindowsetCardBattle.prototype.openTextDisplayIntro = function() {
-    this._textDisplayIntro.open();
+WindowsetCardBattle.prototype.openTextIntro = function() {
+    this._textIntro.open();
 };
 
-WindowsetCardBattle.prototype.closeTextDisplayIntro = function() {
-    this._textDisplayIntro.close();
+WindowsetCardBattle.prototype.closeTextIntro = function() {
+    this._textIntro.close();
 };
 
-WindowsetCardBattle.prototype.openTitleDisplayFolder = function() {
-    this._titleDisplayFolder.open();
+WindowsetCardBattle.prototype.openTitleFolder = function() {
+    this._titleFolder.open();
 };
 
-WindowsetCardBattle.prototype.closeTitleDisplayFolder = function() {
-    this._titleDisplayFolder.close();
+WindowsetCardBattle.prototype.closeTitleFolder = function() {
+    this._titleFolder.close();
 };
 
 WindowsetCardBattle.prototype.openSelectFolder = function() {
