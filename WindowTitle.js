@@ -14,16 +14,10 @@ WindowTitle.prototype.initialize = function() {
     this._displayTitle = '';
     this.openness = 0;
     this.padding = 6;
-    this.initialSetup();
 };
 
 WindowTitle.prototype.addText = function(text = '') {
     this._displayTitle = text;
-};
-
-WindowTitle.prototype.initialSetup = function() {
-    this.changeTextColor('#FF7F53');
-    this.changePosition(0, Graphics.boxHeight / 3);
 };
 
 WindowTitle.prototype.changeTextColor = function(color = '#FFF') {

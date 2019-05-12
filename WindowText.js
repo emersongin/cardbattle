@@ -13,11 +13,6 @@ WindowText.prototype.initialize = function() {
     Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._textBox = [];
     this.openness = 0;
-    this.initialSetup();
-};
-
-WindowText.prototype.initialSetup = function() {
-    this.changePosition(0, Graphics.boxHeight / 2.3);
 };
 
 WindowText.prototype.changePosition = function(x, y) {

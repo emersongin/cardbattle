@@ -9,39 +9,84 @@ WindowsetCardBattle.prototype.initialize = function() {
 };
 
 WindowsetCardBattle.prototype.createWindows = function() {
-    this._titleDisplay = new WindowTitle();
-    this._textDisplay = new WindowText();
+    this._titleDisplayIntro = new WindowTitle();
+    this._textDisplayIntro = new WindowText();
+    this._titleDisplayFolder = new WindowTitle();
+    this._selectFolder = new WindowChoiceFolder();
+    this.initialSetup();
+};
+
+WindowsetCardBattle.prototype.initialSetup = function() {
+    this.setupDisplayIntro();
+    this.setupDisplayFolder();
+};
+
+WindowsetCardBattle.prototype.setupDisplayIntro = function() {
+    this._titleDisplayIntro.changeTextColor('#FF7F53');
+    this._titleDisplayIntro.changePosition(0, Graphics.boxHeight / 3);
+    this._textDisplayIntro.changePosition(0, Graphics.boxHeight / 2.3);
+};
+
+WindowsetCardBattle.prototype.setupDisplayFolder = function() {
+    this._titleDisplayFolder.changeTextColor('#FF7F53');
+    this._titleDisplayFolder.changePosition(0, Graphics.boxHeight / 8);
+    this._selectFolder.setHandler('folder1', null);
+    this._selectFolder.setHandler('folder2', null);
+    this._selectFolder.setHandler('folder3', null);
 };
 
 WindowsetCardBattle.prototype.layers = function() {
     return [
-        this._titleDisplay,
-        this._textDisplay
+        this._titleDisplayIntro,
+        this._textDisplayIntro,
+        this._titleDisplayFolder,
+        this._selectFolder
     ]
 };
 
-WindowsetCardBattle.prototype.changeTextDisplayTitle = function(text) {
-    this._titleDisplay.addText(text);
-    this._titleDisplay.renderText();
+WindowsetCardBattle.prototype.changeTextDisplayTitleIntro = function(text) {
+    this._titleDisplayIntro.addText(text);
+    this._titleDisplayIntro.renderText();
 };
 
-WindowsetCardBattle.prototype.changeTextDisplayText = function(text) {
-    this._textDisplay.addText(text);
-    this._textDisplay.renderText();
+WindowsetCardBattle.prototype.changeTextDisplayTextIntro = function(text) {
+    this._textDisplayIntro.addText(text);
+    this._textDisplayIntro.renderText();
 };
 
-WindowsetCardBattle.prototype.openTitleDisplay = function(text) {
-    this._titleDisplay.open();
+WindowsetCardBattle.prototype.changeTextDisplayTitleFolder = function(text) {
+    this._titleDisplayFolder.addText(text);
+    this._titleDisplayFolder.renderText();
 };
 
-WindowsetCardBattle.prototype.openTextDisplay = function(text) {
-    this._textDisplay.open();
+WindowsetCardBattle.prototype.openTitleDisplayIntro = function() {
+    this._titleDisplayIntro.open();
 };
 
-WindowsetCardBattle.prototype.closeTitleDisplay = function(text) {
-    this._titleDisplay.close();
+WindowsetCardBattle.prototype.closeTitleDisplayIntro = function() {
+    this._titleDisplayIntro.close();
 };
 
-WindowsetCardBattle.prototype.closeTextDisplay = function(text) {
-    this._textDisplay.close();
+WindowsetCardBattle.prototype.openTextDisplayIntro = function() {
+    this._textDisplayIntro.open();
+};
+
+WindowsetCardBattle.prototype.closeTextDisplayIntro = function() {
+    this._textDisplayIntro.close();
+};
+
+WindowsetCardBattle.prototype.openTitleDisplayFolder = function() {
+    this._titleDisplayFolder.open();
+};
+
+WindowsetCardBattle.prototype.closeTitleDisplayFolder = function() {
+    this._titleDisplayFolder.close();
+};
+
+WindowsetCardBattle.prototype.openSelectFolder = function() {
+    this._selectFolder.open();
+};
+
+WindowsetCardBattle.prototype.closeSelectFolder = function() {
+    this._selectFolder.close();
 };
