@@ -26,7 +26,7 @@ WindowChoiceFolder.prototype.createElementsFolder = function() {
 };
 
 WindowChoiceFolder.prototype.addFolder = function(folder) {
-    let elementsFolder = new GameElementFolder();
+    let elementsFolder = new GameColorFolder();
 
     folder.forEach(card => {
         elementsFolder[$dataCards[card.id].color] += card.amount;
@@ -73,7 +73,7 @@ WindowChoiceFolder.prototype.drawItem = function(index) {
 };
 
 WindowChoiceFolder.prototype.createElementString = function(index) {
-    let elementFolder = new GameElementFolder();
+    let elementFolder = new GameColorFolder();
     let elementString = '';
 
     if(this._folders){

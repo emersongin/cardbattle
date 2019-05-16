@@ -23,7 +23,7 @@ SceneCardBattle.prototype.initialize = function(){
 
 SceneCardBattle.prototype.create = function(){
     Scene_Base.prototype.create.call(this);
-    this.createDisplayObjects();
+    //this.createDisplayObjects();
     this.testeCreate();
 };
 
@@ -36,9 +36,9 @@ SceneCardBattle.prototype.update = function(){
         this._frameCount--;
     }
     Scene_Base.prototype.update.call(this);
-    this._spriteset.update();
-    this.updateIntroduction();
-    this.updateChooseFolder();
+    // this._spriteset.update();
+    // this.updateIntroduction();
+    // this.updateChooseFolder();
 };
 
 SceneCardBattle.prototype.stop = function(){
@@ -121,5 +121,8 @@ SceneCardBattle.prototype.gamePlayerTest = function(){
 };
 
 SceneCardBattle.prototype.testeCreate = function(){
+    let windowTrash = new WindowTrash();
+    this.addChild(windowTrash);
 
+    windowTrash.setPoints(99);
 }

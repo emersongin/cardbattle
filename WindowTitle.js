@@ -20,26 +20,22 @@ WindowTitle.prototype.addText = function(text = '') {
     this._displayTitle = text;
 };
 
-WindowTitle.prototype.changeTextColor = function(color = '#FFF') {
-    this.contents.textColor = color;
+WindowTitle.prototype.renderText = function() {
+    this.contents.clear();
+    this.resize(Graphics.boxWidth, 1 * this.contents.fontSize + 24);
+    this.drawText(this._displayTitle, 0, 0, this.width - 10, 'center');
+};
+
+WindowTitle.prototype.resize = function(width, height) {
+    this.move(this.x, this.y , width, height);
 };
 
 WindowTitle.prototype.changePosition = function(x, y) {
     this.move(x, y, this.width, this.height);
 };
 
-WindowTitle.prototype.renderText = function() {
-    this.resize(Graphics.boxWidth, 1 * this.contents.fontSize + 24);
-    this.drawText(this._displayTitle, 0, 0, this.width - 10, 'center');
-};
-
-WindowTitle.prototype.cleanContent = function() {
-    this._displayTitle = '';
-    this.contents.clear();
-};
-
-WindowTitle.prototype.resize = function(width, height) {
-    this.move(this.x, this.y , width, height);
+WindowTitle.prototype.changeTextColor = function(color = '#FFF') {
+    this.contents.textColor = color;
 };
 
 WindowTitle.prototype.changeFontSize = function(size = 24) {
@@ -49,4 +45,3 @@ WindowTitle.prototype.changeFontSize = function(size = 24) {
         this.contents.fontSize = 12;
     }
 };
-

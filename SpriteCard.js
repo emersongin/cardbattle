@@ -16,7 +16,7 @@ SpriteCard.prototype.initialize = function(GameCard){
     this._attackPoint = 0;
     this._healthPoint = 0;
     this._type = GameCard.type;
-    this.frameRender = 0;
+    this.frameUpdate = 0;
     this.frameMove = 0;
     //
     this.openness = false;
@@ -107,7 +107,7 @@ SpriteCard.prototype.updateDisplay = function(){
 };
 
 SpriteCard.prototype.start = function(){
-    this.frameRender = 1;
+    this.frameUpdate = 1;
 };
 
 SpriteCard.prototype.setPosition = function(position){
@@ -155,11 +155,11 @@ SpriteCard.prototype.update = function(){
 };
 
 SpriteCard.prototype.updateRender = function(){
-    if(this.frameRender > 0){
+    if(this.frameUpdate > 0){
         this.updateAttackPoint();
         this.updateHealthPoint();
         this.renderCard();
-		this.frameRender--;
+		this.frameUpdate--;
 	}
 };
 
@@ -180,7 +180,7 @@ SpriteCard.prototype.updateTurnCard = function(){
 };
 
 SpriteCard.prototype.updateAttackPoint = function(){
-    var frame = this.frameRender;
+    var frame = this.frameUpdate;
     var attack = this._attackPoint;
     var targetAttack = this.targetAttackPoint;
 
@@ -190,7 +190,7 @@ SpriteCard.prototype.updateAttackPoint = function(){
 };
 
 SpriteCard.prototype.updateHealthPoint = function(){
-    var frame = this.frameRender;
+    var frame = this.frameUpdate;
     var health = this._healthPoint;
     var targetHealth = this.targetHealthPoint;
 

@@ -25,7 +25,6 @@ WindowText.prototype.resize = function(width, height) {
 
 WindowText.prototype.cleanContent = function() {
     this._textBox = [];
-    this.contents.clear();
 };
 
 WindowText.prototype.changeFontSize = function(size = 24) {
@@ -56,7 +55,7 @@ WindowText.prototype.addText = function(text) {
     });
 };
 
-WindowText.prototype.renderText = function(align = 'left') {
+WindowText.prototype.renderText = function() {
     let lineLength = 0;
     let lineTarget = 0;
     let lineAmount = this._textBox.length;
@@ -68,11 +67,14 @@ WindowText.prototype.renderText = function(align = 'left') {
         }
     })
 
+    this.contents.clear();
     this.resize(Graphics.boxWidth, lineAmount * fontSize + 48);
-    //this.resize(lineLength * fontSize / 2 + 40, lineAmount * fontSize + 48);
     this._textBox.forEach(line => {
-        this.drawText(line, 0, lineTarget, this.width - 40, align);
+        this.drawText(line, 0, lineTarget, this.width - 40, 'left');
         
         lineTarget += fontSize;
     })
+
+    //Renderizar no tamanho do texto
+    //this.resize(lineLength * fontSize / 2 + 40, lineAmount * fontSize + 48);
 };
