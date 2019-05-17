@@ -121,8 +121,18 @@ SceneCardBattle.prototype.gamePlayerTest = function(){
 };
 
 SceneCardBattle.prototype.testeCreate = function(){
-    let windowTrash = new WindowTrash();
-    this.addChild(windowTrash);
+    this.windowTrashPlayer = new WindowTrash(true);
+    let windowTrashEnemy = new WindowTrash();
 
-    windowTrash.setPoints(99);
+    //windowTrashPlayer.changePosition(Graphics.boxWidth / 4, Graphics.boxHeight / 4 + 104);
+    //windowTrashEnemy.changePosition(Graphics.boxWidth / 4, Graphics.boxHeight / 4);
+
+    this.addChild(this.windowTrashPlayer);
+    // this.addChild(windowTrashEnemy);
+
+    this.windowTrashPlayer.setPoints();
+    this.windowTrashPlayer.open();
+
+    // windowTrashEnemy.setPoints();
+    // windowTrashEnemy.open();
 }
