@@ -25,8 +25,8 @@ GameCardPlayer.prototype.setStoredDecks = function(decksToChange) {
 
 // toStore Object {id: amount: } or [{},{}]
 GameCardPlayer.prototype.addCards = function(toStore, storage) {
-    if(Array.isArray(toStore) === false){
-        if(!toStore){
+    if(Array.isArray(toStore) === false) {
+        if(!toStore) {
             toStore = [];
         }else{
             toStore = [toStore];
@@ -35,12 +35,12 @@ GameCardPlayer.prototype.addCards = function(toStore, storage) {
     
     NextCard:
     for (let index = 0; index < toStore.length; index++) {
-        if(!toStore[index].id && !toStore[index].amount){
+        if(!toStore[index].id && !toStore[index].amount) {
             continue;
         }
         
         for (let indexStorage = 0; indexStorage < storage.length; indexStorage++) {
-            if(toStore[index].id === storage[indexStorage].id){
+            if(toStore[index].id === storage[indexStorage].id) {
                 storage[indexStorage].amount += toStore[index].amount;
                 continue NextCard;
             };
@@ -51,8 +51,8 @@ GameCardPlayer.prototype.addCards = function(toStore, storage) {
 
 // toRemove Object {id: amount: } or [{},{}]
 GameCardPlayer.prototype.removeCards = function(toRemove, storage) {
-    if(Array.isArray(toRemove) === false){
-        if(!toRemove){
+    if(Array.isArray(toRemove) === false) {
+        if(!toRemove) {
             toRemove = [];
         }else{
             toRemove = [toRemove];
@@ -60,15 +60,15 @@ GameCardPlayer.prototype.removeCards = function(toRemove, storage) {
     }
 
     for (let index = 0; index < toRemove.length; index++) {
-        if(!toRemove[index].id && !toRemove[index].amount){
+        if(!toRemove[index].id && !toRemove[index].amount) {
             continue;
         }
 
         for (let indexStorage = 0; indexStorage < storage.length; indexStorage++) {
-            if(toRemove[index].id === storage[indexStorage].id){
+            if(toRemove[index].id === storage[indexStorage].id) {
                 storage[indexStorage].amount -= toRemove[index].amount;
 
-                if(storage[indexStorage].amount <= 0){
+                if(storage[indexStorage].amount <= 0) {
                     storage.splice(indexStorage, 1);
                 }
             };
@@ -81,7 +81,7 @@ GameCardPlayer.prototype.addCardsToStorage = function(toStored) {
 };
 
 GameCardPlayer.prototype.addCardsToDeck = function(toStored, indexDeck) {
-    if(this._storedDecks[indexDeck] === undefined){
+    if(this._storedDecks[indexDeck] === undefined) {
         this._storedDecks[indexDeck] = 
         {
             name: 'setName', 
@@ -97,7 +97,7 @@ GameCardPlayer.prototype.removeCardsToStorage = function(toRemove) {
 };
 
 GameCardPlayer.prototype.removeCardsToDeck = function(toRemove, indexDeck) {
-    if(this._storedDecks[indexDeck] === undefined){
+    if(this._storedDecks[indexDeck] === undefined) {
         return false;
     }
 

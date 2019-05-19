@@ -1,14 +1,14 @@
-function GameCard(){
+function GameCard() {
     this.initialize.apply(this, arguments);
 }
 
 GameCard.prototype.constructor = GameCard;
 
-GameCard.prototype.initialize = function(cardId){
+GameCard.prototype.initialize = function(cardId) {
     this.setup(cardId);
 };
 
-GameCard.prototype.setup = function(cardId){
+GameCard.prototype.setup = function(cardId) {
     var card = $dataCards[cardId];
 
     this._id = cardId;
@@ -25,15 +25,15 @@ GameCard.prototype.setup = function(cardId){
     this.active = true;
 };
 
-GameCard.prototype.create = function(){
+GameCard.prototype.create = function() {
 
 };
 
-GameCard.prototype.start = function(){
+GameCard.prototype.start = function() {
 
 };
 
-GameCard.prototype.update = function(){
+GameCard.prototype.update = function() {
 
 };
 

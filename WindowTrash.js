@@ -1,51 +1,73 @@
-function WindowTrash(){
+function WindowTrash() {
     this.initialize.apply(this, arguments);
-}
+};
 
 WindowTrash.prototype = Object.create(Window_Base.prototype);
 WindowTrash.prototype.constructor = WindowTrash;
 
-WindowTrash.prototype.initialize = function(player){
-    Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth / 5, Graphics.boxHeight / 4);
+WindowTrash.prototype.initialize = function(player) {
+    Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._player = player || false;
+    this._background = new Sprite(new Bitmap(104, 107));
     this._frameInterval = 0;
     this._frameScale = 0;
     this._trashPoint = 0;
-    this.targetTrashPoint = 0;
-    this.targetX = 0;
-    this.targetY = 0;
+    this._targetTrashPoint = 0;
+    this._targetX = 0;
+    this._targetY = 0;
     this.setup();
 };
 
-WindowTrash.prototype.PointsInterval = function(){
+WindowTrash.prototype.PointsInterval = function() {
     return 1;
 };
 
-WindowTrash.prototype.pointsDelay = function(){
+WindowTrash.prototype.pointsDelay = function() {
     return 10;
 };
 
-WindowTrash.prototype.setup = function(){
-    this.contents.fontSize = 20;
-    this.opacity = 255;
+WindowTrash.prototype.standardFontSize = function() {
+    return 20;
+};
+
+WindowTrash.prototype.setup = function() {
+    this.padding = 0;
+    this.opacity = 0;
     this.openness = 0;
     this.createBackground();
+    this.initialPosition();
     this.refresh();
-    this.deactivate();
+};
+
+WindowTrash.prototype.initialPosition = function() {
+    this.moveOut();
+
+    if(this._player) {
+        this._targetY = Graphics.boxHeight / 2;
+        this.move(this._targetX, this._targetY, this.width, this.height);
+    }else{
+        this._targetY = Graphics.boxHeight / 2 - this._background.height;
+        this.move(this._targetX, this._targetY, this.width, this.height);   
+    }
+};
+
+WindowTrash.prototype.moveIn = function() {
+    console.log(this._background)
+    this._targetX = Graphics.boxWidth - this._background.width + 10;
+};
+
+WindowTrash.prototype.moveOut = function() {
+    this._targetX = Graphics.boxWidth;
 };
 
 WindowTrash.prototype.createBackground = function() {
-    this.background = new Sprite();
-    this.background.opacity = 0;
-    this.background.move(18, 18);
-
-    if(this._player){
-        this.background.bitmap = ImageManager.loadSystem('BackgroundTrash1');
+    if(this._player) {
+        this._background.bitmap = ImageManager.loadSystem('BackgroundTrash1');
     }else{
-        this.background.bitmap = ImageManager.loadSystem('BackgroundTrash2');
+        this._background.bitmap = ImageManager.loadSystem('BackgroundTrash2');
     }
-
-    this.addChildToBack(this.background);
+    
+    this.addChildToBack(this._background);
 };
 
 WindowTrash.prototype.refresh = function() {
@@ -55,103 +77,115 @@ WindowTrash.prototype.refresh = function() {
 
 WindowTrash.prototype.drawPoints = function() {
     let heightPosition;
-    let widthPosition = 29;
 
-    if(this._player){
+    if(this._player) {
         heightPosition = 10;
     }else{
         heightPosition = 62;
     }
 
-    this.drawText(this._trashPoint.padZero(2), widthPosition, heightPosition);
+    this.drawText(this._trashPoint.padZero(2), 28, heightPosition);
 };
 
-WindowTrash.prototype.update = function(){
+WindowTrash.prototype.update = function() {
     Window_Base.prototype.update.call(this);
-    this.checkUpdatePoints();
-    this.checkUpdateMove();
-    this.reduceDelay();
+    this.updateMove();
+    this.updatePoints();
     this.updateBackgroundOpacity();
+    this.reducerDelay();
 };
 
-WindowTrash.prototype.checkUpdatePoints = function(){
-    if(this._trashPoint != this.targetTrashPoint){
-        if(this._frameInterval <= 0){
+WindowTrash.prototype.updatePoints = function() {
+    if(this.isUpdateTrashPoint() && this.isOpen()) {
+        if(!this._frameInterval) {
             this._frameScale = this.setFrameScale();
             this._frameInterval = this.pointsDelay();
-            this.updateWindowTrash();
+            this.refreshWindowPoints();
             this._frameScale--;
         }
     }
 };
 
-WindowTrash.prototype.checkUpdateMove = function(){
-    if(this.x != this.targetX && this.y != this.targetY){
-        if(this._frameInterval <= 0){
+WindowTrash.prototype.updateMove = function() {
+    if(this.isUpdateMove() && this.isOpen()) {
+        if(!this._frameInterval) {
             this._frameScale = 10;
-            this._frameInterval = this.pointsDelay();
-            this.updateWindowMove();
+            this._frameInterval = 1;
+            this.refreshWindowMove();
             this._frameScale--;
         }
     }
 };
 
-WindowTrash.prototype.reduceDelay = function(){
-    if(this._frameInterval > 0){
+WindowTrash.prototype.reducerDelay = function() {
+    if(this._frameInterval) {
         this._frameInterval--;
     }
 };
 
 WindowTrash.prototype.updateBackgroundOpacity = function() {
-    if(this.background && !this.isOpen()){
-        this.background.opacity = 0;
+    if(this._background && this.isOpen()) {
+        this._background.opacity = this.openness;
     }else{
-        this.background.opacity = this.openness;
+        if(this._background.opacity) {
+            this._background.opacity = 0;
+        }
     }
 };
 
-WindowTrash.prototype.setFrameScale = function(){
-    return parseInt(Math.abs(this.targetTrashPoint - this._trashPoint) / this.PointsInterval());
+WindowTrash.prototype.isUpdateTrashPoint = function() {
+    return this._trashPoint !== this._targetTrashPoint;
 };
 
-WindowTrash.prototype.updateWindowTrash = function(){
-    this._trashPoint = this.updatePoints() || this._trashPoint;
+WindowTrash.prototype.isUpdateMove = function() {
+    return this.isUpdateMoveX() || this.isUpdateMoveY();
+};
+
+WindowTrash.prototype.isUpdateMoveX = function() {
+    return this.x !== this._targetX;
+};
+
+WindowTrash.prototype.isUpdateMoveY = function() {
+    return this.y !== this._targetY;
+};
+
+WindowTrash.prototype.setFrameScale = function() {
+    return parseInt(Math.abs(this._targetTrashPoint - this._trashPoint) / this.PointsInterval());
+};
+
+WindowTrash.prototype.refreshWindowPoints = function() {
+    this._trashPoint = this.rateTrashPoints();
     this.refresh();
 };
 
-WindowTrash.prototype.updateWindowMove = function(){
-    this.x = this.updateXCoord() || this.x;
-    this.y = this.updateYCoord() || this.y;
+WindowTrash.prototype.refreshWindowMove = function() {
+    this.x = this.rateXcoord();
+    this.y = this.rateYCoord();
 };
 
-WindowTrash.prototype.updatePoints = function(){
-	if(this._trashPoint != this.targetTrashPoint){
-        return parseInt((this._trashPoint * (this._frameScale - 1) + this.targetTrashPoint) / this._frameScale);
+WindowTrash.prototype.rateTrashPoints = function() {
+	if(this.isUpdateTrashPoint()) {
+        return parseInt((this._trashPoint * (this._frameScale - 1) + this._targetTrashPoint) / this._frameScale, 10);
     }
+    return this._trashPoint;
 };
 
-WindowTrash.prototype.updateXCoord = function(){
-	if(this.x != this.targetX){
-		return (this.x * (this._frameScale - 1) + this.targetX) / this._frameScale;
-	}
-};
-
-WindowTrash.prototype.updateYCoord = function(){
-	if(this.y != this.targetY){
-		return (this.y * (this._frameScale - 1) + this.targetY) / this._frameScale;
-	}
-};
-
-WindowTrash.prototype.setPoints = function(points = this._trashPoint){
-    if(points < 0){
-        points = 0;
+WindowTrash.prototype.rateXcoord = function() {
+	if(this.isUpdateMoveX()) {
+		return parseInt((this.x * (this._frameScale - 1) + this._targetX) / this._frameScale, 10);
     }
-    if(points > 99){
-        points = 99;
-    }
-    this.targetTrashPoint = points;
+    return this.x;
 };
 
-WindowTrash.prototype.changePosition = function(x, y) {
-    this.move(x, y, this.width, this.height);
+WindowTrash.prototype.rateYCoord = function() {
+	if(this.isUpdateMoveY()) {
+		return parseInt((this.y * (this._frameScale - 1) + this._targetY) / this._frameScale, 10);
+    }
+    return this.y;
+};
+
+WindowTrash.prototype.setPoints = function(points = this._trashPoint) {
+    if(points < 0) points = 0;
+    if(points > 99) points = 99;
+    this._targetTrashPoint = points;
 };

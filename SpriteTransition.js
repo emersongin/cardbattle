@@ -65,7 +65,7 @@ SpriteTransition.prototype.addChildren = function() {
 };
 
 SpriteTransition.prototype.moveTransition = function() {
-    if(this.isActive()){
+    if(this.isActive()) {
         this.updateTransition();
     }
 }
@@ -75,31 +75,31 @@ SpriteTransition.prototype.updateTransition = function() {
     let rectBlackLayer = this._blackLayer.rectangleClear;
 
     //Fechamento retangular de transição
-    if(rectImageLayer.width > 0 && rectImageLayer.height > 0){
+    if(rectImageLayer.width > 0 && rectImageLayer.height > 0) {
         this.updateRectClearImage();
         this.renderRectClearImage();
     }
 
     //Fechamento horizontal retangular de transição
-    if(rectImageLayer.height <= 0 && rectBlackLayer.width > 0){
+    if(rectImageLayer.height <= 0 && rectBlackLayer.width > 0) {
         this.updateRectClearBlack();
         this.renderRectClearBlack();
     }
 
     //Transição de desaparecer gradualmente
-    if(rectBlackLayer.width <= 0 && this.opacity > 0){
+    if(rectBlackLayer.width <= 0 && this.opacity > 0) {
         this._frameCount++
 
-        if(this._frameCount === 1){
+        if(this._frameCount === 1) {
             this.removeChild(this._previousSceneLayer);
             this.removeChild(this._imageLayer);
         }
 
-        if(this._frameCount > 100){
+        if(this._frameCount > 100) {
             this.opacity -= 2;
         }
 
-        if(this.opacity <= 0){
+        if(this.opacity <= 0) {
             this._frameCount = 0;
             this._transitionFinished = true;
             this.disable();
@@ -120,7 +120,7 @@ SpriteTransition.prototype.renderRectClearImage = function() {
     let imageLayer = this._imageLayer;
     let rect = this._imageLayer.rectangleClear;
 
-    if(imageLayer.opacity < 255){
+    if(imageLayer.opacity < 255) {
         imageLayer.opacity  += 8;
     }
     

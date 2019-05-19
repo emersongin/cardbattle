@@ -37,7 +37,7 @@ SpriteBackground.prototype.createTiles = function() {
 };
 
 SpriteBackground.prototype.loadTilesImage = function() {
-    for(var index = 0; index < this._backgroundTiles.length; index++){
+    for(var index = 0; index < this._backgroundTiles.length; index++) {
         this._backgroundTiles[index] = this.loadImage();
     }
 };
@@ -122,7 +122,7 @@ SpriteBackground.prototype.movePosition = function(typeMove) {
 };
 
 SpriteBackground.prototype.moveBackground = function() {
-    if(this.isActive()){
+    if(this.isActive()) {
         this.moveTiles();
     }
 };
@@ -135,22 +135,22 @@ SpriteBackground.prototype.moveTiles = function() {
 };
 
 SpriteBackground.prototype.checkMovementLimit = function(tile) {
-    if(this._moveX > 0){
-        if(tile.x >= 816){
+    if(this._moveX > 0) {
+        if(tile.x >= 816) {
             tile.x = -816;
         }
     }else{
-        if(tile.x <= -816){
+        if(tile.x <= -816) {
             tile.x = 816;
         }
     }
 
-    if(this._moveY > 0){
-        if(tile.y >= 816){
+    if(this._moveY > 0) {
+        if(tile.y >= 816) {
             tile.y = -816;
         }
     }else{
-        if(tile.y <= -816){
+        if(tile.y <= -816) {
             tile.y = 816;
         }
     }

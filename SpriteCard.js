@@ -1,11 +1,11 @@
-function SpriteCard(){
+function SpriteCard() {
     this.initialize.apply(this, arguments);
 }
 
 SpriteCard.prototype = Object.create(Sprite.prototype);
 SpriteCard.prototype.constructor = SpriteCard;
 
-SpriteCard.prototype.initialize = function(GameCard){
+SpriteCard.prototype.initialize = function(GameCard) {
     Sprite.prototype.initialize.call(this);
     this.bitmap = new Bitmap(104, 120);
     this._backgroundImage = new Bitmap();
@@ -34,7 +34,7 @@ SpriteCard.prototype.initialize = function(GameCard){
     this.create(GameCard);
 };
 
-SpriteCard.prototype.create = function(GameCard){
+SpriteCard.prototype.create = function(GameCard) {
     this.createBackgroundImage(GameCard.filename);
     this.createbackgroundVerse();
     this.createBackgroundDisplay(GameCard.color);
@@ -42,16 +42,16 @@ SpriteCard.prototype.create = function(GameCard){
     this.start();
 };
 
-SpriteCard.prototype.createBackgroundImage = function(filename){
+SpriteCard.prototype.createBackgroundImage = function(filename) {
     this._backgroundImage = ImageManager.loadCard(filename);
 };
 
-SpriteCard.prototype.createbackgroundVerse = function(){
+SpriteCard.prototype.createbackgroundVerse = function() {
     this._backgroundVerse = ImageManager.loadCard('CardVerse');
 };
 
-SpriteCard.prototype.createBackgroundDisplay = function(color){
-    switch (color){
+SpriteCard.prototype.createBackgroundDisplay = function(color) {
+    switch (color) {
         case 'red':
             color  = 'rgba(255, 0, 0, 0.7)';
             break;
@@ -78,16 +78,16 @@ SpriteCard.prototype.createBackgroundDisplay = function(color){
     this._backgroundDisplay.fillAll(color);
 };
 
-SpriteCard.prototype.createBorder = function(){
+SpriteCard.prototype.createBorder = function() {
     this._border = ImageManager.loadCard('CardBorderStand');
 };
 
-SpriteCard.prototype.updateDisplay = function(){
+SpriteCard.prototype.updateDisplay = function() {
     var attack; 
     var health;
     this._display.clear();
 
-    switch (this._type){
+    switch (this._type) {
         case 'powerCard':
             this._display.fontSize = 18;
             this._display.textColor = 'yellow';
@@ -106,11 +106,11 @@ SpriteCard.prototype.updateDisplay = function(){
     }
 };
 
-SpriteCard.prototype.start = function(){
+SpriteCard.prototype.start = function() {
     this.frameUpdate = 1;
 };
 
-SpriteCard.prototype.setPosition = function(position){
+SpriteCard.prototype.setPosition = function(position) {
     switch (position.target) {
         case 'Player_A':
             this.targetX = 49 + (104 * position.index); 
@@ -132,10 +132,10 @@ SpriteCard.prototype.setPosition = function(position){
     this.frameMove = 10;
 };
 
-SpriteCard.prototype.renderCard = function(){
+SpriteCard.prototype.renderCard = function() {
     this.bitmap.clear();
 
-    if(this.upsideUp){
+    if(this.upsideUp) {
         this.updateDisplay();
         this.bitmap.blt(this._backgroundImage, 0, 0, 100, 116, 2, 2);
         this.bitmap.blt(this._backgroundDisplay, 0, 0, 100, 30, 2, 88);
@@ -147,15 +147,15 @@ SpriteCard.prototype.renderCard = function(){
 
 };
 
-SpriteCard.prototype.update = function(){
+SpriteCard.prototype.update = function() {
     Sprite.prototype.update.call(this);
     this.updateRender();
     this.updateTurnCard();
     this.updateMove();
 };
 
-SpriteCard.prototype.updateRender = function(){
-    if(this.frameUpdate > 0){
+SpriteCard.prototype.updateRender = function() {
+    if(this.frameUpdate > 0) {
         this.updateAttackPoint();
         this.updateHealthPoint();
         this.renderCard();
@@ -163,13 +163,13 @@ SpriteCard.prototype.updateRender = function(){
 	}
 };
 
-SpriteCard.prototype.updateTurnCard = function(){
-    if(this.turnNow){
-        if(this.frameMove === 0 && this.openness){
+SpriteCard.prototype.updateTurnCard = function() {
+    if(this.turnNow) {
+        if(this.frameMove === 0 && this.openness) {
             this.closeCard();
         }
 
-        if(this.frameMove === 0 && !this.openness){
+        if(this.frameMove === 0 && !this.openness) {
             this.upsideUp ? this.upsideUp = false: this.upsideUp = true;
             
             this.renderCard();
@@ -179,28 +179,28 @@ SpriteCard.prototype.updateTurnCard = function(){
     }
 };
 
-SpriteCard.prototype.updateAttackPoint = function(){
+SpriteCard.prototype.updateAttackPoint = function() {
     var frame = this.frameUpdate;
     var attack = this._attackPoint;
     var targetAttack = this.targetAttackPoint;
 
-	if(this._attackPoint != this.targetAttackPoint){
+	if(this._attackPoint != this.targetAttackPoint) {
         this._attackPoint = parseInt((attack * (frame - 1) + targetAttack) / frame);
     }
 };
 
-SpriteCard.prototype.updateHealthPoint = function(){
+SpriteCard.prototype.updateHealthPoint = function() {
     var frame = this.frameUpdate;
     var health = this._healthPoint;
     var targetHealth = this.targetHealthPoint;
 
-	if(this._healthPoint != this.targetHealthPoint){
+	if(this._healthPoint != this.targetHealthPoint) {
         this._healthPoint = parseInt((health * (frame - 1) + targetHealth) / frame);
     }
 };
 
-SpriteCard.prototype.openCard = function(){
-    if(!this.openness){
+SpriteCard.prototype.openCard = function() {
+    if(!this.openness) {
         this.targetX = this.x - 50;
         this.targetScaleX = 1;
         this.frameMove = 60;
@@ -208,8 +208,8 @@ SpriteCard.prototype.openCard = function(){
     }
 };
 
-SpriteCard.prototype.closeCard = function(){
-    if(this.openness){
+SpriteCard.prototype.closeCard = function() {
+    if(this.openness) {
         this.targetX = this.x + 50;
         this.targetScaleX = 0;
         this.frameMove = 60;
@@ -217,8 +217,8 @@ SpriteCard.prototype.closeCard = function(){
     }
 };
 
-SpriteCard.prototype.updateMove = function(){
-    if(this.frameMove > 0){
+SpriteCard.prototype.updateMove = function() {
+    if(this.frameMove > 0) {
         this.updateCoordX();
         this.updateCoordY();
         this.updateScaleX();
@@ -227,26 +227,26 @@ SpriteCard.prototype.updateMove = function(){
     }
 };
 
-SpriteCard.prototype.updateCoordX = function(){
-	if(this.x != this.targetX){
+SpriteCard.prototype.updateCoordX = function() {
+	if(this.x != this.targetX) {
 		this.x = (this.x * (this.frameMove - 1) + this.targetX) / this.frameMove;
 	}
 };
 
-SpriteCard.prototype.updateCoordY = function(){
-	if(this.y != this.targetY){
+SpriteCard.prototype.updateCoordY = function() {
+	if(this.y != this.targetY) {
 		this.y = (this.y * (this.frameMove - 1) + this.targetY) / this.frameMove;
 	}
 };
 
-SpriteCard.prototype.updateScaleX = function(){
-	if(this.scale.x != this.targetScaleX){
+SpriteCard.prototype.updateScaleX = function() {
+	if(this.scale.x != this.targetScaleX) {
 		this.scale.x  = (this.scale.x  * (this.frameMove - 1) + this.targetScaleX)  / this.frameMove;
 	}
 };
 
-SpriteCard.prototype.updateScaleY = function(){
-	if(this.scale.y != this.targetScaleY){
+SpriteCard.prototype.updateScaleY = function() {
+	if(this.scale.y != this.targetScaleY) {
         this.scale.y  = (this.scale.y  * (this.frameMove - 1) + this.targetScaleY)  / this.frameMove;
 	}
 };

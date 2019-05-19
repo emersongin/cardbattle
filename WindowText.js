@@ -28,7 +28,7 @@ WindowText.prototype.cleanContent = function() {
 };
 
 WindowText.prototype.changeFontSize = function(size = 24) {
-    if(size > 12){
+    if(size > 12) {
         this.contents.fontSize = size;
     }else{
         this.contents.fontSize = 12;
@@ -42,8 +42,8 @@ WindowText.prototype.changeTextColor = function(color = '#FFF') {
 WindowText.prototype.addText = function(text) {
     let marginLeftText = "     ";
 
-    if(Array.isArray(text) === false){
-        if(!text){
+    if(Array.isArray(text) === false) {
+        if(!text) {
             text = [''];
         }else{
             text = [text];
@@ -62,7 +62,7 @@ WindowText.prototype.renderText = function() {
     let fontSize = this.contents.fontSize;
     
     this._textBox.forEach(line => {
-        if(lineLength < line.length){
+        if(lineLength < line.length) {
             lineLength = line.length;
         }
     })
