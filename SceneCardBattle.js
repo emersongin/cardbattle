@@ -24,8 +24,9 @@ SceneCardBattle.prototype.initialize = function() {
 SceneCardBattle.prototype.create = function() {
     Scene_Base.prototype.create.call(this);
     //this.createDisplayObjects();
-    this.testeTrashWindow();
-    this.testeZoneWindow();
+    //this.testeTrashWindow();
+    //this.testeZoneWindow();
+    this.testeCard();
 };
 
 SceneCardBattle.prototype.start = function() {
@@ -81,10 +82,10 @@ SceneCardBattle.prototype.updateIntroduction = function() {
     }
     if(spriteset.transitionIsFinished() && control === 'TransitionInProgress') {
         this._sceneController = 'ChallengerInProgress';
-        windowset.changeTitleIntro("Card Battle Challenge");
+        windowset.changeTitleIntro('Card Battle Challenge');
         windowset.changeTextIntro([
-            "Lv 92",
-            "Forest Deck"
+            'Lv 92',
+            'Forest Deck'
         ]);
         windowset.openTitleIntro();
         windowset.openTextIntro();
@@ -110,7 +111,7 @@ SceneCardBattle.prototype.updateChooseFolder = function() {
 
     if(control === 'ChallengerClosing' && frame <= 0) {
         this._sceneController = 'ChooseAFolderInProgress';
-        windowset.changeTitleFolder("Choose a folder");
+        windowset.changeTitleFolder('Choose a folder');
         windowset.openTitleFolder();
         windowset.openSelectFolder();
     }
@@ -129,7 +130,21 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
 
 
 
+SceneCardBattle.prototype.testeCard = function() {
+    this.card = new SpriteCard(new GameCard(1));
 
+    this.addChild(this.card);
+    this.card.setPosition({target: 'Field', index: 0});
+    this.card.openCard();
+    //this.card.turnStart();
+
+    //update teste
+    // if(this.card.isOpen()){
+    //     if(this.card.isShow()){
+    //         this.card.turnStart();
+    //     }
+    // }
+}
 
 
 SceneCardBattle.prototype.testeZoneWindow = function() {
@@ -142,28 +157,16 @@ SceneCardBattle.prototype.testeZoneWindow = function() {
     this.windowZone.moveIn();
     this.windowZone2.moveIn();
 
+    this.windowZone.setPackPoints(10);
+    this.windowZone2.setPackPoints(10);
 
-    this.windowZone.setWhitePoints(9);
-    this.windowZone.setBluePoints(9);
-    this.windowZone.setGreenPoints(9);
-    this.windowZone.setRedPoints(9);
-    this.windowZone.setBlackPoints(9);
-    this.windowZone.setPackPoints(34);
-    this.windowZone.setHandPoints(6);
-    this.windowZone.setAttackPoints(450);
-    this.windowZone.setHealthPoints(350);
+    this.windowZone.setWinPoints(1);
+    this.windowZone2.setWinPoints(2);
+
+    this.windowZone.positionAnimation({target: 'Wins', index: 2});
+    this.windowZone.showWinAnimation();
+    
 }
-
-
-
-
-
-
-
-
-
-
-
 
 SceneCardBattle.prototype.testeTrashWindow = function() {
     this.windowTrashPlayer = new WindowTrash(true);
@@ -172,11 +175,11 @@ SceneCardBattle.prototype.testeTrashWindow = function() {
     this.addChild(this.windowTrashPlayer);
     this.addChild(this.windowTrashEnemy);
 
-    this.windowTrashPlayer.setPoints(10);
+    this.windowTrashPlayer.setPoints(1);
     this.windowTrashPlayer.open();
     this.windowTrashPlayer.moveIn();
 
-    this.windowTrashEnemy.setPoints(90);
+    this.windowTrashEnemy.setPoints(1);
     this.windowTrashEnemy.open();
     this.windowTrashEnemy.moveIn();
 }

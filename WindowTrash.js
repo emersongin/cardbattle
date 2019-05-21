@@ -43,21 +43,20 @@ WindowTrash.prototype.initialPosition = function() {
     this.moveOut();
 
     if(this._player) {
-        this._targetY = Graphics.boxHeight / 2;
+        this._targetY = this.height / 2;
         this.move(this._targetX, this._targetY, this.width, this.height);
     }else{
-        this._targetY = Graphics.boxHeight / 2 - this._background.height;
+        this._targetY = this.height / 2 - this._background.height;
         this.move(this._targetX, this._targetY, this.width, this.height);   
     }
 };
 
 WindowTrash.prototype.moveIn = function() {
-    console.log(this._background)
-    this._targetX = Graphics.boxWidth - this._background.width + 10;
+    this._targetX = this.width - this._background.width + 10;
 };
 
 WindowTrash.prototype.moveOut = function() {
-    this._targetX = Graphics.boxWidth;
+    this._targetX = this.width;
 };
 
 WindowTrash.prototype.createBackground = function() {
@@ -126,10 +125,8 @@ WindowTrash.prototype.reducerDelay = function() {
 WindowTrash.prototype.updateBackgroundOpacity = function() {
     if(this._background && this.isOpen()) {
         this._background.opacity = this.openness;
-    }else{
-        if(this._background.opacity) {
-            this._background.opacity = 0;
-        }
+    }else if(this._background.opacity){
+        this._background.opacity = 0;
     }
 };
 

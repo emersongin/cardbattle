@@ -16,8 +16,8 @@ WindowTitle.prototype.initialize = function() {
     this.padding = 6;
 };
 
-WindowTitle.prototype.addText = function(text = '') {
-    this._displayTitle = text;
+WindowTitle.prototype.addText = function(text) {
+    this._displayTitle = text || '';
 };
 
 WindowTitle.prototype.renderText = function() {
@@ -34,8 +34,8 @@ WindowTitle.prototype.changePosition = function(x, y) {
     this.move(x, y, this.width, this.height);
 };
 
-WindowTitle.prototype.changeTextColor = function(color = '#FFF') {
-    this.contents.textColor = color;
+WindowTitle.prototype.changeTextColor = function(color) {
+    this.contents.textColor = color || '#FFF';
 };
 
 WindowTitle.prototype.changeFontSize = function(size = 24) {

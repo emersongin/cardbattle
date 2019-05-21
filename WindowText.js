@@ -40,7 +40,7 @@ WindowText.prototype.changeTextColor = function(color = '#FFF') {
 };
 
 WindowText.prototype.addText = function(text) {
-    let marginLeftText = "     ";
+    let marginLeftText = '     ';
 
     if(Array.isArray(text) === false) {
         if(!text) {
