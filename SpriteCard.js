@@ -22,6 +22,8 @@ SpriteCard.prototype.initialize = function(GameCard) {
     this._openness = false;
     this._show = false;
     this._turn = false;
+    this._select = false;
+    this._sequence = [];
     this.setup();
     this.create(GameCard);
 };
@@ -34,9 +36,9 @@ SpriteCard.prototype.create = function(GameCard) {
     this.createBackground();
     this.createBackgroundImage(GameCard.getFilename());
     this.createbackgroundVerse();
-    this.createBorder();
+    this.createBorderStand();
+    this.createBorderSelect();
     this.createBackgroundColor(GameCard.getColor());
-    this._framePoints = 1;
 };
 
 SpriteCard.prototype.createBackground = function() {
@@ -53,8 +55,12 @@ SpriteCard.prototype.createbackgroundVerse = function() {
     this._backgroundVerse = ImageManager.loadCard('CardVerse');
 };
 
-SpriteCard.prototype.createBorder = function() {
-    this._border = ImageManager.loadCard('CardBorderStand');
+SpriteCard.prototype.createBorderStand = function() {
+    this._borderStand = ImageManager.loadCard('CardStand');
+};
+
+SpriteCard.prototype.createBorderSelect = function() {
+    this._borderSelect = ImageManager.loadCard('CardSelect');
 };
 
 SpriteCard.prototype.createBackgroundColor = function(color) {
@@ -96,9 +102,14 @@ SpriteCard.prototype.drawCard = function() {
     if(this._show) {
         this._background.bitmap.blt(this._backgroundImage, 0, 0, 100, 116, 2, 2);
         this._background.bitmap.blt(this._backgroundColor, 0, 0, 100, 30, 2, 88);
-        this._background.bitmap.blt(this._border, 0, 0, 104, 120, 0, 0);
     }else{
         this._background.bitmap.blt(this._backgroundVerse, 0, 0, 104, 120, 0, 0);
+    }
+    
+    if(this._select){
+        this._background.bitmap.blt(this._borderSelect, 0, 0, 104, 120, 0, 0);
+    }else{
+        this._background.bitmap.blt(this._borderStand, 0, 0, 104, 120, 0, 0);
     }
 };
 
@@ -108,11 +119,11 @@ SpriteCard.prototype.drawDisplay = function() {
     
     if(this._show) {
         switch (this._type) {
-            case 'powerCard':
+            case 'POWER_CARD':
                 this._background.bitmap.textColor = 'yellow';
                 this._background.bitmap.drawText('Power', 2, 88, 100, 30, 'center');
                 break;
-            case 'battleCard':
+            case 'BATTLE_CARD':
                 this._background.bitmap.textColor = 'white';
                 this._background.bitmap.drawText(attack + "/" + health, 2, 88, 100, 30, 'center');
                 break;
@@ -122,52 +133,35 @@ SpriteCard.prototype.drawDisplay = function() {
     }
 };
 
-SpriteCard.prototype.setPosition = function(position) {
-    switch (position.target) {
-        case 'Field':
-            this.x = 49 + (104 * position.index); 
-            if(this._player) {
-                this.y = 441;
+SpriteCard.prototype.actionMove = function(action) {
+    let lessCoor = 0;
+    let lessScale = 0.0;
+
+    switch (action.target) {
+        case 'INIT_POSITION_HAND':
+            this.x = 866;
+            this._targetX = this.x;
+            if(this.isPlayer()) {
+                this._targetY = 441;
             }else{
-                this.y = 65;
+                this._targetY = 65;
             }
             break;
-        case 'Hand':
-            this.x = 816;
-            if(this._player) {
-                this.y = 441;
-            }else{
-                this.y = 65;
-            }
-            break;
-        case 'PowerField':
-            this.x = 252 + (104 * position.index); 
-            this.y = 260;
-            break;
-        case 'PowerPosition':
-            this.x = 608;
-            this.y = 260;
-            break;
-    }
-
-    //Correction to OpenCard();
-    this.x = this.x + 50;
-    this._targetX = this.x;
-    this._targetY = this.y;
-    this._frameMove = 1;
-};
-
-SpriteCard.prototype.setMove = function(position) {
-    switch (position.target) {
-        case 'Field':
-            this._targetX = 49 + (104 * position.index); 
+        case 'INIT_POSITION_POWER_FIELD':
+                this.x = 658;
+                this._targetX = this.x;
+                this.y = 260;
+                this._targetY = this.y;
+                break;
+        case 'MOVE_BATTLE_FIELD':
+            this._targetX = 49 + (104 * action.index);
             if(this._player) {
                 this._targetY = 441;
             }else{
                 this._targetY = 65;
             }
             break;
-        case 'Hand':
+        case 'MOVE_HAND':
             this._targetX = 816;
             if(this._player) {
                 this._targetY = 441;
@@ -175,24 +169,100 @@ SpriteCard.prototype.setMove = function(position) {
                 this._targetY = 65;
             }
             break;
-        case 'PowerField':
+        case 'MOVE_POWER_FIELD':
             this._targetX = 252 + (104 * position.index); 
             this._targetY = 260;
             break;
-        case 'PowerPosition':
-            this._targetX = 608;
-            this._targetY = 260;
+        case 'OPEN_CARD':
+            if(this.isClose()) {
+                this._targetX = this.x - 50;
+                this._targetScaleX = 1;
+            }
+            break;
+        case 'CLOSE_CARD':
+            if(this.isOpen()) {
+                this._targetX = this.x + 50;
+                this._targetScaleX = 0;
+            }
+            break;
+        case 'TURN_CARD':
+            this._show = this.displaySwitch();
+            break;
+        case 'REFRESH_CARD':
+            this.refresh();
+            break;
+        case 'REFRESH_SELECT_CARD':
+            this._select = true;
+            this.refresh();
+            break;
+        case 'REFRESH_UNSELECT_CARD':
+            this._select = false;
+            this.refresh();
+            break;
+        case 'PLUS_CARD':
+            for (let index = 0; index < action.times; index++) {
+                lessCoor += 10;
+                lessScale += 0.2;
+            }
+
+            this._targetX = this.x - lessCoor;
+            this._targetY = this.y - lessCoor;
+            this._targetScaleX = this.scale.x + lessScale;
+            this._targetScaleY = this.scale.y + lessScale;
+            break;
+        case 'LESS_CARD':
+            for (let index = 0; index < action.times; index++) {
+                lessCoor += 10;
+                lessScale += 0.2;
+            }
+
+            this._targetX = this.x + lessCoor;
+            this._targetY = this.y + lessCoor;
+            this._targetScaleX = this.scale.x - lessScale;
+            this._targetScaleY = this.scale.y - lessScale;
+            break;
+        case 'UP_CARD':
+            for (let index = 0; index < action.times; index++) {
+                lessCoor += 16;
+            }
+            this._targetY = this.y - lessCoor;
+            break;
+        case 'DOWN_CARD':
+            for (let index = 0; index < action.times; index++) {
+                lessCoor += 16;
+            }
+            this._targetY = this.y + lessCoor;
             break;
     }
-    this._frameMove = 10;
+    this._frameMove = action.frame;
+};
+
+SpriteCard.prototype.isPlayer = function() {
+    return this._player;
 };
 
 SpriteCard.prototype.update = function() {
     Sprite.prototype.update.call(this);
+    this.updateActionMove();
     this.updateOpening();
-    this.updateTurn();
     this.updateMove();
     this.updatePoints();
+};
+
+SpriteCard.prototype.updateActionMove = function() {
+    if(this.hasSequence()){
+        if(this.voidFrameMove()) {
+            this.actionMove(this._sequence.shift());
+        }
+    }
+};
+
+SpriteCard.prototype.hasSequence = function() {
+    return this._sequence.length;
+};
+
+SpriteCard.prototype.setAction = function(action) {
+    this._sequence.push(action);
 };
 
 SpriteCard.prototype.updateOpening = function() {
@@ -200,21 +270,6 @@ SpriteCard.prototype.updateOpening = function() {
         this._openness = true;
     }else if(this.scale.x === 0 && this.isOpen()){
         this._openness = false;
-    }
-};
-
-SpriteCard.prototype.updateTurn = function() {
-    if(this.isTurn()) {
-        if(this.emptyFrameMove() && this.isOpen()) {
-            this.closeCard();
-        }
-
-        if(this.emptyFrameMove() && this.isClose()) {
-            this._show = this.displaySwitch();
-            this.refresh();
-            this.openCard();
-            this.turnEnd();
-        }
     }
 };
 
@@ -253,7 +308,7 @@ SpriteCard.prototype.hasFrameMove = function() {
     return this._frameMove;
 };
 
-SpriteCard.prototype.emptyFrameMove = function() {
+SpriteCard.prototype.voidFrameMove = function() {
     return !this._frameMove;
 };
 
@@ -271,22 +326,6 @@ SpriteCard.prototype.turnStart = function() {
 
 SpriteCard.prototype.turnEnd = function() {
     this._turn = false;
-};
-
-SpriteCard.prototype.openCard = function() {
-    if(this.isClose()) {
-        this._targetX = this.x - 50;
-        this._targetScaleX = 1;
-        this._frameMove = 10;
-    }
-};
-
-SpriteCard.prototype.closeCard = function() {
-    if(this.isOpen()) {
-        this._targetX = this.x + 50;
-        this._targetScaleX = 0;
-        this._frameMove = 10;
-    }
 };
 
 SpriteCard.prototype.updateCoordX = function() {

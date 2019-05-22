@@ -134,16 +134,34 @@ SceneCardBattle.prototype.testeCard = function() {
     this.card = new SpriteCard(new GameCard(1));
 
     this.addChild(this.card);
-    this.card.setPosition({target: 'Field', index: 0});
-    this.card.openCard();
-    //this.card.turnStart();
+    this.card.setAction({target: 'INIT_POSITION_POWER_FIELD', frame: 1});
+    this.card.setAction({target: 'REFRESH_CARD', frame: 1});
+    this.card.setAction({target: 'OPEN_CARD', frame: 10});
 
-    //update teste
-    // if(this.card.isOpen()){
-    //     if(this.card.isShow()){
-    //         this.card.turnStart();
-    //     }
-    // }
+
+
+    // this.card.setAction({target: 'REFRESH_SELECT_CARD', frame: 1});
+    // this.card.setAction({target: 'PLUS_CARD', times: 1, frame: 10});
+    // this.card.setAction({target: 'LESS_CARD', times: 1, frame: 10});
+    // this.card.setAction({target: 'CLOSE_CARD', frame: 10});
+    // this.card.setAction({target: 'TURN_CARD', frame: 1});
+    // this.card.setAction({target: 'REFRESH_CARD', frame: 1});
+    // this.card.setAction({target: 'OPEN_CARD', frame: 10});
+    
+    //this.card.setAction({target: 'UP_CARD', times: 1, frame: 2});
+    //this.card.setAction({target: 'DOWN_CARD', times: 1, frame: 2});
+
+    // this.card.setAction({target: 'PLUS_CARD', times: 1, frame: 10});
+    // this.card.setAction({target: 'LESS_CARD', times: 5, frame: 20});
+
+    // this.card.setAction({target: 'MOVE_BATTLE_FIELD', index: 1, frame: 20});
+    // this.card.setAction({target: 'CLOSE_CARD' , frame: 20});
+    // this.card.setAction({target: 'TURN_CARD', frame: 1});
+    // this.card.setAction({target: 'REFRESH_CARD', frame: 1});
+    // this.card.setAction({target: 'OPEN_CARD' , frame: 20});
+    // this.card.setAction({target: 'MOVE_BATTLE_FIELD', index: 1, frame: 20});
+    // this.card.setAction({target: 'MOVE_HAND', frame: 20});
+
 }
 
 
