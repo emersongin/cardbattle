@@ -1,6 +1,6 @@
 function SpriteCard() {
     this.initialize.apply(this, arguments);
-}
+};
 
 SpriteCard.prototype = Object.create(Sprite.prototype);
 SpriteCard.prototype.constructor = SpriteCard;
@@ -8,10 +8,10 @@ SpriteCard.prototype.constructor = SpriteCard;
 SpriteCard.prototype.initialize = function(GameCard) {
     Sprite.prototype.initialize.call(this);
     this._player = GameCard.isPlayer();
-    this._attackPoint = GameCard.getAttackPoint();
-    this._healthPoint = GameCard.getHealthPoint();
-    this._targetAttackPoint = GameCard.getAttackPoint();
-    this._targetHealthPoint = GameCard.getHealthPoint();
+    this._attackPoints = GameCard.getAttackPoint();
+    this._healthPoints = GameCard.getHealthPoint();
+    this._targetAttackPoints = this._attackPoints;
+    this._targetHealthPoints = this._healthPoints;
     this._type = GameCard.getType();
     this._targetX = 0;
     this._targetY = 0;
@@ -19,18 +19,19 @@ SpriteCard.prototype.initialize = function(GameCard) {
     this._targetScaleY = 1;
     this._framePoints = 0;
     this._frameMove = 0;
+    this._sequence = [];
     this._openness = false;
     this._show = false;
-    this._turn = false;
     this._select = false;
-    this._sequence = [];
+    this._active = true;
     this.setup();
     this.create(GameCard);
+    this._delay = 0;
 };
 
 SpriteCard.prototype.setup = function() {
     this.scale.x = 0;
-}
+};
 
 SpriteCard.prototype.create = function(GameCard) {
     this.createBackground();
@@ -42,7 +43,8 @@ SpriteCard.prototype.create = function(GameCard) {
 };
 
 SpriteCard.prototype.createBackground = function() {
-    this._background = new Sprite(new Bitmap(104, 120));
+    this._background = new Sprite_Base();
+    this._background.bitmap = new Bitmap(104, 120);
     this._background.bitmap.fontSize = 18;
     this.addChild(this._background);
 };
@@ -94,19 +96,23 @@ SpriteCard.prototype.createBackgroundColor = function(color) {
 
 SpriteCard.prototype.refresh = function() {
     this._background.bitmap.clear();
-    this.drawCard();
+    this.drawBackground();
+    this.drawSelect();
     this.drawDisplay();
+    this.drawEnabled();
 };
 
-SpriteCard.prototype.drawCard = function() {
+SpriteCard.prototype.drawBackground = function() {
     if(this._show) {
         this._background.bitmap.blt(this._backgroundImage, 0, 0, 100, 116, 2, 2);
         this._background.bitmap.blt(this._backgroundColor, 0, 0, 100, 30, 2, 88);
     }else{
         this._background.bitmap.blt(this._backgroundVerse, 0, 0, 104, 120, 0, 0);
     }
-    
-    if(this._select){
+};
+
+SpriteCard.prototype.drawSelect = function() {
+    if(this.isSelect()) {
         this._background.bitmap.blt(this._borderSelect, 0, 0, 104, 120, 0, 0);
     }else{
         this._background.bitmap.blt(this._borderStand, 0, 0, 104, 120, 0, 0);
@@ -114,8 +120,8 @@ SpriteCard.prototype.drawCard = function() {
 };
 
 SpriteCard.prototype.drawDisplay = function() {
-    let attack = this._attackPoint.padZero(2);
-    let health = this._healthPoint.padZero(2);
+    let attack = this._attackPoints.padZero(2);
+    let health = this._healthPoints.padZero(2);
     
     if(this._show) {
         switch (this._type) {
@@ -130,6 +136,14 @@ SpriteCard.prototype.drawDisplay = function() {
             default:
                 throw new Error('This Card not type');
         }
+    }
+};
+
+SpriteCard.prototype.drawEnabled = function() {
+    if(this.isEnabled()) {
+        this._background.setColorTone([0, 0, 0, 0]);
+    }else{
+        this._background.setColorTone([0, 0, 0, 125]);
     }
 };
 
@@ -161,6 +175,16 @@ SpriteCard.prototype.actionMove = function(action) {
                 this._targetY = 65;
             }
             break;
+        case 'MOVE_PLUS_BATTLE_FIELD':
+            this._targetX = 49 + (104 * action.index);
+            if(this._player) {
+                this._targetY = 441;
+            }else{
+                this._targetY = 65;
+            }
+            this._targetScaleX = 1;
+            this._targetScaleY = 1;
+            break;
         case 'MOVE_HAND':
             this._targetX = 816;
             if(this._player) {
@@ -189,14 +213,6 @@ SpriteCard.prototype.actionMove = function(action) {
             this._show = this.displaySwitch();
             break;
         case 'REFRESH_CARD':
-            this.refresh();
-            break;
-        case 'REFRESH_SELECT_CARD':
-            this._select = true;
-            this.refresh();
-            break;
-        case 'REFRESH_UNSELECT_CARD':
-            this._select = false;
             this.refresh();
             break;
         case 'PLUS_CARD':
@@ -233,8 +249,11 @@ SpriteCard.prototype.actionMove = function(action) {
             }
             this._targetY = this.y + lessCoor;
             break;
+        case 'FLASH':
+            this._background.startAnimation($dataAnimations[121]);
+            break;
     }
-    this._frameMove = action.frame;
+    this._frameMove = action.frame || 1;
 };
 
 SpriteCard.prototype.isPlayer = function() {
@@ -247,10 +266,11 @@ SpriteCard.prototype.update = function() {
     this.updateOpening();
     this.updateMove();
     this.updatePoints();
+    this.updateSelect();
 };
 
 SpriteCard.prototype.updateActionMove = function() {
-    if(this.hasSequence()){
+    if(this.hasSequence()) {
         if(this.voidFrameMove()) {
             this.actionMove(this._sequence.shift());
         }
@@ -268,15 +288,15 @@ SpriteCard.prototype.setAction = function(action) {
 SpriteCard.prototype.updateOpening = function() {
     if(this.scale.x === 1 && this.isClose()) {
         this._openness = true;
-    }else if(this.scale.x === 0 && this.isOpen()){
+    }else if(this.scale.x === 0 && this.isOpen()) {
         this._openness = false;
     }
 };
 
 SpriteCard.prototype.updateMove = function() {
     if(this.hasFrameMove()) {
-        this.updateCoordX();
-        this.updateCoordY();
+        this.updateX();
+        this.updateY();
         this.updateScaleX();
         this.updateScaleY();
         this._frameMove--;
@@ -284,12 +304,52 @@ SpriteCard.prototype.updateMove = function() {
 };
 
 SpriteCard.prototype.updatePoints = function() {
-    if(this.hasFramePoints()) {
-        this.updateAttackPoint();
-        this.updateHealthPoint();
-        this.refresh();
-		this._framePoints--;
-	}
+    if(this.hasFrameMove() && this.isOpen()) {
+        if(this.voidFrameMove()) {
+            this.refreshPoints();
+            this._framePoints--;
+        }
+    }
+};
+
+SpriteCard.prototype.updateSelect = function() {
+    if(this.isSelect()){
+        this._delay++
+        if(this._delay > 20){
+            this._background.startAnimation($dataAnimations[122]);
+            this._delay = 0;
+        }
+    }
+}
+
+SpriteCard.prototype.refreshPoints = function() {
+    this._attackPoints = this.updateAttackPoints();
+    this._healthPoints = this.updateHealthPoints();
+    this.refresh();
+};
+
+SpriteCard.prototype.updateAttackPoints = function() {
+	if(this.isUpdateAttackPoints()) {
+        this._framePoints = this.setFrameAttackPoints();
+        return parseInt((this._attackPoints * (this._framePoints - 1) + this._targetAttackPoints) / this._framePoints, 10);
+    }
+    return this._attackPoints;
+};
+
+SpriteCard.prototype.updateHealthPoints = function() {
+	if(this.isUpdateHealthPoints()) {
+        this._framePoints = this.setFrameHealthPoints();
+        return parseInt((this._healthPoints * (this._framePoints - 1) + this._targetHealthPoints) / this._framePoints, 10);
+    }
+    return this._healthPoints;
+};
+
+SpriteCard.prototype.setFrameAttackPoints = function() {
+    return parseInt(Math.abs(this._attackPoints - this._targetAttackPoints) / 1);
+};
+
+SpriteCard.prototype.setFrameHealthPoints = function() {
+    return parseInt(Math.abs(this._healthPoints - this._targetHealthPoints) / 1);
 };
 
 SpriteCard.prototype.isOpen = function() {
@@ -298,10 +358,6 @@ SpriteCard.prototype.isOpen = function() {
 
 SpriteCard.prototype.isClose = function() {
     return !this._openness;
-};
-
-SpriteCard.prototype.isTurn = function() {
-    return this._turn;
 };
 
 SpriteCard.prototype.hasFrameMove = function() {
@@ -320,21 +376,37 @@ SpriteCard.prototype.isShow = function() {
     return this._show;
 };
 
-SpriteCard.prototype.turnStart = function() {
-    this._turn = true;
+SpriteCard.prototype.select = function() {
+    this._select = true;
 };
 
-SpriteCard.prototype.turnEnd = function() {
-    this._turn = false;
+SpriteCard.prototype.unSelect = function() {
+    this._select = false;
 };
 
-SpriteCard.prototype.updateCoordX = function() {
+SpriteCard.prototype.isSelect = function() {
+    return this._select;
+};
+
+SpriteCard.prototype.enable = function() {
+    this._active = true;
+};
+
+SpriteCard.prototype.disable = function() {
+    this._active = false;
+};
+
+SpriteCard.prototype.isEnabled = function() {
+    return this._active;
+};
+
+SpriteCard.prototype.updateX = function() {
 	if(this.isUpdateMoveX()) {
 		this.x = (this.x * (this._frameMove - 1) + this._targetX) / this._frameMove;
 	}
 };
 
-SpriteCard.prototype.updateCoordY = function() {
+SpriteCard.prototype.updateY = function() {
 	if(this.isUpdateMoveY()) {
 		this.y = (this.y * (this._frameMove - 1) + this._targetY) / this._frameMove;
 	}
@@ -372,22 +444,30 @@ SpriteCard.prototype.hasFramePoints = function() {
     return this._framePoints;
 };
 
-SpriteCard.prototype.updateAttackPoint = function() {
-	if(this.isUpdateAttackPoint()) {
-        this._attackPoint = parseInt((this._attackPoint * (this._framePoints - 1) + this._targetAttackPoint) / this._framePoints);
-    }
+SpriteCard.prototype.voidFramePoints = function() {
+    return !this._framePoints;
 };
 
-SpriteCard.prototype.updateHealthPoint = function() {
-	if(this.isUpdateHealthPoint()) {
-        this._healthPoint = parseInt((this._healthPoint * (this._framePoints - 1) + this._targetHealthPoint) / this._framePoints);
-    }
+SpriteCard.prototype.isUpdatePoints = function() {
+    return this.isUpdateAttackPoints() || this.isUpdateHealthPoints();
 };
 
-SpriteCard.prototype.isUpdateAttackPoint = function() {
-    return this._attackPoint !== this._targetAttackPoint;
+SpriteCard.prototype.isUpdateAttackPoints = function() {
+    return this._attackPoints !== this._targetAttackPoints;
 };
 
-SpriteCard.prototype.isUpdateHealthPoint = function() {
-    return this._healthPoint !== this._targetHealthPoint;
+SpriteCard.prototype.isUpdateHealthPoints = function() {
+    return this._healthPoints !== this._targetHealthPoints;
+};
+
+SpriteCard.prototype.setAttackPoints = function(points = this._attackPoints) {
+    if(points < 0) points = 0;
+    if(points > 99) points = 99;
+    this._targetAttackPoints = points;
+};
+
+SpriteCard.prototype.setHealthPoints = function(points = this._healthPoints) {
+    if(points < 0) points = 0;
+    if(points > 99) points = 99;
+    this._targetHealthPoints = points;
 };
