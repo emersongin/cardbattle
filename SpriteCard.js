@@ -8,25 +8,29 @@ SpriteCard.prototype.constructor = SpriteCard;
 SpriteCard.prototype.initialize = function(GameCard) {
     Sprite.prototype.initialize.call(this);
     this._player = GameCard.isPlayer();
+    this._type = GameCard.getType();
     this._attackPoints = GameCard.getAttackPoint();
     this._healthPoints = GameCard.getHealthPoint();
     this._targetAttackPoints = this._attackPoints;
     this._targetHealthPoints = this._healthPoints;
-    this._type = GameCard.getType();
+    this._framePoints = 0;
+    this._sequence = [];
     this._targetX = 0;
     this._targetY = 0;
     this._targetScaleX = 0;
     this._targetScaleY = 1;
-    this._framePoints = 0;
     this._frameMove = 0;
-    this._sequence = [];
+    this._flashDelay = 0;
     this._openness = false;
     this._show = false;
+    this._light = false;
     this._select = false;
+    this._confirm = false;
+    this._effect = false;
+    this._block = false;
     this._active = true;
     this.setup();
     this.create(GameCard);
-    this._delay = 0;
 };
 
 SpriteCard.prototype.setup = function() {
@@ -36,10 +40,14 @@ SpriteCard.prototype.setup = function() {
 SpriteCard.prototype.create = function(GameCard) {
     this.createBackground();
     this.createBackgroundImage(GameCard.getFilename());
-    this.createbackgroundVerse();
-    this.createBorderStand();
-    this.createBorderSelect();
+    this.createBackgroundVerse();
     this.createBackgroundColor(GameCard.getColor());
+    this.createBorder();
+    this.createSelect();
+    this.createChoice();
+    this.createConfirm();
+    this.createEffect();
+    this.createCancel();
 };
 
 SpriteCard.prototype.createBackground = function() {
@@ -53,36 +61,28 @@ SpriteCard.prototype.createBackgroundImage = function(filename) {
     this._backgroundImage = ImageManager.loadCard(filename);
 };
 
-SpriteCard.prototype.createbackgroundVerse = function() {
+SpriteCard.prototype.createBackgroundVerse = function() {
     this._backgroundVerse = ImageManager.loadCard('CardVerse');
-};
-
-SpriteCard.prototype.createBorderStand = function() {
-    this._borderStand = ImageManager.loadCard('CardStand');
-};
-
-SpriteCard.prototype.createBorderSelect = function() {
-    this._borderSelect = ImageManager.loadCard('CardSelect');
 };
 
 SpriteCard.prototype.createBackgroundColor = function(color) {
     switch (color) {
-        case 'white':
+        case 'WHITE':
             color  = 'rgba(255, 255, 255, 0.7)';
             break;
-        case 'red':
+        case 'RED':
             color  = 'rgba(255, 0, 0, 0.7)';
             break;
-        case 'green':
+        case 'GREEN':
             color  = 'rgba(0, 255, 0, 0.7)';
             break;
-        case 'blue':
+        case 'BLUE':
             color  = 'rgba(0, 0, 255, 0.7)';
             break;
-        case 'black':
+        case 'BLACK':
             color  = 'rgba(0, 0, 0, 0.7)';
             break;
-        case 'brown':
+        case 'BROWN':
             color  = 'rgba(139, 69, 19, 0.7)';
             break;
         default:
@@ -94,11 +94,185 @@ SpriteCard.prototype.createBackgroundColor = function(color) {
     this._backgroundColor.fillAll(color);
 };
 
+SpriteCard.prototype.createBorder = function() {
+    this._borderStand = ImageManager.loadCard('CardStand');
+};
+
+SpriteCard.prototype.createSelect = function() {
+    this._selectBorder = ImageManager.loadCard('CardSelect');
+};
+
+SpriteCard.prototype.createChoice = function() {
+    this._lightBorder = new Sprite_Base();
+    this._lightBorder.bitmap = ImageManager.loadCard('CardChoice');
+    this.addChild(this._lightBorder);
+};
+
+SpriteCard.prototype.createConfirm = function() {
+    this._confirmBorder = new Sprite_Base();
+    this._confirmBorder.bitmap = ImageManager.loadCard('CardConfirm');
+    this.addChild(this._confirmBorder);
+};
+
+SpriteCard.prototype.createEffect = function() {
+    if(this.isPlayer()) {
+        this._effectIcon = ImageManager.loadCard('CardEffect1');
+    }else{
+        this._effectIcon = ImageManager.loadCard('CardEffect3');
+    }
+};
+
+SpriteCard.prototype.createCancel = function() {
+    if(this.isPlayer()) {
+        this._blockIcon = ImageManager.loadCard('CardEffect2');
+    }else{
+        this._blockIcon = ImageManager.loadCard('CardEffect4');
+    }
+};
+
+SpriteCard.prototype.isPlayer = function() {
+    return this._player;
+};
+
+SpriteCard.prototype.isNoPlayer = function() {
+    return !this._player;
+};
+
+SpriteCard.prototype.isOpen = function() {
+    return this._openness;
+};
+
+SpriteCard.prototype.isClose = function() {
+    return !this._openness;
+};
+
+SpriteCard.prototype.hasFrameMove = function() {
+    return this._frameMove;
+};
+
+SpriteCard.prototype.voidFrameMove = function() {
+    return !this._frameMove;
+};
+
+SpriteCard.prototype.hasFramePoints = function() {
+    return this._framePoints;
+};
+
+SpriteCard.prototype.voidFramePoints = function() {
+    return !this._framePoints;
+};
+
+SpriteCard.prototype.displaySwitch = function() {
+    return this.isShow() ? false : true;
+};
+
+SpriteCard.prototype.isShow = function() {
+    return this._show;
+};
+
+SpriteCard.prototype.isLight = function() {
+    return this._light;
+};
+
+SpriteCard.prototype.isUnlit = function() {
+    return !this._light;
+};
+
+SpriteCard.prototype.isSelected = function() {
+    return this._select;
+};
+
+SpriteCard.prototype.isUnselected = function() {
+    return !this._select;
+};
+
+SpriteCard.prototype.isConfirmed = function() {
+    return this._confirm;
+};
+
+SpriteCard.prototype.isNoConfirm = function() {
+    return !this._confirm;
+};
+
+SpriteCard.prototype.isEnabled = function() {
+    return this._active;
+};
+
+SpriteCard.prototype.isDisabled = function() {
+    return !this._active;
+};
+
+SpriteCard.prototype.isEffect = function() {
+    return this._effect;
+};
+
+SpriteCard.prototype.isNoEffect = function() {
+    return !this._effect;
+};
+
+SpriteCard.prototype.isBlock = function() {
+    return this._block;
+};
+
+SpriteCard.prototype.isUnblock = function() {
+    return !this._block;
+};
+
+SpriteCard.prototype.light = function() {
+    this._light = true;
+};
+
+SpriteCard.prototype.unlit = function() {
+    this._light = false;
+};
+
+SpriteCard.prototype.select = function() {
+    this._select = true;
+};
+
+SpriteCard.prototype.unselect = function() {
+    this._select = false;
+};
+
+SpriteCard.prototype.confirm = function() {
+    this._confirm = true;
+};
+
+SpriteCard.prototype.unconfirm = function() {
+    this._confirm = false;
+};
+
+SpriteCard.prototype.enable = function() {
+    this._active = true;
+};
+
+SpriteCard.prototype.disable = function() {
+    this._active = false;
+};
+
+SpriteCard.prototype.effect = function() {
+    this._effect = true;
+};
+
+SpriteCard.prototype.uneffect = function() {
+    this._effect = false;
+};
+
+SpriteCard.prototype.block = function() {
+    this._block = true;
+};
+
+SpriteCard.prototype.unblock = function() {
+    this._block = false;
+};
+
 SpriteCard.prototype.refresh = function() {
     this._background.bitmap.clear();
     this.drawBackground();
-    this.drawSelect();
     this.drawDisplay();
+    this.drawSelect();
+    this.drawEffect();
+    this.drawCancel();
     this.drawEnabled();
 };
 
@@ -106,16 +280,8 @@ SpriteCard.prototype.drawBackground = function() {
     if(this._show) {
         this._background.bitmap.blt(this._backgroundImage, 0, 0, 100, 116, 2, 2);
         this._background.bitmap.blt(this._backgroundColor, 0, 0, 100, 30, 2, 88);
-    }else{
+    } else {
         this._background.bitmap.blt(this._backgroundVerse, 0, 0, 104, 120, 0, 0);
-    }
-};
-
-SpriteCard.prototype.drawSelect = function() {
-    if(this.isSelect()) {
-        this._background.bitmap.blt(this._borderSelect, 0, 0, 104, 120, 0, 0);
-    }else{
-        this._background.bitmap.blt(this._borderStand, 0, 0, 104, 120, 0, 0);
     }
 };
 
@@ -139,125 +305,32 @@ SpriteCard.prototype.drawDisplay = function() {
     }
 };
 
+SpriteCard.prototype.drawSelect = function() {
+    if(this.isSelected()) {
+        this._background.bitmap.blt(this._selectBorder, 0, 0, 104, 120, 0, 0);
+    } else {
+        this._background.bitmap.blt(this._borderStand, 0, 0, 104, 120, 0, 0);
+    }
+};
+
+SpriteCard.prototype.drawEffect = function() {
+    if(this.isEffect()) {
+        this._background.bitmap.blt(this._effectIcon, 0, 0, 104, 120, 0, 0);
+    }
+};
+
+SpriteCard.prototype.drawCancel = function() {
+    if(this.isBlock()) {
+        this._background.bitmap.blt(this._blockIcon, 0, 0, 104, 120, 0, 0);
+    }
+};
+
 SpriteCard.prototype.drawEnabled = function() {
     if(this.isEnabled()) {
         this._background.setColorTone([0, 0, 0, 0]);
-    }else{
+    } else {
         this._background.setColorTone([0, 0, 0, 125]);
     }
-};
-
-SpriteCard.prototype.actionMove = function(action) {
-    let lessCoor = 0;
-    let lessScale = 0.0;
-
-    switch (action.target) {
-        case 'INIT_POSITION_HAND':
-            this.x = 866;
-            this._targetX = this.x;
-            if(this.isPlayer()) {
-                this._targetY = 441;
-            }else{
-                this._targetY = 65;
-            }
-            break;
-        case 'INIT_POSITION_POWER_FIELD':
-                this.x = 658;
-                this._targetX = this.x;
-                this.y = 260;
-                this._targetY = this.y;
-                break;
-        case 'MOVE_BATTLE_FIELD':
-            this._targetX = 49 + (104 * action.index);
-            if(this._player) {
-                this._targetY = 441;
-            }else{
-                this._targetY = 65;
-            }
-            break;
-        case 'MOVE_PLUS_BATTLE_FIELD':
-            this._targetX = 49 + (104 * action.index);
-            if(this._player) {
-                this._targetY = 441;
-            }else{
-                this._targetY = 65;
-            }
-            this._targetScaleX = 1;
-            this._targetScaleY = 1;
-            break;
-        case 'MOVE_HAND':
-            this._targetX = 816;
-            if(this._player) {
-                this._targetY = 441;
-            }else{
-                this._targetY = 65;
-            }
-            break;
-        case 'MOVE_POWER_FIELD':
-            this._targetX = 252 + (104 * position.index); 
-            this._targetY = 260;
-            break;
-        case 'OPEN_CARD':
-            if(this.isClose()) {
-                this._targetX = this.x - 50;
-                this._targetScaleX = 1;
-            }
-            break;
-        case 'CLOSE_CARD':
-            if(this.isOpen()) {
-                this._targetX = this.x + 50;
-                this._targetScaleX = 0;
-            }
-            break;
-        case 'TURN_CARD':
-            this._show = this.displaySwitch();
-            break;
-        case 'REFRESH_CARD':
-            this.refresh();
-            break;
-        case 'PLUS_CARD':
-            for (let index = 0; index < action.times; index++) {
-                lessCoor += 10;
-                lessScale += 0.2;
-            }
-
-            this._targetX = this.x - lessCoor;
-            this._targetY = this.y - lessCoor;
-            this._targetScaleX = this.scale.x + lessScale;
-            this._targetScaleY = this.scale.y + lessScale;
-            break;
-        case 'LESS_CARD':
-            for (let index = 0; index < action.times; index++) {
-                lessCoor += 10;
-                lessScale += 0.2;
-            }
-
-            this._targetX = this.x + lessCoor;
-            this._targetY = this.y + lessCoor;
-            this._targetScaleX = this.scale.x - lessScale;
-            this._targetScaleY = this.scale.y - lessScale;
-            break;
-        case 'UP_CARD':
-            for (let index = 0; index < action.times; index++) {
-                lessCoor += 16;
-            }
-            this._targetY = this.y - lessCoor;
-            break;
-        case 'DOWN_CARD':
-            for (let index = 0; index < action.times; index++) {
-                lessCoor += 16;
-            }
-            this._targetY = this.y + lessCoor;
-            break;
-        case 'FLASH':
-            this._background.startAnimation($dataAnimations[121]);
-            break;
-    }
-    this._frameMove = action.frame || 1;
-};
-
-SpriteCard.prototype.isPlayer = function() {
-    return this._player;
 };
 
 SpriteCard.prototype.update = function() {
@@ -266,7 +339,8 @@ SpriteCard.prototype.update = function() {
     this.updateOpening();
     this.updateMove();
     this.updatePoints();
-    this.updateSelect();
+    this.updateChoice();
+    this.updateConfirm();
 };
 
 SpriteCard.prototype.updateActionMove = function() {
@@ -275,14 +349,6 @@ SpriteCard.prototype.updateActionMove = function() {
             this.actionMove(this._sequence.shift());
         }
     }
-};
-
-SpriteCard.prototype.hasSequence = function() {
-    return this._sequence.length;
-};
-
-SpriteCard.prototype.setAction = function(action) {
-    this._sequence.push(action);
 };
 
 SpriteCard.prototype.updateOpening = function() {
@@ -304,7 +370,7 @@ SpriteCard.prototype.updateMove = function() {
 };
 
 SpriteCard.prototype.updatePoints = function() {
-    if(this.hasFrameMove() && this.isOpen()) {
+    if(this.isUpdatePoints() && this.isOpen()) {
         if(this.voidFrameMove()) {
             this.refreshPoints();
             this._framePoints--;
@@ -312,15 +378,37 @@ SpriteCard.prototype.updatePoints = function() {
     }
 };
 
-SpriteCard.prototype.updateSelect = function() {
-    if(this.isSelect()){
-        this._delay++
-        if(this._delay > 20){
-            this._background.startAnimation($dataAnimations[122]);
-            this._delay = 0;
+SpriteCard.prototype.updateChoice = function() {
+    if(this.isLight() && this.isOpen()) {
+        this._lightBorder.opacity = 200;
+        this._flashDelay++
+        if(this._flashDelay > 20) {
+            this._lightBorder.startAnimation($dataAnimations[122]);
+            this._flashDelay = 0;
+        }
+    } else {
+        if(this._lightBorder.opacity || this.isNoConfirm()) {
+            this._lightBorder.opacity = 0;
+            this._flashDelay = 0;
         }
     }
-}
+};
+
+SpriteCard.prototype.updateConfirm = function() {
+    if(this.isConfirmed() && this.isOpen()) {
+        this._confirmBorder.opacity = 200;
+        this._flashDelay++
+        if(this._flashDelay > 20) {
+            this._confirmBorder.startAnimation($dataAnimations[122]);
+            this._flashDelay = 0;
+        }
+    } else {
+        if(this._confirmBorder.opacity || this.isUnlit()) {
+            this._confirmBorder.opacity = 0;
+            this._flashDelay = 0;
+        }
+    }
+};
 
 SpriteCard.prototype.refreshPoints = function() {
     this._attackPoints = this.updateAttackPoints();
@@ -350,54 +438,6 @@ SpriteCard.prototype.setFrameAttackPoints = function() {
 
 SpriteCard.prototype.setFrameHealthPoints = function() {
     return parseInt(Math.abs(this._healthPoints - this._targetHealthPoints) / 1);
-};
-
-SpriteCard.prototype.isOpen = function() {
-    return this._openness;
-};
-
-SpriteCard.prototype.isClose = function() {
-    return !this._openness;
-};
-
-SpriteCard.prototype.hasFrameMove = function() {
-    return this._frameMove;
-};
-
-SpriteCard.prototype.voidFrameMove = function() {
-    return !this._frameMove;
-};
-
-SpriteCard.prototype.displaySwitch = function() {
-    return this.isShow() ? false : true;
-};
-
-SpriteCard.prototype.isShow = function() {
-    return this._show;
-};
-
-SpriteCard.prototype.select = function() {
-    this._select = true;
-};
-
-SpriteCard.prototype.unSelect = function() {
-    this._select = false;
-};
-
-SpriteCard.prototype.isSelect = function() {
-    return this._select;
-};
-
-SpriteCard.prototype.enable = function() {
-    this._active = true;
-};
-
-SpriteCard.prototype.disable = function() {
-    this._active = false;
-};
-
-SpriteCard.prototype.isEnabled = function() {
-    return this._active;
 };
 
 SpriteCard.prototype.updateX = function() {
@@ -440,14 +480,6 @@ SpriteCard.prototype.isUpdateScaleY = function() {
     return this.scale.y !== this._targetScaleY;
 };
 
-SpriteCard.prototype.hasFramePoints = function() {
-    return this._framePoints;
-};
-
-SpriteCard.prototype.voidFramePoints = function() {
-    return !this._framePoints;
-};
-
 SpriteCard.prototype.isUpdatePoints = function() {
     return this.isUpdateAttackPoints() || this.isUpdateHealthPoints();
 };
@@ -458,6 +490,254 @@ SpriteCard.prototype.isUpdateAttackPoints = function() {
 
 SpriteCard.prototype.isUpdateHealthPoints = function() {
     return this._healthPoints !== this._targetHealthPoints;
+};
+
+SpriteCard.prototype.hasSequence = function() {
+    return this._sequence.length;
+};
+
+SpriteCard.prototype.setActions = function(actions) {
+    if(Array.isArray(actions) === false) {
+        if(actions) {
+            actions = [actions];
+        }else{
+            actions = [];
+        }
+    }
+    
+    for (let index = 0; index < actions.length; index++) {
+        this._sequence.push(actions[index]);
+    }
+};
+
+SpriteCard.prototype.actionMove = function(action) {
+    switch (action.type) {
+        case 'INIT_POSITION_HAND':
+            this.setInitialPositionHand();
+            break;
+        case 'INIT_POSITION_POWER_FIELD':
+            this.setInitialPositionPowerField();
+            break;
+        case 'MOVE_BATTLE_FIELD':
+            this.moveBattleField(action.index);
+            break;
+        case 'MOVE_PLUS_BATTLE_FIELD':
+            this.moveBattleFieldPlus(action.index);
+            break;
+        case 'MOVE_ATTACK':
+                this.moveAttack(action.index);
+                break;
+        case 'MOVE_HAND':
+            this.moveHand();
+            break;
+        case 'MOVE_POWER_FIELD':
+            this.movePowerField(action.index);
+            break;
+        case 'OPEN_CARD':
+            this.openCard();
+            break;
+        case 'CLOSE_CARD':
+            this.closeCard();
+            break;
+        case 'TURN_CARD':
+            this._show = this.displaySwitch();
+            break;
+        case 'REFRESH_CARD':
+            this.refresh();
+            break;
+        case 'PLUS_CARD':
+            this.plusCard(action.times);
+            break;
+        case 'LESS_CARD':
+            this.lessCard(action.times);
+            break;
+        case 'UP_CARD':
+            this.upCard(action.times);
+            break;
+        case 'DOWN_CARD':
+            this.downCard(action.times);
+            break;
+        case 'FLASH':
+            this._background.startAnimation($dataAnimations[121]);
+            break;
+        case 'LIGHT_CARD':
+            this.light();
+            break;
+        case 'UNLIT_CARD':
+            this.unlit();
+            break;
+        case 'SELECT_CARD':
+            this.select();
+            this.refresh();
+            break;
+        case 'UNSELECT_CARD':
+            this.unselect();
+            this.refresh();
+            break;
+        case 'CONFIRM_CARD':
+            this.unlit();
+            this.unselect();
+            this.confirm();
+            break;
+        case 'UNCONFIRM_CARD':
+            this.unconfirm();
+            break;
+        case 'ENABLE_CARD':
+            this.enable();
+            this.refresh();
+            break;
+        case 'DISABLE_CARD':
+            this.disable();
+            this.refresh();
+            break;
+        case 'EFFECT_CARD':
+            this.effect();
+            this.refresh();
+            break;
+        case 'UNEFFECT_CARD':
+            this.uneffect();
+            this.refresh();
+            break;
+        case 'BLOCK_CARD':
+            this.block();
+            this.refresh();
+            break;
+        case 'UNBLOCK_CARD':
+            this.unblock();
+            this.refresh();
+            break;
+        case 'ATTACK_POINTS':
+            this.setAttackPoints(action.points);
+            break;
+        case 'HEALTH_POINTS':
+            this.setHealthPoints(action.points);
+            break;
+    }
+    this._frameMove = action.frame || 1;
+};
+
+SpriteCard.prototype.setInitialPositionHand = function() {
+    this.x = 866;
+    this._targetX = this.x;
+    if(this.isPlayer()) {
+        this._targetY = 441;
+    } else {
+        this._targetY = 65;
+    }
+};
+
+SpriteCard.prototype.setInitialPositionPowerField = function() {
+    this.x = 658;
+    this._targetX = this.x;
+    this.y = 260;
+    this._targetY = this.y;
+};
+
+SpriteCard.prototype.moveBattleField = function(index) {
+    this._targetX = 49 + (104 * index);
+    if(this._player) {
+        this._targetY = 441;
+    } else {
+        this._targetY = 65;
+    }
+};
+
+SpriteCard.prototype.moveAttack = function(index) {
+    this._targetX = 49 + (52 * index);
+    if(this._player) {
+        this._targetY = 185;
+    } else {
+        this._targetY = 321;
+    }
+};
+
+SpriteCard.prototype.moveBattleFieldPlus = function(index) {
+    this._targetX = 49 + (104 * index);
+    if(this._player) {
+        this._targetY = 441;
+    } else {
+        this._targetY = 65;
+    }
+    this._targetScaleX = 1;
+    this._targetScaleY = 1;
+};
+
+SpriteCard.prototype.moveHand = function() {
+    this._targetX = 816;
+    if(this._player) {
+        this._targetY = 441;
+    } else {
+        this._targetY = 65;
+    }
+};
+
+SpriteCard.prototype.movePowerField = function(index) {
+    this._targetX = 252 + (104 * index); 
+    this._targetY = 260;
+};
+
+SpriteCard.prototype.openCard = function() {
+    if(this.isClose()) {
+        this._targetX = this.x - 50;
+        this._targetScaleX = 1;
+    }
+};
+
+SpriteCard.prototype.closeCard = function() {
+    if(this.isOpen()) {
+        this._targetX = this.x + 50;
+        this._targetScaleX = 0;
+    }
+};
+
+SpriteCard.prototype.plusCard = function(times) {
+    let lessCoor = 0;
+    let plusScale = 0.0;
+
+    for (let index = 0; index < times; index++) {
+        lessCoor += 10;
+        plusScale += 0.2;
+    }
+
+    this._targetX = this.x - lessCoor;
+    this._targetY = this.y - lessCoor;
+    this._targetScaleX = this.scale.x + plusScale;
+    this._targetScaleY = this.scale.y + plusScale;
+};
+
+SpriteCard.prototype.lessCard = function(times) {
+    let plusCoor = 0;
+    let lessScale = 0.0;
+
+    for (let index = 0; index < times; index++) {
+        plusCoor += 10;
+        lessScale += 0.2;
+    }
+
+    this._targetX = this.x + plusCoor;
+    this._targetY = this.y + plusCoor;
+    this._targetScaleX = this.scale.x - lessScale;
+    this._targetScaleY = this.scale.y - lessScale;
+};
+
+SpriteCard.prototype.upCard = function(times) {
+    let lessCoor = 0;
+
+    for (let index = 0; index < times; index++) {
+        lessCoor += 16;
+    }
+
+    this._targetY = this.y - lessCoor;
+};
+
+SpriteCard.prototype.downCard = function(times) {
+    let plusCoor = 0;
+
+    for (let index = 0; index < action.times; index++) {
+        plusCoor += 16;
+    }
+
+    this._targetY = this.y + plusCoor;
 };
 
 SpriteCard.prototype.setAttackPoints = function(points = this._attackPoints) {
