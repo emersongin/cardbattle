@@ -11,9 +11,8 @@ SpriteTransition.prototype.initialize = function() {
     this._imageLayer = new Sprite();
     this._blackLayer = new Sprite();
     this._imageLayer.opacity = 0;
-    this._transitionFinished = false;
     this._frameCount = 0;
-    this._active = false;
+    this._active = true;
     this.visible = false;
     this.create();
 };
@@ -22,14 +21,28 @@ SpriteTransition.prototype.isActive = function() {
     return this._active;
 };
 
-SpriteTransition.prototype.activate = function() {
-    this.visible = true;
+SpriteTransition.prototype.enable = function() {
     this._active = true;
 };
 
 SpriteTransition.prototype.disable = function() {
-    this.visible = false;
     this._active = false;
+};
+
+SpriteTransition.prototype.isShown = function() {
+    return this.visible;
+};
+
+SpriteTransition.prototype.isHidden = function() {
+    return !this.visible;
+};
+
+SpriteTransition.prototype.show = function() {
+    this.visible = true;
+};
+
+SpriteTransition.prototype.hide = function() {
+    this.visible = false;
 };
 
 SpriteTransition.prototype.create = function() {
@@ -64,7 +77,8 @@ SpriteTransition.prototype.addChildren = function() {
     this.addChildAt(this._blackLayer, 2);
 };
 
-SpriteTransition.prototype.moveTransition = function() {
+SpriteTransition.prototype.update = function() {
+    Sprite.prototype.update.call(this);
     if(this.isActive()) {
         this.updateTransition();
     }
@@ -101,19 +115,18 @@ SpriteTransition.prototype.updateTransition = function() {
 
         if(this.opacity <= 0) {
             this._frameCount = 0;
-            this._transitionFinished = true;
             this.disable();
         }
     }
 };
 
-SpriteTransition.prototype.updateRectClearImage = function(time = 4) {
+SpriteTransition.prototype.updateRectClearImage = function(time = 2) {
     let imageLayer = this._imageLayer;
 
     imageLayer.rectangleClear.x += time;
     imageLayer.rectangleClear.y += time;
-    imageLayer.rectangleClear.width += time ? -time * 2: +time * 2;
-    imageLayer.rectangleClear.height += time ? -time * 2: +time * 2;
+    imageLayer.rectangleClear.width += time ? -time * 2 : +time * 2;
+    imageLayer.rectangleClear.height += time ? -time * 2 : +time * 2;
 };
 
 SpriteTransition.prototype.renderRectClearImage = function() {
@@ -129,7 +142,7 @@ SpriteTransition.prototype.renderRectClearImage = function() {
     imageLayer.bitmap.clearRect(rect.x, rect.y, rect.width, rect.height);
 };
 
-SpriteTransition.prototype.updateRectClearBlack = function(time = 12) {
+SpriteTransition.prototype.updateRectClearBlack = function(time = 6) {
     let blackLayer = this._blackLayer;
 
     blackLayer.rectangleClear.x += time;

@@ -1,12 +1,3 @@
-
-/*:
- * @plugindesc The scene class of the Card Battle screen.
- * @author Emerson Andrey
- *
- * @help ...
- *
-*/
-
 function SceneCardBattle() {
     this.initialize.apply(this, arguments);
 }
@@ -16,17 +7,21 @@ SceneCardBattle.prototype.constructor = SceneCardBattle;
 
 SceneCardBattle.prototype.initialize = function() {
     Scene_Base.prototype.initialize.call(this);
-    this._sceneController = 'Start';
-    this._frameCount = 0;
+    this._wait = 0;
     this.gamePlayerTest();
 };
 
 SceneCardBattle.prototype.create = function() {
     Scene_Base.prototype.create.call(this);
-    //this.createDisplayObjects();
-    //this.testeTrashWindow();
-    this.testeZoneWindow();
-    this.testeCard();
+    this.createDisplayObjects();
+    
+    // this.testeTrashWindow();
+    // this.testeZoneWindow();
+    // this.testeCard();
+    // this.testeWin();
+    //this.testeCollection();
+    //this.testeGameLuck();
+
 };
 
 SceneCardBattle.prototype.start = function() {
@@ -34,13 +29,10 @@ SceneCardBattle.prototype.start = function() {
 };
 
 SceneCardBattle.prototype.update = function() {
-    if(this._frameCount > 0) {
-        this._frameCount--;
-    }
     Scene_Base.prototype.update.call(this);
-    // this._spriteset.update();
-    // this.updateIntroduction();
-    // this.updateChooseFolder();
+    this._spriteset.update();
+    this.updateIntroduction();
+    this.updateCardBattle();
 };
 
 SceneCardBattle.prototype.stop = function() {
@@ -53,7 +45,6 @@ SceneCardBattle.prototype.terminate = function() {
 
 SceneCardBattle.prototype.createDisplayObjects = function() {
     this.createSpriteset();
-    this.createWindowset();
 };
 
 SceneCardBattle.prototype.createSpriteset = function() {
@@ -63,63 +54,86 @@ SceneCardBattle.prototype.createSpriteset = function() {
     })
 };
 
-SceneCardBattle.prototype.createWindowset = function() {
-    this._windowset = new WindowsetCardBattle();
-    this._windowset.layers().forEach(window =>{
-        this.addChild(window);
-    })
-};
-
 SceneCardBattle.prototype.updateIntroduction = function() {
-    let spriteset = this._spriteset;
-    let windowset = this._windowset;
-    let control = this._sceneController;
-
-    if(control === 'Start') {
-        this._sceneController = 'TransitionInProgress';
-        spriteset.enableBackground();
-        spriteset.enableTransition();
+    if (CardBattleManager.getPhase() === 'INITIALIZE') {
+        if(this._spriteset.isHideBackground() && this._spriteset.isHideTransition()) {
+            this._spriteset.showBackground();
+            this._spriteset.showTransition();
+        }
+        if(this._spriteset.isDisabledTransition() && this._spriteset.isHideChallenger()) {
+            if(this._wait > 20) {
+                this._spriteset.showChallenger();
+                this._wait = 0;
+            } else {
+                this._wait++;
+            }
+        }
+        if(this._spriteset.isDisabledChallenger() && this._spriteset.isHideChooseFolder()) {
+            if(this._wait > 60) {
+                this._spriteset.showChooseFolder();
+                this._wait = 0;
+            } else {
+                this._wait++;
+            }
+        }
+        if(this._spriteset.isDisabledChooseFolder()) {
+            if(this._wait > 60) {
+                CardBattleManager.setPhase('CARD_BATTLE');
+                this._wait = 0;
+            } else {
+                this._wait++;
+            }
+        }
     }
-    if(spriteset.transitionIsFinished() && control === 'TransitionInProgress') {
-        this._sceneController = 'ChallengerInProgress';
-        windowset.changeTitleIntro('Card Battle Challenge');
-        windowset.changeTextIntro([
-            'Lv 92',
-            'Forest Deck'
-        ]);
-        windowset.openTitleIntro();
-        windowset.openTextIntro();
-    }
-    if(this.confirmKey() && control === 'ChallengerInProgress') {
-        this._sceneController = 'ChallengerClosing';
-        this._frameCount = 60;
-        windowset.closeTitleIntro();
-        windowset.closeTextIntro();
-    }
-
 };
 
-SceneCardBattle.prototype.confirmKey = function() {
-    return Input.isTriggered('ok') || TouchInput.isTriggered();
-};
+SceneCardBattle.prototype.updateCardBattle = function() {
+    switch (CardBattleManager.getPhase()) {
+        case 'CARD_BATTLE':
+            if (CardBattleManager.getPlayerWins() < 2 && CardBattleManager.getEnemyWins() < 2) {
+                CardBattleManager.setPhase('START_PHASE');
+            } else {
+                CardBattleManager.setPhase('END_PHASE');
+            }
+            break;
+        case 'START_PHASE':
+            this._spriteset.showGameLuck();
+            CardBattleManager.setPhase('WAIT');
+            break;
+        case 'DRAW_PHASE':
 
-SceneCardBattle.prototype.updateChooseFolder = function() {
-    let spriteset = this._spriteset;
-    let windowset = this._windowset;
-    let control = this._sceneController;
-    let frame = this._frameCount;
+            break;
+        case 'LOAD_PHASE':
 
-    if(control === 'ChallengerClosing' && frame <= 0) {
-        this._sceneController = 'ChooseAFolderInProgress';
-        windowset.changeTitleFolder('Choose a folder');
-        windowset.openTitleFolder();
-        windowset.openSelectFolder();
+            break;
+        case 'SUMMON_PHASE':
+
+            break;
+        case 'COMPILE_PHASE':
+
+            break;
+        case 'BATTLE_PHASE':
+
+            break;
+        case 'END_PHASE':
+
+            break;
+        default:
+            if(this._spriteset.isDisabledGameLuck()){
+                if(this._wait > 100) {
+                    CardBattleManager.setPhase('START_PHASE');
+                    this._wait = 0;
+                } else {
+                    this._wait++;
+                }
+            }
+            break;
     }
-}
+};
 
 SceneCardBattle.prototype.gamePlayerTest = function() {
-    $gameCardPlayer.addCardsToStorage(new GameCardStored(1, 40));
-    $gameCardPlayer.addDeck(new GameFolder('Folder 1', [new GameCardStored(1, 40)]));
+    $gameCardPlayer.addCardsToStorage(new GameCardStored(3, 40));
+    $gameCardPlayer.addDeck(new GameFolder('Folder 1', [new GameCardStored(3, 40)]));
 };
 
 
@@ -127,123 +141,130 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
 
 
 
+SceneCardBattle.prototype.testeGameLuck = function() {
+    this._gameLuck = new SpriteGameLuck();
+    this._gameLuck.visible = true;
+    this.addChild(this._gameLuck);
+
+    this._gameLuck.openCards();
+};
 
 
 
-SceneCardBattle.prototype.testeCard = function() {
-    this.card = new SpriteCard(new GameCard(1));
-    this.card2 = new SpriteCard(new GameCard(1));
-    this.card._player = false;
+SceneCardBattle.prototype.testeCollection = function() {
+    this._testeColection = new SpriteCollection();
+    this._testeColection.x = Graphics.boxWidth / 2;
+    this._testeColection.y = Graphics.boxHeight / 2;
 
-    this.addChild(this.card);
-    this.addChild(this.card2);
-
-    this.card.setActions([
-        {type: 'INIT_POSITION_POWER_FIELD'},
-        {type: 'TURN_CARD'},
-        {type: 'REFRESH_CARD'},
-        {type: 'OPEN_CARD', frame: 10},
-        {type: 'MOVE_BATTLE_FIELD', frame: 10, index: 0}
-    ]);
-
-    this.card2.setActions([
-        {type: 'INIT_POSITION_POWER_FIELD'},
-        {type: 'TURN_CARD'},
-        {type: 'REFRESH_CARD'},
-        {type: 'OPEN_CARD', frame: 10},
-        {type: 'MOVE_BATTLE_FIELD', frame: 10, index: 0},
-        {type: 'PLUS_CARD', times: 2, frame: 20},
-        {type: 'CONFIRM_CARD'},
-        {type: 'LESS_CARD', times: 2, frame: 10},
-        {type: 'UNCONFIRM_CARD'},
-        {type: 'MOVE_ATTACK', frame: 3, index: 1},
-        {type: 'MOVE_PLUS_BATTLE_FIELD', frame: 10, index: 0}
-    ]);
-
-    // this.card.setActions({target: 'EFFECT_CARD'});
-    // this.card.setActions({target: 'CANCEL_CARD'});
-    // this.card.setActions({target: 'UNEFFECT_CARD'});
-    // this.card.setActions({target: 'NOCANCEL_CARD'});
+    let GameCardCollection = [];
+    for (let index = 0; index < 1; index++) {
+        GameCardCollection.push(new GameCard(1));
+    }
+    this.addChild(this._testeColection);
     
-    // this.card.setActions({target: 'CHOICE_CARD'});
-    // this.card.setActions({target: 'SELECT_CARD'});
-    // this.card.setActions({target: 'CONFIRM_CARD'});
-    // this.card.setActions({target: 'DISABLE_CARD'});
-    // this.card.setActions({target: 'ENABLE_CARD'});
-    // this.card.setActions({target: 'WITHDRAW_CARD'});
-    // this.card.setActions({target: 'UNSELECT_CARD'});
-    // this.card.setActions({target: 'UNCONFIRM_CARD'});
+    this._testeColection.refreshCollection(GameCardCollection);
+    this._testeColection.addChildren();
 
-    // this.card.setActions({target: 'INIT_POSITION_POWER_FIELD'});
-    // this.card.setActions({target: 'TURN_CARD'});
-    // this.card.setActions({target: 'REFRESH_CARD'});
-    // this.card.setActions({target: 'OPEN_CARD', frame: 10});
-    // 
+    GameCardCollection.forEach((GameCard, index) => {
+        this._testeColection.positionCollection(index);
+        this._testeColection.open(index);
+
+        // this._testeColection.positionHand(index);
+        // this._testeColection.moveField(index);
+
+        // this._testeColection.toTurn(index);
+        // this._testeColection.flash(index);
+        // this._testeColection.close(index);
+
+        // this._testeColection.effect(index);
+        // this._testeColection.block(index);
+
+        // this._testeColection.activeEffect(index);
+
+        // this._testeColection.toDestroy(index);
+
+        // this._testeColection.light(index);
+        // this._testeColection.unlit(index);
+
+        // this._testeColection.select(index);
+        // this._testeColection.unselect(index);
+        // this._testeColection.confirm(index);
+
+        // this._testeColection.react(index);
+
+        // this._testeColection.powerUp(index);
+        // this._testeColection.powerDown(index);
+        
+        // this._testeColection.disabled(index);
+        // this._testeColection.enabled(index);
+
+        // this._testeColection.moveAttack(index, 6);
+        // this._testeColection.moveBattleField(index);
+
+        //this._testeColection.damager(index);
+
+        // this._testeColection.setAttack(index, 90);
+        // this._testeColection.setHealth(index, -90);
+
+    });
     
-    // this.card.setActions({type: 'ATTACK_POINTS', points: 50});
-    // this.card.setActions({type: 'HEALTH_POINTS', points: 50});
+};
+
+// SceneCardBattle.prototype.testeWin = function() {
+//     this.windowWinPlayer = new WindowWin(true);
+//     this.windowWinEnemy = new WindowWin();
+
+//     this.addChild(this.windowWinPlayer);
+//     this.addChild(this.windowWinEnemy);
+
+//     this.windowWinPlayer.open();
+//     this.windowWinPlayer.moveIn();
+//     this.windowWinEnemy.open();
+//     this.windowWinEnemy.moveIn();
+
+//     this.windowWinPlayer.firstVictory();
+//     this.windowWinEnemy.winner();
+//     this.windowWinPlayer.winner();
+//     this.windowWinEnemy.secondVictory();
     
-    // this.card.setActions({target: 'INIT_POSITION_HAND', frame: 1});
-    // this.card.setActions({target: 'REFRESH_CARD', frame: 1});
-    // this.card.setActions({target: 'OPEN_CARD', frame: 10});
-    // this.card.setActions({target: 'LESS_CARD', times: 5, frame: 20});
-    // this.card.setActions({target: 'MOVE_PLUS_BATTLE_FIELD', index: 1, frame: 20});
+// }
 
-    // this.card.setActions({target: 'REFRESH_SELECT_CARD', frame: 1});
-    // this.card.setActions({target: 'PLUS_CARD', times: 1, frame: 10});
-    // this.card.setActions({target: 'LESS_CARD', times: 1, frame: 10});
-    // this.card.setActions({target: 'CLOSE_CARD', frame: 10});
-    // this.card.setActions({target: 'TURN_CARD', frame: 1});
-    // this.card.setActions({target: 'REFRESH_CARD', frame: 1});
-    // this.card.setActions({target: 'OPEN_CARD', frame: 10});
+// SceneCardBattle.prototype.testeZoneWindow = function() {
+//     this.windowZone = new WindowZone(true);
+//     this.windowZone2 = new WindowZone();
+
+//     this.addChild(this.windowZone);
+//     this.addChild(this.windowZone2);
+
+//     this.windowZone.initialPosition();
+//     this.windowZone2.initialPosition();
+
+//     this.windowZone.open();
+//     this.windowZone2.open();
+
+//     this.windowZone.moveIn();
+//     this.windowZone2.moveIn();
+
+//     this.windowZone.setPackPoints(10);
+//     this.windowZone2.setPackPoints(10);
+
+//     //this.windowZone.positionAnimation('RED_POINTS');
+//     //this.windowZone.showWinAnimation();
     
-    //this.card.setActions({target: 'UP_CARD', times: 1, frame: 2});
-    //this.card.setActions({target: 'DOWN_CARD', times: 1, frame: 2});
+// }
 
-    // this.card.setActions({target: 'PLUS_CARD', times: 1, frame: 10});
-    // this.card.setActions({target: 'LESS_CARD', times: 5, frame: 20});
+// SceneCardBattle.prototype.testeTrashWindow = function() {
+//     this.windowTrashPlayer = new WindowTrash(true);
+//     this.windowTrashEnemy = new WindowTrash();
 
-    // this.card.setActions({target: 'MOVE_BATTLE_FIELD', index: 1, frame: 20});
-    // this.card.setActions({target: 'CLOSE_CARD' , frame: 20});
-    // this.card.setActions({target: 'TURN_CARD', frame: 1});
-    // this.card.setActions({target: 'REFRESH_CARD', frame: 1});
-    // this.card.setActions({target: 'OPEN_CARD' , frame: 20});
-    // this.card.setActions({target: 'MOVE_BATTLE_FIELD', index: 1, frame: 20});
-    // this.card.setActions({target: 'MOVE_HAND', frame: 20});
+//     this.addChild(this.windowTrashPlayer);
+//     this.addChild(this.windowTrashEnemy);
 
-}
+//     this.windowTrashPlayer.setPoints(1);
+//     this.windowTrashPlayer.open();
+//     this.windowTrashPlayer.moveIn();
 
-
-SceneCardBattle.prototype.testeZoneWindow = function() {
-    this.windowZone = new WindowZone(true);
-    this.windowZone2 = new WindowZone();
-
-    this.addChild(this.windowZone);
-    this.addChild(this.windowZone2);
-
-    this.windowZone.moveIn();
-    this.windowZone2.moveIn();
-
-    this.windowZone.setPackPoints(10);
-    this.windowZone2.setPackPoints(10);
-
-    //this.windowZone.positionAnimation('RED_POINTS');
-    //this.windowZone.showWinAnimation();
-    
-}
-
-SceneCardBattle.prototype.testeTrashWindow = function() {
-    this.windowTrashPlayer = new WindowTrash(true);
-    this.windowTrashEnemy = new WindowTrash();
-
-    this.addChild(this.windowTrashPlayer);
-    this.addChild(this.windowTrashEnemy);
-
-    this.windowTrashPlayer.setPoints(1);
-    this.windowTrashPlayer.open();
-    this.windowTrashPlayer.moveIn();
-
-    this.windowTrashEnemy.setPoints(1);
-    this.windowTrashEnemy.open();
-    this.windowTrashEnemy.moveIn();
-}
+//     this.windowTrashEnemy.setPoints(1);
+//     this.windowTrashEnemy.open();
+//     this.windowTrashEnemy.moveIn();
+// }

@@ -4,10 +4,12 @@
 // The static class that manages the database and game objects.
 
 var $dataCards = null;
+var $dataCardBattleEnemies = null;
 var $gameCardPlayer = null;
 
 DataManager._databaseFiles.push(
-    {name: '$dataCards', src: 'Cards.json'}
+    {name: '$dataCards', src: 'Cards.json'},
+    {name: '$dataCardBattleEnemies', src: 'CardBattleEnemies.json'}
 );
 
 DataManager.createGameObjects = function() {

@@ -112,6 +112,10 @@ GameCardPlayer.prototype.removeDeck = function(index) {
     this._storedDecks.splice(index, 1);
 };
 
+GameCardPlayer.prototype.getGameCardCollection = function(index) {
+    return this._storedDecks[index].folder;
+};
+
 GameCardPlayer.prototype.getNameFolder = function(index) {
     return this._storedDecks[index].name;
 };

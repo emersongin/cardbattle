@@ -66,7 +66,7 @@ SpriteCard.prototype.createBackgroundVerse = function() {
 };
 
 SpriteCard.prototype.createBackgroundColor = function(color) {
-    switch (color) {
+    switch (color.toUpperCase()) {
         case 'WHITE':
             color  = 'rgba(255, 255, 255, 0.7)';
             break;
@@ -272,7 +272,7 @@ SpriteCard.prototype.refresh = function() {
     this.drawDisplay();
     this.drawSelect();
     this.drawEffect();
-    this.drawCancel();
+    this.drawBlock();
     this.drawEnabled();
 };
 
@@ -315,13 +315,13 @@ SpriteCard.prototype.drawSelect = function() {
 
 SpriteCard.prototype.drawEffect = function() {
     if(this.isEffect()) {
-        this._background.bitmap.blt(this._effectIcon, 0, 0, 104, 120, 0, 0);
+        this._background.bitmap.blt(this._effectIcon, 0, 0, 13, 22, 10, 10);
     }
 };
 
-SpriteCard.prototype.drawCancel = function() {
+SpriteCard.prototype.drawBlock = function() {
     if(this.isBlock()) {
-        this._background.bitmap.blt(this._blockIcon, 0, 0, 104, 120, 0, 0);
+        this._background.bitmap.blt(this._blockIcon, 0, 0, 13, 22, 10, 60);
     }
 };
 
@@ -512,185 +512,168 @@ SpriteCard.prototype.setActions = function(actions) {
 
 SpriteCard.prototype.actionMove = function(action) {
     switch (action.type) {
-        case 'INIT_POSITION_HAND':
-            this.setInitialPositionHand();
+        case 'POSITION_BATTLEFIELD':
+            this.setPositionBattlefield(action.index);
             break;
-        case 'INIT_POSITION_POWER_FIELD':
-            this.setInitialPositionPowerField();
+        case 'POSITION_HAND':
+            this.setPositionHand();
             break;
-        case 'MOVE_BATTLE_FIELD':
-            this.moveBattleField(action.index);
+        case 'POSITION_POWERFIELD':
+            this.setPositionPowerfield();
             break;
-        case 'MOVE_PLUS_BATTLE_FIELD':
-            this.moveBattleFieldPlus(action.index);
+        case 'POSITION_COLLECTION':
+            this.setPositionCollection(action.index, action.length);
             break;
-        case 'MOVE_ATTACK':
-                this.moveAttack(action.index);
-                break;
+        case 'MOVE_FIELD':
+            this.moveField(action.index);
+            break;
         case 'MOVE_HAND':
             this.moveHand();
             break;
-        case 'MOVE_POWER_FIELD':
-            this.movePowerField(action.index);
+        case 'MOVE_ATTACK':
+                this.moveAttack(action.target);
+                break;
+        case 'OPEN':
+            this.updateOpening();
+            this.open();
             break;
-        case 'OPEN_CARD':
-            this.openCard();
+        case 'CLOSE':
+            this.updateOpening();
+            this.close();
             break;
-        case 'CLOSE_CARD':
-            this.closeCard();
-            break;
-        case 'TURN_CARD':
+        case 'TO_TURN':
             this._show = this.displaySwitch();
             break;
-        case 'REFRESH_CARD':
+        case 'REFRESH':
             this.refresh();
             break;
-        case 'PLUS_CARD':
-            this.plusCard(action.times);
+        case 'PLUS':
+            this.plus(action.times);
             break;
-        case 'LESS_CARD':
-            this.lessCard(action.times);
+        case 'LESS':
+            this.less(action.times);
             break;
-        case 'UP_CARD':
-            this.upCard(action.times);
+        case 'MOVE_UP':
+            this.up(action.times);
             break;
-        case 'DOWN_CARD':
-            this.downCard(action.times);
+        case 'MOVE_DOWN':
+            this.down(action.times);
             break;
-        case 'FLASH':
-            this._background.startAnimation($dataAnimations[121]);
+        case 'MOVE_LEFT':
+            this.left(action.times);
             break;
-        case 'LIGHT_CARD':
+        case 'MOVE_RIGHT':
+            this.right(action.times);
+            break;
+        case 'ANIMATION':
+            this._background.startAnimation($dataAnimations[action.index]);
+            break;
+        case 'LIGHT':
             this.light();
             break;
-        case 'UNLIT_CARD':
+        case 'UNLIT':
             this.unlit();
             break;
-        case 'SELECT_CARD':
+        case 'SELECT':
             this.select();
-            this.refresh();
             break;
-        case 'UNSELECT_CARD':
+        case 'UNSELECT':
             this.unselect();
-            this.refresh();
             break;
-        case 'CONFIRM_CARD':
-            this.unlit();
-            this.unselect();
+        case 'CONFIRM':
             this.confirm();
             break;
-        case 'UNCONFIRM_CARD':
+        case 'UNCONFIRM':
             this.unconfirm();
             break;
-        case 'ENABLE_CARD':
+        case 'ENABLE':
             this.enable();
-            this.refresh();
             break;
-        case 'DISABLE_CARD':
+        case 'DISABLE':
             this.disable();
-            this.refresh();
             break;
-        case 'EFFECT_CARD':
+        case 'EFFECT':
             this.effect();
-            this.refresh();
             break;
-        case 'UNEFFECT_CARD':
+        case 'UNEFFECT':
             this.uneffect();
-            this.refresh();
             break;
-        case 'BLOCK_CARD':
+        case 'BLOCK':
             this.block();
-            this.refresh();
             break;
-        case 'UNBLOCK_CARD':
+        case 'UNBLOCK':
             this.unblock();
-            this.refresh();
             break;
-        case 'ATTACK_POINTS':
-            this.setAttackPoints(action.points);
+        case 'ATTACK':
+            this.setAttack(action.points);
             break;
-        case 'HEALTH_POINTS':
-            this.setHealthPoints(action.points);
+        case 'HEALTH':
+            this.setHealth(action.points);
+            break;
+        case 'WAIT':
             break;
     }
     this._frameMove = action.frame || 1;
 };
 
-SpriteCard.prototype.setInitialPositionHand = function() {
-    this.x = 866;
-    this._targetX = this.x;
-    if(this.isPlayer()) {
-        this._targetY = 441;
-    } else {
-        this._targetY = 65;
-    }
+SpriteCard.prototype.setPositionBattlefield = function(index) {
+    this._targetX = 50 + (104 * index);
+    this._targetY = 0;
 };
 
-SpriteCard.prototype.setInitialPositionPowerField = function() {
-    this.x = 658;
-    this._targetX = this.x;
-    this.y = 260;
-    this._targetY = this.y;
+SpriteCard.prototype.setPositionHand = function() {
+    this._targetX = 850;
+    this._targetY = 0;
 };
 
-SpriteCard.prototype.moveBattleField = function(index) {
-    this._targetX = 49 + (104 * index);
-    if(this._player) {
-        this._targetY = 441;
-    } else {
-        this._targetY = 65;
-    }
+SpriteCard.prototype.setPositionPowerfield = function() {
+    this._targetX = 658;
+    this._targetY = 0;
 };
 
-SpriteCard.prototype.moveAttack = function(index) {
-    this._targetX = 49 + (52 * index);
-    if(this._player) {
-        this._targetY = 185;
-    } else {
-        this._targetY = 321;
-    }
+SpriteCard.prototype.setPositionCollection = function(index, length) {
+    let paddind = length > 6 ? (624 / length - 1) * index : 104 * index;
+
+    this._targetX = 50 + paddind;
+    this._targetY = 0;
 };
 
-SpriteCard.prototype.moveBattleFieldPlus = function(index) {
-    this._targetX = 49 + (104 * index);
-    if(this._player) {
-        this._targetY = 441;
-    } else {
-        this._targetY = 65;
-    }
+SpriteCard.prototype.moveField = function(index) {
+    this._targetX = 0 + (104 * index);
+    this._targetY = 0;
     this._targetScaleX = 1;
     this._targetScaleY = 1;
 };
 
 SpriteCard.prototype.moveHand = function() {
     this._targetX = 816;
+    this._targetY = 0;
+};
+
+SpriteCard.prototype.moveAttack = function(target) {
+    this._targetX = 0 + (52 * target);
     if(this._player) {
-        this._targetY = 441;
+        this._targetY = this.y - 256;
     } else {
-        this._targetY = 65;
+        this._targetY = this.y + 256;
     }
 };
 
-SpriteCard.prototype.movePowerField = function(index) {
-    this._targetX = 252 + (104 * index); 
-    this._targetY = 260;
-};
-
-SpriteCard.prototype.openCard = function() {
+SpriteCard.prototype.open = function() {
     if(this.isClose()) {
         this._targetX = this.x - 50;
         this._targetScaleX = 1;
     }
 };
 
-SpriteCard.prototype.closeCard = function() {
+SpriteCard.prototype.close = function() {
     if(this.isOpen()) {
         this._targetX = this.x + 50;
         this._targetScaleX = 0;
     }
 };
 
-SpriteCard.prototype.plusCard = function(times) {
+SpriteCard.prototype.plus = function(times) {
     let lessCoor = 0;
     let plusScale = 0.0;
 
@@ -705,7 +688,7 @@ SpriteCard.prototype.plusCard = function(times) {
     this._targetScaleY = this.scale.y + plusScale;
 };
 
-SpriteCard.prototype.lessCard = function(times) {
+SpriteCard.prototype.less = function(times) {
     let plusCoor = 0;
     let lessScale = 0.0;
 
@@ -720,7 +703,7 @@ SpriteCard.prototype.lessCard = function(times) {
     this._targetScaleY = this.scale.y - lessScale;
 };
 
-SpriteCard.prototype.upCard = function(times) {
+SpriteCard.prototype.up = function(times) {
     let lessCoor = 0;
 
     for (let index = 0; index < times; index++) {
@@ -730,23 +713,43 @@ SpriteCard.prototype.upCard = function(times) {
     this._targetY = this.y - lessCoor;
 };
 
-SpriteCard.prototype.downCard = function(times) {
+SpriteCard.prototype.down = function(times) {
     let plusCoor = 0;
 
-    for (let index = 0; index < action.times; index++) {
+    for (let index = 0; index < times; index++) {
         plusCoor += 16;
     }
 
     this._targetY = this.y + plusCoor;
 };
 
-SpriteCard.prototype.setAttackPoints = function(points = this._attackPoints) {
+SpriteCard.prototype.left = function(times) {
+    let lessCoor = 0;
+
+    for (let index = 0; index < times; index++) {
+        lessCoor += 16;
+    }
+
+    this._targetX = this.x - lessCoor;
+};
+
+SpriteCard.prototype.right = function(times) {
+    let plusCoor = 0;
+
+    for (let index = 0; index < times; index++) {
+        plusCoor += 16;
+    }
+
+    this._targetX = this.x + plusCoor;
+};
+
+SpriteCard.prototype.setAttack = function(points = this._attackPoints) {
     if(points < 0) points = 0;
     if(points > 99) points = 99;
     this._targetAttackPoints = points;
 };
 
-SpriteCard.prototype.setHealthPoints = function(points = this._healthPoints) {
+SpriteCard.prototype.setHealth = function(points = this._healthPoints) {
     if(points < 0) points = 0;
     if(points > 99) points = 99;
     this._targetHealthPoints = points;

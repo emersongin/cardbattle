@@ -35,7 +35,6 @@ WindowTrash.prototype.setup = function() {
     this.opacity = 0;
     this.openness = 0;
     this.createBackground();
-    this.initialPosition();
     this.refresh();
 };
 
@@ -97,7 +96,7 @@ WindowTrash.prototype.update = function() {
 WindowTrash.prototype.updatePoints = function() {
     if(this.isUpdateTrashPoint() && this.isOpen()) {
         if(!this._frameInterval) {
-            this._frameScale = this.setFrameScale();
+            this._frameScale = this.setFrameTrashPoints();
             this._frameInterval = this.pointsDelay();
             this.refreshWindowPoints();
             this._frameScale--;
@@ -146,8 +145,16 @@ WindowTrash.prototype.isUpdateMoveY = function() {
     return this.y !== this._targetY;
 };
 
-WindowTrash.prototype.setFrameScale = function() {
+WindowTrash.prototype.setFrameTrashPoints = function() {
     return parseInt(Math.abs(this._targetTrashPoint - this._trashPoint) / this.PointsInterval());
+};
+
+WindowTrash.prototype.setFrameX = function() {
+    return parseInt(Math.abs(this.x - this._targetX) / 10);
+};
+
+WindowTrash.prototype.setFrameY = function() {
+    return parseInt(Math.abs(this.y - this._targetY) / 10);
 };
 
 WindowTrash.prototype.refreshWindowPoints = function() {
@@ -169,6 +176,7 @@ WindowTrash.prototype.rateTrashPoints = function() {
 
 WindowTrash.prototype.rateXcoord = function() {
 	if(this.isUpdateMoveX()) {
+        this._frameScale = this.setFrameX();
 		return parseInt((this.x * (this._frameScale - 1) + this._targetX) / this._frameScale, 10);
     }
     return this.x;
@@ -176,6 +184,7 @@ WindowTrash.prototype.rateXcoord = function() {
 
 WindowTrash.prototype.rateYCoord = function() {
 	if(this.isUpdateMoveY()) {
+        this._frameScale = this.setFrameY();
 		return parseInt((this.y * (this._frameScale - 1) + this._targetY) / this._frameScale, 10);
     }
     return this.y;

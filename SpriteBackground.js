@@ -8,10 +8,10 @@ SpriteBackground.prototype.constructor = SpriteBackground;
 SpriteBackground.prototype.initialize = function() {
     Sprite.prototype.initialize.call(this);
     this._backgroundTiles = new Array(4);
-    this._speed = 1;
+    this._speed = 0.5;
     this._moveX = 0;
     this._moveY = 0;
-    this._active = false;
+    this._active = true;
     this.visible = false;
     this.createTiles();
 };
@@ -20,14 +20,28 @@ SpriteBackground.prototype.isActive = function() {
     return this._active;
 };
 
-SpriteBackground.prototype.activate = function() {
-    this.visible = true;
+SpriteBackground.prototype.enable = function() {
     this._active = true;
 };
 
 SpriteBackground.prototype.disable = function() {
-    this.visible = false;
     this._active = false;
+};
+
+SpriteBackground.prototype.isShown = function() {
+    return this.visible;
+};
+
+SpriteBackground.prototype.isHidden = function() {
+    return !this.visible;
+};
+
+SpriteBackground.prototype.show = function() {
+    this.visible = true;
+};
+
+SpriteBackground.prototype.hide = function() {
+    this.visible = false;
 };
 
 SpriteBackground.prototype.createTiles = function() {
@@ -121,7 +135,8 @@ SpriteBackground.prototype.movePosition = function(typeMove) {
     this._moveY = valueY;
 };
 
-SpriteBackground.prototype.moveBackground = function() {
+SpriteBackground.prototype.update = function() {
+    Sprite.prototype.update.call(this);
     if(this.isActive()) {
         this.moveTiles();
     }

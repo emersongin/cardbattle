@@ -51,8 +51,7 @@ WindowZone.prototype.standardFontSize = function() {
 WindowZone.prototype.setup = function() {
     this.padding = 0;
     this.opacity = 0;
-    this.openness = 255;
-    this.initialPosition();
+    this.openness = 0;
     this.createBackground();
     this.createSpriteAnimation();
     this.refresh();
@@ -70,7 +69,7 @@ WindowZone.prototype.initialPosition = function() {
 
 WindowZone.prototype.moveIn = function() {
     if(this._player) {
-        this._targetY = this.height - this._background.height;
+        this._targetY = 440;
     }else{
         this._targetY = 0;
     }
@@ -78,9 +77,9 @@ WindowZone.prototype.moveIn = function() {
 
 WindowZone.prototype.moveOut = function() {
     if(this._player) {
-        this._targetY = this.height;
+        this._targetY = 624;
     }else{
-        this._targetY = 0 - this._background.height;
+        this._targetY = -184;
     }
 };
 
@@ -159,7 +158,6 @@ WindowZone.prototype.updateBattlePoints = function() {
 WindowZone.prototype.updateMove = function() {
     if(this.isUpdateMove() && this.isOpen()) {
         if(!this._delay) {
-            this._frame = 10;
             this._delay = 1;
             this.refreshMove();
             this._frame--;
@@ -268,6 +266,14 @@ WindowZone.prototype.setFramePackPoints = function() {
 
 WindowZone.prototype.setFrameHandPoints = function() {
     return parseInt(Math.abs(this._handPoints - this._targetHandPoints) / this.intervalPoints());
+};
+
+WindowZone.prototype.setFrameX = function() {
+    return parseInt(Math.abs(this.x - this._targetX) / 10);
+};
+
+WindowZone.prototype.setFrameY = function() {
+    return parseInt(Math.abs(this.y - this._targetY) / 10);
 };
 
 WindowZone.prototype.setFrameAttackPoints = function() {
@@ -390,6 +396,7 @@ WindowZone.prototype.rateHealthPoints = function() {
 
 WindowZone.prototype.rateXcoord = function() {
 	if(this.isUpdateMoveX()) {
+        this._frame = this.setFrameX();
 		return parseInt((this.x * (this._frame - 1) + this._targetX) / this._frame, 10);
     }
     return this.x;
@@ -397,6 +404,7 @@ WindowZone.prototype.rateXcoord = function() {
 
 WindowZone.prototype.rateYCoord = function() {
 	if(this.isUpdateMoveY()) {
+        this._frame = this.setFrameY();
 		return parseInt((this.y * (this._frame - 1) + this._targetY) / this._frame, 10);
     }
     return this.y;
@@ -489,6 +497,6 @@ WindowZone.prototype.positionAnimation = function(position) {
     }
 }
 
-WindowZone.prototype.showWinAnimation = function() {
-    this._spriteAnimation.startAnimation($dataAnimations[101], true, 1);
+WindowZone.prototype.showWinAnimation = function(index) {
+    this._spriteAnimation.startAnimation($dataAnimations[index], true, 1);
 }

@@ -11,6 +11,9 @@ SpritesetCardBattle.prototype.initialize = function() {
 SpritesetCardBattle.prototype.createSprites = function() {
     this._background = new SpriteBackground();
     this._transition = new SpriteTransition();
+    this._challenger = new SpriteChallenger();
+    this._chooseFolder = new SpriteChooseFolder();
+    this._gameLuck = new SpriteGameLuck();
     this.start();
 };
 
@@ -19,25 +22,82 @@ SpritesetCardBattle.prototype.start = function() {
 };
 
 SpritesetCardBattle.prototype.update = function() {
-    this._background.moveBackground();
-    this._transition.moveTransition();
+    this._background.update();
+    this._transition.update();
+    this._challenger.update();
+    this._gameLuck.update();
 };
 
 SpritesetCardBattle.prototype.layers = function() {
     return [
         this._background,
-        this._transition
+        this._transition,
+        this._challenger,
+        this._chooseFolder,
+        this._gameLuck
     ]
 };
 
-SpritesetCardBattle.prototype.enableBackground = function() {
-    this._background.activate();
+SpritesetCardBattle.prototype.showBackground = function() {
+    this._background.show();
 };
 
-SpritesetCardBattle.prototype.enableTransition = function() {
-    this._transition.activate();
+SpritesetCardBattle.prototype.showTransition = function() {
+    this._transition.show();
 };
 
-SpritesetCardBattle.prototype.transitionIsFinished = function() {
-    return this._transition.isFinished();
+SpritesetCardBattle.prototype.showChallenger = function() {
+    this._challenger.show();
+    this._challenger.openWindows();
+};
+
+SpritesetCardBattle.prototype.showChooseFolder = function() {
+    this._chooseFolder.show();
+    this._chooseFolder.openWindows();
+};
+
+SpritesetCardBattle.prototype.showGameLuck = function() {
+    this._gameLuck.setup();
+    this._gameLuck.show();
+    this._gameLuck.openCards();
+};
+
+SpritesetCardBattle.prototype.isHideBackground = function() {
+    return this._background.isHidden();
+};
+
+SpritesetCardBattle.prototype.isHideTransition = function() {
+    return this._transition.isHidden();
+};
+
+SpritesetCardBattle.prototype.isHideChallenger = function() {
+    return this._challenger.isHidden();
+};
+
+SpritesetCardBattle.prototype.isHideChooseFolder = function() {
+    return this._chooseFolder.isHidden();
+};
+
+SpritesetCardBattle.prototype.isHideGameLuck = function() {
+    return this._gameLuck.isHidden();
+};
+
+SpritesetCardBattle.prototype.isDisabledBackground = function() {
+    return !this._background.isActive();
+};
+
+SpritesetCardBattle.prototype.isDisabledTransition = function() {
+    return !this._transition.isActive();
+};
+
+SpritesetCardBattle.prototype.isDisabledChallenger = function() {
+    return !this._challenger.isActive();
+};
+
+SpritesetCardBattle.prototype.isDisabledChooseFolder = function() {
+    return !this._chooseFolder.isActive();
+};
+
+SpritesetCardBattle.prototype.isDisabledGameLuck = function() {
+    return !this._gameLuck.isActive();
 };
