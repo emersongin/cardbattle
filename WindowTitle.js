@@ -39,7 +39,7 @@ WindowTitle.prototype.changeTextColor = function(color) {
 };
 
 WindowTitle.prototype.changeFontSize = function(size = 24) {
-    if(size > 12) {
+    if (size > 12) {
         this.contents.fontSize = size;
     }else{
         this.contents.fontSize = 12;

@@ -60,7 +60,7 @@ WindowZone.prototype.setup = function() {
 WindowZone.prototype.initialPosition = function() {
     this.moveOut();
 
-    if(this._player) {
+    if (this._player) {
         this.move(0, this._targetY, this.width, this.height);
     }else{
         this.move(0, this._targetY, this.width, this.height);
@@ -68,7 +68,7 @@ WindowZone.prototype.initialPosition = function() {
 };
 
 WindowZone.prototype.moveIn = function() {
-    if(this._player) {
+    if (this._player) {
         this._targetY = 440;
     }else{
         this._targetY = 0;
@@ -76,7 +76,7 @@ WindowZone.prototype.moveIn = function() {
 };
 
 WindowZone.prototype.moveOut = function() {
-    if(this._player) {
+    if (this._player) {
         this._targetY = 624;
     }else{
         this._targetY = -184;
@@ -84,7 +84,7 @@ WindowZone.prototype.moveOut = function() {
 };
 
 WindowZone.prototype.createBackground = function() {
-    if(this._player) {
+    if (this._player) {
         this._background.bitmap = ImageManager.loadSystem('BackgroundZone1');
     }else{
         this._background.bitmap = ImageManager.loadSystem('BackgroundZone2');
@@ -106,7 +106,7 @@ WindowZone.prototype.drawPoints = function() {
         heightPositionOfficer,
         paddingItens = 80;
 
-    if(this._player) {
+    if (this._player) {
         heightPositionItens = 148;
         heightPositionOfficer = 120;
     }else{
@@ -136,8 +136,8 @@ WindowZone.prototype.update = function() {
 };
 
 WindowZone.prototype.updatePoints = function() {
-    if(this.isUpdateZonePoints() && this.isOpen()) {
-        if(!this._delay) {
+    if (this.isUpdateZonePoints() && this.isOpen()) {
+        if (!this._delay) {
             this._delay = this.delayPoints();
             this.refreshPoints();
             this._frame--;
@@ -146,8 +146,8 @@ WindowZone.prototype.updatePoints = function() {
 };
 
 WindowZone.prototype.updateBattlePoints = function() {
-    if(this.isUpdateBattlePoints() && this.isOpen()) {
-        if(!this._delay) {
+    if (this.isUpdateBattlePoints() && this.isOpen()) {
+        if (!this._delay) {
             this._delay = 1;
             this.refreshBattlePoints();
             this._frame--;
@@ -156,8 +156,8 @@ WindowZone.prototype.updateBattlePoints = function() {
 };
 
 WindowZone.prototype.updateMove = function() {
-    if(this.isUpdateMove() && this.isOpen()) {
-        if(!this._delay) {
+    if (this.isUpdateMove() && this.isOpen()) {
+        if (!this._delay) {
             this._delay = 1;
             this.refreshMove();
             this._frame--;
@@ -166,16 +166,16 @@ WindowZone.prototype.updateMove = function() {
 };
 
 WindowZone.prototype.reducerDelay = function() {
-    if(this._delay) {
+    if (this._delay) {
         this._delay--;
     }
 };
 
 WindowZone.prototype.updateBackgroundOpacity = function() {
-    if(this._background && this.isOpen()) {
+    if (this._background && this.isOpen()) {
         this._background.opacity = this.openness;
     }else{
-        if(this._background.opacity) {
+        if (this._background.opacity) {
             this._background.opacity = 0;
         }
     }
@@ -291,9 +291,9 @@ WindowZone.prototype.setFrameHealthPoints = function() {
 };
 
 WindowZone.prototype.setintervalPoints = function(Absolute) {
-    if(Absolute > 100){
+    if (Absolute > 100) {
         return 16;
-    }else if(Absolute > 50){
+    }else if (Absolute > 50) {
         return 8;
     }else{
         return 1;
@@ -323,7 +323,7 @@ WindowZone.prototype.refreshMove = function() {
 };
 
 WindowZone.prototype.rateWhitePoints = function() {
-	if(this.iisUpdateWhitePoints()) {
+	if (this.iisUpdateWhitePoints()) {
         this._frame = this.setFrameWhitePoints();
         return parseInt((this._whitePoints * (this._frame - 1) + this._targetWhitePoints) / this._frame, 10);
     }
@@ -331,7 +331,7 @@ WindowZone.prototype.rateWhitePoints = function() {
 };
 
 WindowZone.prototype.rateBluePoints = function() {
-	if(this.isUpdateBluePoints()) {
+	if (this.isUpdateBluePoints()) {
         this._frame = this.setFrameBluePoints();
         return parseInt((this._bluePoints * (this._frame - 1) + this._targetBluePoints) / this._frame, 10);
     }
@@ -339,7 +339,7 @@ WindowZone.prototype.rateBluePoints = function() {
 };
 
 WindowZone.prototype.rateGreenPoints = function() {
-	if(this.isUpdateGreenPoints()) {
+	if (this.isUpdateGreenPoints()) {
         this._frame = this.setFrameGreenPoints();
         return parseInt((this._greenPoints * (this._frame - 1) + this._targetGreenPoints) / this._frame, 10);
     }
@@ -347,7 +347,7 @@ WindowZone.prototype.rateGreenPoints = function() {
 };
 
 WindowZone.prototype.rateRedPoints = function() {
-	if(this.isUpdateRedPoints()) {
+	if (this.isUpdateRedPoints()) {
         this._frame = this.setFrameRedPoints();
         return parseInt((this._redPoints * (this._frame - 1) + this._targetRedPoints) / this._frame, 10);
     }
@@ -355,7 +355,7 @@ WindowZone.prototype.rateRedPoints = function() {
 };
 
 WindowZone.prototype.rateBlackPoints = function() {
-	if(this.isUpdateBlackPoints()) {
+	if (this.isUpdateBlackPoints()) {
         this._frame = this.setFrameBlackPoints();
         return parseInt((this._blackPoints * (this._frame - 1) + this._targetBlackPoints) / this._frame, 10);
     }
@@ -363,7 +363,7 @@ WindowZone.prototype.rateBlackPoints = function() {
 };
 
 WindowZone.prototype.ratePackPoints = function() {
-	if(this.isUpdatePackPoints()) {
+	if (this.isUpdatePackPoints()) {
         this._frame = this.setFramePackPoints();
         return parseInt((this._packPoints * (this._frame - 1) + this._targetPackPoints) / this._frame, 10);
     }
@@ -371,7 +371,7 @@ WindowZone.prototype.ratePackPoints = function() {
 };
 
 WindowZone.prototype.rateHandPoints = function() {
-	if(this.isUpdateHandPoints()) {
+	if (this.isUpdateHandPoints()) {
         this._frame = this.setFrameHandPoints();
         return parseInt((this._handPoints * (this._frame - 1) + this._targetHandPoints) / this._frame, 10);
     }
@@ -379,7 +379,7 @@ WindowZone.prototype.rateHandPoints = function() {
 };
 
 WindowZone.prototype.rateAttackPoints = function() {
-	if(this.isUpdateAttackPoints()) {
+	if (this.isUpdateAttackPoints()) {
         this._frame = this.setFrameAttackPoints();
         return parseInt((this._attackPoints * (this._frame - 1) + this._targetAttackPoints) / this._frame, 10);
     }
@@ -387,7 +387,7 @@ WindowZone.prototype.rateAttackPoints = function() {
 };
 
 WindowZone.prototype.rateHealthPoints = function() {
-	if(this.isUpdateHealthPoints()) {
+	if (this.isUpdateHealthPoints()) {
         this._frame = this.setFrameHealthPoints();
         return parseInt((this._healthPoints * (this._frame - 1) + this._targetHealthPoints) / this._frame, 10);
     }
@@ -395,7 +395,7 @@ WindowZone.prototype.rateHealthPoints = function() {
 };
 
 WindowZone.prototype.rateXcoord = function() {
-	if(this.isUpdateMoveX()) {
+	if (this.isUpdateMoveX()) {
         this._frame = this.setFrameX();
 		return parseInt((this.x * (this._frame - 1) + this._targetX) / this._frame, 10);
     }
@@ -403,7 +403,7 @@ WindowZone.prototype.rateXcoord = function() {
 };
 
 WindowZone.prototype.rateYCoord = function() {
-	if(this.isUpdateMoveY()) {
+	if (this.isUpdateMoveY()) {
         this._frame = this.setFrameY();
 		return parseInt((this.y * (this._frame - 1) + this._targetY) / this._frame, 10);
     }
@@ -411,56 +411,56 @@ WindowZone.prototype.rateYCoord = function() {
 };
 
 WindowZone.prototype.setWhitePoints = function(points = this._whitePoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetWhitePoints = points;
 };
 
 WindowZone.prototype.setBluePoints = function(points = this._bluePoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetBluePoints = points;
 };
 
 WindowZone.prototype.setGreenPoints = function(points = this._greenPoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetGreenPoints = points;
 };
 
 WindowZone.prototype.setRedPoints = function(points = this._redPoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetRedPoints = points;
 };
 
 WindowZone.prototype.setBlackPoints = function(points = this._blackPoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetBlackPoints = points;
 };
 
 WindowZone.prototype.setPackPoints = function(points = this._packPoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetPackPoints = points;
 };
 
 WindowZone.prototype.setHandPoints = function(points = this._handPoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetHandPoints = points;
 };
 
 WindowZone.prototype.setAttackPoints = function(points = this._attackPoints) {
-    if(points < 0) points = 0;
-    if(points > 999) points = 999;
+    if (points < 0) points = 0;
+    if (points > 999) points = 999;
     this._targetAttackPoints = points;
 };
 
 WindowZone.prototype.setHealthPoints = function(points = this._healthPoints) {
-    if(points < 0) points = 0;
-    if(points > 999) points = 999;
+    if (points < 0) points = 0;
+    if (points > 999) points = 999;
     this._targetHealthPoints = points;
 };
 
@@ -490,7 +490,7 @@ WindowZone.prototype.positionAnimation = function(position) {
         default:
             throw new Error('The Zone does not have this position');
     }
-    if(this._player) {
+    if (this._player) {
         this._spriteAnimation.y = 180;
     }else{
         this._spriteAnimation.y = 30;

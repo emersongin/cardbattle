@@ -76,7 +76,7 @@ WindowChoiceFolder.prototype.createElementString = function(index) {
     let elementFolder = new GameColorFolder();
     let elementString = '';
 
-    if(this._folders) {
+    if (this._folders) {
         elementFolder = this._folders[index];
     }
 

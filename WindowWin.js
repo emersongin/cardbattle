@@ -35,7 +35,7 @@ WindowWin.prototype.createBackground = function() {
 };
 
 WindowWin.prototype.createVictoryIcons = function() {
-    if(this._player) {
+    if (this._player) {
         this._icon = ImageManager.loadSystem('BackgroundWin1');
     } else {
         this._icon = ImageManager.loadSystem('BackgroundWin2');
@@ -45,7 +45,7 @@ WindowWin.prototype.createVictoryIcons = function() {
 WindowWin.prototype.initialPosition = function() {
     this.moveOut();
 
-    if(this._player) {
+    if (this._player) {
         this._targetY = this.height - (64 + this._background.height);
         this.move(this._targetX, this._targetY, this.width, this.height);
     }else{
@@ -56,10 +56,10 @@ WindowWin.prototype.initialPosition = function() {
 
 WindowWin.prototype.refresh = function() {
     this.contents.clear();
-    if(this._winPoints >= 1) {
+    if (this._winPoints >= 1) {
         this.contents.blt(this._icon, 0, 0, 32, 32, 30, 12);
     }
-    if(this._winPoints >= 2) {
+    if (this._winPoints >= 2) {
         this.contents.blt(this._icon, 0, 0, 32, 32, 82, 12);
     }
 }
@@ -74,8 +74,8 @@ WindowWin.prototype.update = function() {
 };
 
 WindowWin.prototype.updateMove = function() {
-    if(this.isUpdateMove() && this.isOpen()) {
-        if(!this._frameInterval) {
+    if (this.isUpdateMove() && this.isOpen()) {
+        if (!this._frameInterval) {
             this._frameInterval = 1;
             this.refreshMove();
             this._frameScale--;
@@ -84,21 +84,21 @@ WindowWin.prototype.updateMove = function() {
 };
 
 WindowWin.prototype.updateBackgroundOpacity = function() {
-    if(this._background && this.isOpen()) {
+    if (this._background && this.isOpen()) {
         this._background.opacity = this.openness;
-    }else if(this._background.opacity) {
+    }else if (this._background.opacity) {
         this._background.opacity = 0;
     }
 };
 
 WindowWin.prototype.updateFirstVictory = function() {
-    if(this.isFirstVictory() && this.isOpen()) {
+    if (this.isFirstVictory() && this.isOpen()) {
         this._firstVictoryDelay++
-        if(this._firstVictoryDelay === 6) {
+        if (this._firstVictoryDelay === 6) {
             this.refresh();
             this.contents.blt(this._icon, 0, 0, 32, 32, 30, 12);
         }
-        if(this._firstVictoryDelay > 10) {
+        if (this._firstVictoryDelay > 10) {
             this.refresh();
             this._firstVictoryDelay = 0;
         }
@@ -106,13 +106,13 @@ WindowWin.prototype.updateFirstVictory = function() {
 };
 
 WindowWin.prototype.updateSecondVictory = function() {
-    if(this.isSecondVictory() && this.isOpen()) {
+    if (this.isSecondVictory() && this.isOpen()) {
         this._secondVictoryDelay++
-        if(this._secondVictoryDelay === 6) {
+        if (this._secondVictoryDelay === 6) {
             this.refresh();
             this.contents.blt(this._icon, 0, 0, 32, 32, 82, 12);
         }
-        if(this._secondVictoryDelay > 10) {
+        if (this._secondVictoryDelay > 10) {
             this.refresh();
             this._secondVictoryDelay = 0;
         }
@@ -120,7 +120,7 @@ WindowWin.prototype.updateSecondVictory = function() {
 };
 
 WindowWin.prototype.reducerDelay = function() {
-    if(this._frameInterval) {
+    if (this._frameInterval) {
         this._frameInterval--;
     }
 };
@@ -179,7 +179,7 @@ WindowWin.prototype.setFrameY = function() {
 };
 
 WindowWin.prototype.rateX = function() {
-	if(this.isUpdateMoveX()) {
+	if (this.isUpdateMoveX()) {
         this._frameScale = this.setFrameX();
 		return parseInt((this.x * (this._frameScale - 1) + this._targetX) / this._frameScale, 10);
     }
@@ -187,7 +187,7 @@ WindowWin.prototype.rateX = function() {
 };
 
 WindowWin.prototype.rateY = function() {
-	if(this.isUpdateMoveY()) {
+	if (this.isUpdateMoveY()) {
         this._frameScale = this.setFrameY();
 		return parseInt((this.y * (this._frameScale - 1) + this._targetY) / this._frameScale, 10);
     }

@@ -10,7 +10,11 @@ Scene_Boot.prototype.start = function() {
     } else {
         this.checkPlayerLocation();
         DataManager.setupNewGame();
+
+        CardBattleManager.setup();
+        CardBattleManager.setIdEnemy(1);
         SceneManager.goto(SceneCardBattle);
+        
         Window_TitleCommand.initCommandPosition();
     }
     this.updateDocumentTitle();

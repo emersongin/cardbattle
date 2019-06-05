@@ -137,7 +137,7 @@ SpriteBackground.prototype.movePosition = function(typeMove) {
 
 SpriteBackground.prototype.update = function() {
     Sprite.prototype.update.call(this);
-    if(this.isActive()) {
+    if (this.isActive()) {
         this.moveTiles();
     }
 };
@@ -150,22 +150,22 @@ SpriteBackground.prototype.moveTiles = function() {
 };
 
 SpriteBackground.prototype.checkMovementLimit = function(tile) {
-    if(this._moveX > 0) {
-        if(tile.x >= 816) {
+    if (this._moveX > 0) {
+        if (tile.x >= 816) {
             tile.x = -816;
         }
     }else{
-        if(tile.x <= -816) {
+        if (tile.x <= -816) {
             tile.x = 816;
         }
     }
 
-    if(this._moveY > 0) {
-        if(tile.y >= 816) {
+    if (this._moveY > 0) {
+        if (tile.y >= 816) {
             tile.y = -816;
         }
     }else{
-        if(tile.y <= -816) {
+        if (tile.y <= -816) {
             tile.y = 816;
         }
     }

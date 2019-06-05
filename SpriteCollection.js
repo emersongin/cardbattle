@@ -33,9 +33,21 @@ SpriteCollection.prototype.addChildren = function() {
 };
 
 SpriteCollection.prototype.removeChildren = function() {
-    this.children.forEach((SpriteCard, index) => {
-        this.removeChildAt(index);
+    this.children.forEach(SpriteCard => {
+        this.removeChild(SpriteCard);
     });
+};
+
+SpriteCollection.prototype.hasFramesCollection = function() {
+    let frames = false;
+
+    this.children.forEach(SpriteCard => {
+        if (SpriteCard.hasSequence() || SpriteCard.hasFrameMove()) {
+            frames = true;
+        };
+    });
+
+    return frames;
 };
 
 SpriteCollection.prototype.positionHand = function(index) {

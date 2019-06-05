@@ -31,7 +31,7 @@ SceneCardBattle.prototype.start = function() {
 SceneCardBattle.prototype.update = function() {
     Scene_Base.prototype.update.call(this);
     this._spriteset.update();
-    this.updateIntroduction();
+    this.updatePreBattle();
     this.updateCardBattle();
 };
 
@@ -54,30 +54,30 @@ SceneCardBattle.prototype.createSpriteset = function() {
     })
 };
 
-SceneCardBattle.prototype.updateIntroduction = function() {
+SceneCardBattle.prototype.updatePreBattle = function() {
     if (CardBattleManager.getPhase() === 'INITIALIZE') {
-        if(this._spriteset.isHideBackground() && this._spriteset.isHideTransition()) {
+        if (this._spriteset.isHideBackground() && this._spriteset.isHideTransition()) {
             this._spriteset.showBackground();
             this._spriteset.showTransition();
         }
-        if(this._spriteset.isDisabledTransition() && this._spriteset.isHideChallenger()) {
-            if(this._wait > 20) {
+        if (this._spriteset.isDisabledTransition() && this._spriteset.isHideChallenger()) {
+            if (this._wait > 20) {
                 this._spriteset.showChallenger();
                 this._wait = 0;
             } else {
                 this._wait++;
             }
         }
-        if(this._spriteset.isDisabledChallenger() && this._spriteset.isHideChooseFolder()) {
-            if(this._wait > 60) {
+        if (this._spriteset.isDisabledChallenger() && this._spriteset.isHideChooseFolder()) {
+            if (this._wait > 60) {
                 this._spriteset.showChooseFolder();
                 this._wait = 0;
             } else {
                 this._wait++;
             }
         }
-        if(this._spriteset.isDisabledChooseFolder()) {
-            if(this._wait > 60) {
+        if (this._spriteset.isDisabledChooseFolder()) {
+            if (this._wait > 60) {
                 CardBattleManager.setPhase('CARD_BATTLE');
                 this._wait = 0;
             } else {
@@ -119,8 +119,8 @@ SceneCardBattle.prototype.updateCardBattle = function() {
 
             break;
         default:
-            if(this._spriteset.isDisabledGameLuck()){
-                if(this._wait > 100) {
+            if (this._spriteset.isDisabledGameLuck()) {
+                if (this._wait > 100) {
                     CardBattleManager.setPhase('START_PHASE');
                     this._wait = 0;
                 } else {
@@ -153,12 +153,12 @@ SceneCardBattle.prototype.testeGameLuck = function() {
 
 SceneCardBattle.prototype.testeCollection = function() {
     this._testeColection = new SpriteCollection();
-    this._testeColection.x = Graphics.boxWidth / 2;
+    this._testeColection.x = Graphics.boxWidth / 16;
     this._testeColection.y = Graphics.boxHeight / 2;
 
     let GameCardCollection = [];
-    for (let index = 0; index < 1; index++) {
-        GameCardCollection.push(new GameCard(1));
+    for (let index = 0; index < 6; index++) {
+        GameCardCollection.push(new GameCard(3));
     }
     this.addChild(this._testeColection);
     
@@ -167,7 +167,8 @@ SceneCardBattle.prototype.testeCollection = function() {
 
     GameCardCollection.forEach((GameCard, index) => {
         this._testeColection.positionCollection(index);
-        this._testeColection.open(index);
+        this._testeColection.waitMoment(index, index * 8);
+        this._testeColection.toTurn(index);
 
         // this._testeColection.positionHand(index);
         // this._testeColection.moveField(index);

@@ -115,7 +115,7 @@ SpriteCard.prototype.createConfirm = function() {
 };
 
 SpriteCard.prototype.createEffect = function() {
-    if(this.isPlayer()) {
+    if (this.isPlayer()) {
         this._effectIcon = ImageManager.loadCard('CardEffect1');
     }else{
         this._effectIcon = ImageManager.loadCard('CardEffect3');
@@ -123,7 +123,7 @@ SpriteCard.prototype.createEffect = function() {
 };
 
 SpriteCard.prototype.createCancel = function() {
-    if(this.isPlayer()) {
+    if (this.isPlayer()) {
         this._blockIcon = ImageManager.loadCard('CardEffect2');
     }else{
         this._blockIcon = ImageManager.loadCard('CardEffect4');
@@ -277,7 +277,7 @@ SpriteCard.prototype.refresh = function() {
 };
 
 SpriteCard.prototype.drawBackground = function() {
-    if(this._show) {
+    if (this._show) {
         this._background.bitmap.blt(this._backgroundImage, 0, 0, 100, 116, 2, 2);
         this._background.bitmap.blt(this._backgroundColor, 0, 0, 100, 30, 2, 88);
     } else {
@@ -289,7 +289,7 @@ SpriteCard.prototype.drawDisplay = function() {
     let attack = this._attackPoints.padZero(2);
     let health = this._healthPoints.padZero(2);
     
-    if(this._show) {
+    if (this._show) {
         switch (this._type) {
             case 'POWER_CARD':
                 this._background.bitmap.textColor = 'yellow';
@@ -306,7 +306,7 @@ SpriteCard.prototype.drawDisplay = function() {
 };
 
 SpriteCard.prototype.drawSelect = function() {
-    if(this.isSelected()) {
+    if (this.isSelected()) {
         this._background.bitmap.blt(this._selectBorder, 0, 0, 104, 120, 0, 0);
     } else {
         this._background.bitmap.blt(this._borderStand, 0, 0, 104, 120, 0, 0);
@@ -314,19 +314,19 @@ SpriteCard.prototype.drawSelect = function() {
 };
 
 SpriteCard.prototype.drawEffect = function() {
-    if(this.isEffect()) {
+    if (this.isEffect()) {
         this._background.bitmap.blt(this._effectIcon, 0, 0, 13, 22, 10, 10);
     }
 };
 
 SpriteCard.prototype.drawBlock = function() {
-    if(this.isBlock()) {
+    if (this.isBlock()) {
         this._background.bitmap.blt(this._blockIcon, 0, 0, 13, 22, 10, 60);
     }
 };
 
 SpriteCard.prototype.drawEnabled = function() {
-    if(this.isEnabled()) {
+    if (this.isEnabled()) {
         this._background.setColorTone([0, 0, 0, 0]);
     } else {
         this._background.setColorTone([0, 0, 0, 125]);
@@ -344,23 +344,23 @@ SpriteCard.prototype.update = function() {
 };
 
 SpriteCard.prototype.updateActionMove = function() {
-    if(this.hasSequence()) {
-        if(this.voidFrameMove()) {
+    if (this.hasSequence()) {
+        if (this.voidFrameMove()) {
             this.actionMove(this._sequence.shift());
         }
     }
 };
 
 SpriteCard.prototype.updateOpening = function() {
-    if(this.scale.x === 1 && this.isClose()) {
+    if (this.scale.x === 1 && this.isClose()) {
         this._openness = true;
-    }else if(this.scale.x === 0 && this.isOpen()) {
+    }else if (this.scale.x === 0 && this.isOpen()) {
         this._openness = false;
     }
 };
 
 SpriteCard.prototype.updateMove = function() {
-    if(this.hasFrameMove()) {
+    if (this.hasFrameMove()) {
         this.updateX();
         this.updateY();
         this.updateScaleX();
@@ -370,8 +370,8 @@ SpriteCard.prototype.updateMove = function() {
 };
 
 SpriteCard.prototype.updatePoints = function() {
-    if(this.isUpdatePoints() && this.isOpen()) {
-        if(this.voidFrameMove()) {
+    if (this.isUpdatePoints() && this.isOpen()) {
+        if (this.voidFrameMove()) {
             this.refreshPoints();
             this._framePoints--;
         }
@@ -379,15 +379,15 @@ SpriteCard.prototype.updatePoints = function() {
 };
 
 SpriteCard.prototype.updateChoice = function() {
-    if(this.isLight() && this.isOpen()) {
+    if (this.isLight() && this.isOpen()) {
         this._lightBorder.opacity = 200;
         this._flashDelay++
-        if(this._flashDelay > 20) {
+        if (this._flashDelay > 20) {
             this._lightBorder.startAnimation($dataAnimations[122]);
             this._flashDelay = 0;
         }
     } else {
-        if(this._lightBorder.opacity || this.isNoConfirm()) {
+        if (this._lightBorder.opacity || this.isNoConfirm()) {
             this._lightBorder.opacity = 0;
             this._flashDelay = 0;
         }
@@ -395,15 +395,15 @@ SpriteCard.prototype.updateChoice = function() {
 };
 
 SpriteCard.prototype.updateConfirm = function() {
-    if(this.isConfirmed() && this.isOpen()) {
+    if (this.isConfirmed() && this.isOpen()) {
         this._confirmBorder.opacity = 200;
         this._flashDelay++
-        if(this._flashDelay > 20) {
+        if (this._flashDelay > 20) {
             this._confirmBorder.startAnimation($dataAnimations[122]);
             this._flashDelay = 0;
         }
     } else {
-        if(this._confirmBorder.opacity || this.isUnlit()) {
+        if (this._confirmBorder.opacity || this.isUnlit()) {
             this._confirmBorder.opacity = 0;
             this._flashDelay = 0;
         }
@@ -417,7 +417,7 @@ SpriteCard.prototype.refreshPoints = function() {
 };
 
 SpriteCard.prototype.updateAttackPoints = function() {
-	if(this.isUpdateAttackPoints()) {
+	if (this.isUpdateAttackPoints()) {
         this._framePoints = this.setFrameAttackPoints();
         return parseInt((this._attackPoints * (this._framePoints - 1) + this._targetAttackPoints) / this._framePoints, 10);
     }
@@ -425,7 +425,7 @@ SpriteCard.prototype.updateAttackPoints = function() {
 };
 
 SpriteCard.prototype.updateHealthPoints = function() {
-	if(this.isUpdateHealthPoints()) {
+	if (this.isUpdateHealthPoints()) {
         this._framePoints = this.setFrameHealthPoints();
         return parseInt((this._healthPoints * (this._framePoints - 1) + this._targetHealthPoints) / this._framePoints, 10);
     }
@@ -441,25 +441,25 @@ SpriteCard.prototype.setFrameHealthPoints = function() {
 };
 
 SpriteCard.prototype.updateX = function() {
-	if(this.isUpdateMoveX()) {
+	if (this.isUpdateMoveX()) {
 		this.x = (this.x * (this._frameMove - 1) + this._targetX) / this._frameMove;
 	}
 };
 
 SpriteCard.prototype.updateY = function() {
-	if(this.isUpdateMoveY()) {
+	if (this.isUpdateMoveY()) {
 		this.y = (this.y * (this._frameMove - 1) + this._targetY) / this._frameMove;
 	}
 };
 
 SpriteCard.prototype.updateScaleX = function() {
-	if(this.isUpdateScaleX()) {
+	if (this.isUpdateScaleX()) {
 		this.scale.x  = (this.scale.x  * (this._frameMove - 1) + this._targetScaleX)  / this._frameMove;
 	}
 };
 
 SpriteCard.prototype.updateScaleY = function() {
-	if(this.isUpdateScaleY()) {
+	if (this.isUpdateScaleY()) {
         this.scale.y  = (this.scale.y  * (this._frameMove - 1) + this._targetScaleY)  / this._frameMove;
 	}
 };
@@ -497,8 +497,8 @@ SpriteCard.prototype.hasSequence = function() {
 };
 
 SpriteCard.prototype.setActions = function(actions) {
-    if(Array.isArray(actions) === false) {
-        if(actions) {
+    if (Array.isArray(actions) === false) {
+        if (actions) {
             actions = [actions];
         }else{
             actions = [];
@@ -652,7 +652,7 @@ SpriteCard.prototype.moveHand = function() {
 
 SpriteCard.prototype.moveAttack = function(target) {
     this._targetX = 0 + (52 * target);
-    if(this._player) {
+    if (this._player) {
         this._targetY = this.y - 256;
     } else {
         this._targetY = this.y + 256;
@@ -660,14 +660,14 @@ SpriteCard.prototype.moveAttack = function(target) {
 };
 
 SpriteCard.prototype.open = function() {
-    if(this.isClose()) {
+    if (this.isClose()) {
         this._targetX = this.x - 50;
         this._targetScaleX = 1;
     }
 };
 
 SpriteCard.prototype.close = function() {
-    if(this.isOpen()) {
+    if (this.isOpen()) {
         this._targetX = this.x + 50;
         this._targetScaleX = 0;
     }
@@ -744,13 +744,13 @@ SpriteCard.prototype.right = function(times) {
 };
 
 SpriteCard.prototype.setAttack = function(points = this._attackPoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetAttackPoints = points;
 };
 
 SpriteCard.prototype.setHealth = function(points = this._healthPoints) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetHealthPoints = points;
 };

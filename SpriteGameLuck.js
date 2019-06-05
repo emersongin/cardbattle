@@ -45,8 +45,8 @@ SpriteGameLuck.prototype.gameCardReverse = function() {
 };
 
 SpriteGameLuck.prototype.refreshSpriteCollection = function() {
-    this._SpriteCollection.refreshCollection(this._GameCardCollection);
     this._SpriteCollection.removeChildren();
+    this._SpriteCollection.refreshCollection(this._GameCardCollection);
     this._SpriteCollection.addChildren();
 };
 
@@ -102,7 +102,11 @@ SpriteGameLuck.prototype.isGameOn = function() {
     return this._gameActive;
 };
 
-SpriteGameLuck.prototype.gameoff = function() {
+SpriteGameLuck.prototype.isGameOff = function() {
+    return !this._gameActive;
+};
+
+SpriteGameLuck.prototype.gameOff = function() {
     this._gameActive = false;
 };
 
@@ -113,6 +117,7 @@ SpriteGameLuck.prototype.update = function() {
         this.updateCardCursor();
         this.updateGame();
     };
+    this.updateEndGame();
 };
 
 SpriteGameLuck.prototype.updateIndex = function() {
@@ -216,12 +221,21 @@ SpriteGameLuck.prototype.updateGame = function() {
         let index = this.getIndexSelector();
 
         this.closeMoviment();
-        if(this._GameCardCollection[index].getID() === 1) {
+        if (this._GameCardCollection[index].getID() === 1) {
             this._gameResult = true;
         }
-        this.gameoff();
-        this.disable();
+        this.gameOff();
     }
+};
+
+SpriteGameLuck.prototype.updateEndGame = function() {
+    if (this.isGameOff() && this.isActive() && this.collectionEndMove()) {
+        this.disable();
+    };
+};
+
+SpriteGameLuck.prototype.collectionEndMove = function() {
+    return !this._SpriteCollection.hasFramesCollection();
 };
 
 SpriteGameLuck.prototype.touchTurnCard = function() {

@@ -41,7 +41,7 @@ WindowTrash.prototype.setup = function() {
 WindowTrash.prototype.initialPosition = function() {
     this.moveOut();
 
-    if(this._player) {
+    if (this._player) {
         this._targetY = this.height / 2;
         this.move(this._targetX, this._targetY, this.width, this.height);
     }else{
@@ -59,7 +59,7 @@ WindowTrash.prototype.moveOut = function() {
 };
 
 WindowTrash.prototype.createBackground = function() {
-    if(this._player) {
+    if (this._player) {
         this._background.bitmap = ImageManager.loadSystem('BackgroundTrash1');
     }else{
         this._background.bitmap = ImageManager.loadSystem('BackgroundTrash2');
@@ -76,7 +76,7 @@ WindowTrash.prototype.refresh = function() {
 WindowTrash.prototype.drawPoints = function() {
     let heightPosition;
 
-    if(this._player) {
+    if (this._player) {
         heightPosition = 10;
     }else{
         heightPosition = 62;
@@ -94,8 +94,8 @@ WindowTrash.prototype.update = function() {
 };
 
 WindowTrash.prototype.updatePoints = function() {
-    if(this.isUpdateTrashPoint() && this.isOpen()) {
-        if(!this._frameInterval) {
+    if (this.isUpdateTrashPoint() && this.isOpen()) {
+        if (!this._frameInterval) {
             this._frameScale = this.setFrameTrashPoints();
             this._frameInterval = this.pointsDelay();
             this.refreshWindowPoints();
@@ -105,8 +105,8 @@ WindowTrash.prototype.updatePoints = function() {
 };
 
 WindowTrash.prototype.updateMove = function() {
-    if(this.isUpdateMove() && this.isOpen()) {
-        if(!this._frameInterval) {
+    if (this.isUpdateMove() && this.isOpen()) {
+        if (!this._frameInterval) {
             this._frameScale = 10;
             this._frameInterval = 1;
             this.refreshWindowMove();
@@ -116,15 +116,15 @@ WindowTrash.prototype.updateMove = function() {
 };
 
 WindowTrash.prototype.reducerDelay = function() {
-    if(this._frameInterval) {
+    if (this._frameInterval) {
         this._frameInterval--;
     }
 };
 
 WindowTrash.prototype.updateBackgroundOpacity = function() {
-    if(this._background && this.isOpen()) {
+    if (this._background && this.isOpen()) {
         this._background.opacity = this.openness;
-    }else if(this._background.opacity){
+    }else if (this._background.opacity) {
         this._background.opacity = 0;
     }
 };
@@ -168,14 +168,14 @@ WindowTrash.prototype.refreshWindowMove = function() {
 };
 
 WindowTrash.prototype.rateTrashPoints = function() {
-	if(this.isUpdateTrashPoint()) {
+	if (this.isUpdateTrashPoint()) {
         return parseInt((this._trashPoint * (this._frameScale - 1) + this._targetTrashPoint) / this._frameScale, 10);
     }
     return this._trashPoint;
 };
 
 WindowTrash.prototype.rateXcoord = function() {
-	if(this.isUpdateMoveX()) {
+	if (this.isUpdateMoveX()) {
         this._frameScale = this.setFrameX();
 		return parseInt((this.x * (this._frameScale - 1) + this._targetX) / this._frameScale, 10);
     }
@@ -183,7 +183,7 @@ WindowTrash.prototype.rateXcoord = function() {
 };
 
 WindowTrash.prototype.rateYCoord = function() {
-	if(this.isUpdateMoveY()) {
+	if (this.isUpdateMoveY()) {
         this._frameScale = this.setFrameY();
 		return parseInt((this.y * (this._frameScale - 1) + this._targetY) / this._frameScale, 10);
     }
@@ -191,7 +191,7 @@ WindowTrash.prototype.rateYCoord = function() {
 };
 
 WindowTrash.prototype.setPoints = function(points = this._trashPoint) {
-    if(points < 0) points = 0;
-    if(points > 99) points = 99;
+    if (points < 0) points = 0;
+    if (points > 99) points = 99;
     this._targetTrashPoint = points;
 };
