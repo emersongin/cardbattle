@@ -67,8 +67,8 @@ SpriteChallenger.prototype.createTextChallenger = function() {
 };
 
 SpriteChallenger.prototype.addChildren = function() {
-    this.addChildAt(this._title, 0);
-    this.addChildAt(this._text, 1);
+    this.addChild(this._title);
+    this.addChild(this._text);
 };
 
 SpriteChallenger.prototype.openWindows = function() {

@@ -10,10 +10,10 @@ SpritesetCardBattle.prototype.initialize = function() {
 
 SpritesetCardBattle.prototype.createSprites = function() {
     this._background = new SpriteBackground();
-    this._transition = new SpriteTransition();
+    this._opening = new SpriteOpening();
     this._challenger = new SpriteChallenger();
     this._chooseFolder = new SpriteChooseFolder();
-    this._gameLuck = new SpriteGameLuck();
+    this._luckyGame = new SpriteLuckyGame();
     this.start();
 };
 
@@ -23,18 +23,18 @@ SpritesetCardBattle.prototype.start = function() {
 
 SpritesetCardBattle.prototype.update = function() {
     this._background.update();
-    this._transition.update();
+    this._opening.update();
     this._challenger.update();
-    this._gameLuck.update();
+    this._luckyGame.update();
 };
 
 SpritesetCardBattle.prototype.layers = function() {
     return [
         this._background,
-        this._transition,
+        this._opening,
         this._challenger,
         this._chooseFolder,
-        this._gameLuck
+        this._luckyGame
     ]
 };
 
@@ -42,8 +42,8 @@ SpritesetCardBattle.prototype.showBackground = function() {
     this._background.show();
 };
 
-SpritesetCardBattle.prototype.showTransition = function() {
-    this._transition.show();
+SpritesetCardBattle.prototype.showOpening = function() {
+    this._opening.show();
 };
 
 SpritesetCardBattle.prototype.showChallenger = function() {
@@ -56,18 +56,18 @@ SpritesetCardBattle.prototype.showChooseFolder = function() {
     this._chooseFolder.openWindows();
 };
 
-SpritesetCardBattle.prototype.showGameLuck = function() {
-    this._gameLuck.setup();
-    this._gameLuck.show();
-    this._gameLuck.openCards();
+SpritesetCardBattle.prototype.showLuckyGame  = function() {
+    this._luckyGame.setup();
+    this._luckyGame.show();
+    this._luckyGame.openCards();
 };
 
 SpritesetCardBattle.prototype.isHideBackground = function() {
     return this._background.isHidden();
 };
 
-SpritesetCardBattle.prototype.isHideTransition = function() {
-    return this._transition.isHidden();
+SpritesetCardBattle.prototype.isHideOpening = function() {
+    return this._opening.isHidden();
 };
 
 SpritesetCardBattle.prototype.isHideChallenger = function() {
@@ -78,16 +78,16 @@ SpritesetCardBattle.prototype.isHideChooseFolder = function() {
     return this._chooseFolder.isHidden();
 };
 
-SpritesetCardBattle.prototype.isHideGameLuck = function() {
-    return this._gameLuck.isHidden();
+SpritesetCardBattle.prototype.isHideLuckyGame = function() {
+    return this._luckyGame.isHidden();
 };
 
 SpritesetCardBattle.prototype.isDisabledBackground = function() {
     return !this._background.isActive();
 };
 
-SpritesetCardBattle.prototype.isDisabledTransition = function() {
-    return !this._transition.isActive();
+SpritesetCardBattle.prototype.isDisabledOpening = function() {
+    return !this._opening.isActive();
 };
 
 SpritesetCardBattle.prototype.isDisabledChallenger = function() {
@@ -98,6 +98,6 @@ SpritesetCardBattle.prototype.isDisabledChooseFolder = function() {
     return !this._chooseFolder.isActive();
 };
 
-SpritesetCardBattle.prototype.isDisabledGameLuck = function() {
-    return !this._gameLuck.isActive();
+SpritesetCardBattle.prototype.isDisabledLuckyGame = function() {
+    return !this._luckyGame.isActive();
 };

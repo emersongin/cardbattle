@@ -7,7 +7,7 @@ SpriteBackground.prototype.constructor = SpriteBackground;
 
 SpriteBackground.prototype.initialize = function() {
     Sprite.prototype.initialize.call(this);
-    this._backgroundTiles = new Array(4);
+    this._backgroundTiles = [];
     this._speed = 0.5;
     this._moveX = 0;
     this._moveY = 0;
@@ -51,8 +51,8 @@ SpriteBackground.prototype.createTiles = function() {
 };
 
 SpriteBackground.prototype.loadTilesImage = function() {
-    for(var index = 0; index < this._backgroundTiles.length; index++) {
-        this._backgroundTiles[index] = this.loadImage();
+    for(var index = 0; index < 4; index++) {
+        this._backgroundTiles.push(this.loadImage());
     }
 };
 
@@ -137,19 +137,19 @@ SpriteBackground.prototype.movePosition = function(typeMove) {
 
 SpriteBackground.prototype.update = function() {
     Sprite.prototype.update.call(this);
-    if (this.isActive()) {
+    if (this.isActive() && this.isShown()) {
         this.moveTiles();
     }
 };
 
 SpriteBackground.prototype.moveTiles = function() {
     this.children.forEach(tile => {
-        this.checkMovementLimit(tile);
-        this.refreshMovement(tile);
+        this.limitMoving(tile);
+        this.refreshMoving(tile);
     });
 };
 
-SpriteBackground.prototype.checkMovementLimit = function(tile) {
+SpriteBackground.prototype.limitMoving = function(tile) {
     if (this._moveX > 0) {
         if (tile.x >= 816) {
             tile.x = -816;
@@ -171,7 +171,7 @@ SpriteBackground.prototype.checkMovementLimit = function(tile) {
     }
 };
 
-SpriteBackground.prototype.refreshMovement = function(tile) {
+SpriteBackground.prototype.refreshMoving = function(tile) {
     tile.x += (this._speed * this._moveX);
     tile.y += (this._speed * this._moveY);
 };
