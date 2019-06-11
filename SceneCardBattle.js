@@ -13,7 +13,7 @@ SceneCardBattle.prototype.initialize = function() {
 
 SceneCardBattle.prototype.create = function() {
     Scene_Base.prototype.create.call(this);
-    //this.createDisplayObjects();
+    this.createDisplayObjects();
     
     // this.testeTrashWindow();
     // this.testeZoneWindow();
@@ -21,7 +21,7 @@ SceneCardBattle.prototype.create = function() {
     // this.testeWin();
     //this.testeCollection();
     //this.testeGameLuck();
-    this.testeSpriteBattlefield();
+    //this.testeSpriteBattlefield();
 
 };
 
@@ -139,10 +139,18 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
 
 
 SceneCardBattle.prototype.testeSpriteBattlefield = function() {
+    this._Battlefield = new SpriteBattlefield();
+    this.addChild(this._Battlefield);
+
+    this._Battlefield.moveInPlayerBackground();
+    this._Battlefield.moveInPlayerTrash();
+    this._Battlefield.moveInPlayerScore();
+
+    this._Battlefield.moveInEnemyBackground();
+    this._Battlefield.moveInEnemyTrash();
+    this._Battlefield.moveInEnemyScore();
 
 };
-
-
 
 // SceneCardBattle.prototype.testeGameLuck = function() {
 //     this._gameLuck = new SpriteGameLuck();

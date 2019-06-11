@@ -5,9 +5,9 @@ function WindowTrash() {
 WindowTrash.prototype = Object.create(Window_Base.prototype);
 WindowTrash.prototype.constructor = WindowTrash;
 
-WindowTrash.prototype.initialize = function(player) {
+WindowTrash.prototype.initialize = function(Setup) {
     Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
-    this._player = player || false;
+    this._player = Setup.player;
     this._background = new Sprite(new Bitmap(104, 107));
     this._frameInterval = 0;
     this._frameScale = 0;
@@ -16,6 +16,10 @@ WindowTrash.prototype.initialize = function(player) {
     this._targetX = 0;
     this._targetY = 0;
     this.setup();
+};
+
+WindowTrash.prototype.isPlayer = function() {
+    return this._player;
 };
 
 WindowTrash.prototype.PointsInterval = function() {
@@ -36,18 +40,18 @@ WindowTrash.prototype.setup = function() {
     this.openness = 0;
     this.createBackground();
     this.refresh();
+    this.initialPosition();
+    this.open();
 };
 
 WindowTrash.prototype.initialPosition = function() {
-    this.moveOut();
-
-    if (this._player) {
+    if (this.isPlayer()) {
         this._targetY = this.height / 2;
-        this.move(this._targetX, this._targetY, this.width, this.height);
     }else{
-        this._targetY = this.height / 2 - this._background.height;
-        this.move(this._targetX, this._targetY, this.width, this.height);   
+        this._targetY = (this.height / 2) - this._background.height;
     }
+    this._targetX = this.width;
+    this.move(this._targetX, this._targetY, this.width, this.height);
 };
 
 WindowTrash.prototype.moveIn = function() {

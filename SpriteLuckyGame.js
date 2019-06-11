@@ -46,7 +46,7 @@ SpriteLuckyGame.prototype.gameCardReverse = function() {
 
 SpriteLuckyGame.prototype.refreshSpriteCollection = function() {
     this._SpriteCollection.removeChildren();
-    this._SpriteCollection.refreshCollection(this._GameCardCollection);
+    this._SpriteCollection.refreshCollections(this._GameCardCollection);
     this._SpriteCollection.addChildren();
 };
 
@@ -125,12 +125,16 @@ SpriteLuckyGame.prototype.updateIndex = function() {
 };
 
 SpriteLuckyGame.prototype.updateCardCursorMove = function() {
-    if (Input.isRepeated('left') || TouchInput.isTriggered() && this.touchKey('left')) {
-        this.cursorLeft();
+    if (Input.isRepeated('left') && !TouchInput.isTriggered()) {
+        this.cursorMove(this.getIndexSelector() - 1);
     }
 
-    if (Input.isRepeated('right') || TouchInput.isTriggered() && this.touchKey('right')) {
-        this.cursorRight();
+    if (Input.isRepeated('right') && !TouchInput.isTriggered()) {
+        this.cursorMove(this.getIndexSelector() + 1);
+    }
+
+    if (TouchInput.isTriggered() && this.touchChild() >= 0) {
+        this.cursorMove(this.touchChild());
     }
 
     if (this.updateIndex()) {
@@ -139,60 +143,62 @@ SpriteLuckyGame.prototype.updateCardCursorMove = function() {
     }
 };
 
-SpriteLuckyGame.prototype.touchKey = function(key) {
-    switch (key) {
-        case 'left':
-            if (this.getIndexSelector()) {
-                return this.isTouchSpriteChild(this.getIndexSelector() - 1);
+SpriteLuckyGame.prototype.cursorMove = function(index) {
+    if (this.maxCardsCollection()) {
+        if (index > 0) {
+            if (index < this.maxCardsCollection() - 1) {
+                this.setIndexSelector(index);
+            } else {
+                this.setIndexSelector(this.maxCardsCollection() - 1);
             }
-            break;
-        case 'right':
-            if (this.getIndexSelector() < this.maxCardsCollection() - 1) {
-                return this.isTouchSpriteChild(this.getIndexSelector() + 1);
-            }
-            break;
-        default:
-            return false;
+        } else {
+            this.setIndexSelector(0);
+        }
     }
+    console.log(this.getIndexSelector())
+};
+
+SpriteLuckyGame.prototype.touchChild = function() {
+    let childTouched = 0;
+
+    this._GameCardCollection.forEach((GameCard, index) => {
+        if (this.isTouchSpriteChild(index)) {
+            childTouched = index;
+        };
+    });
+
+    return childTouched;
 };
 
 SpriteLuckyGame.prototype.isTouchSpriteChild = function(index) {
-    let x = this.canvasToLocalX.call(this._SpriteCollection.selectChild(index), TouchInput.x);
-    let y = this.canvasToLocalY.call(this._SpriteCollection.selectChild(index), TouchInput.y);
+    let child = this._SpriteCollection.selectChild(index);
+    let childX = this.canvasToLocalX.call(child, TouchInput.x);
+    let childY = this.canvasToLocalY.call(child, TouchInput.y);
+    let delimiterX = 104;
+    let delimiterY = 120;
 
-    if (x >= 0 && x <= 104 && y >= 0 && y <= 120) {return true;} else {return false;};
+    return (childX >= 0 && childX <= delimiterX) && 
+    (childY >= 0 && childY <= delimiterY);
 };
 
-SpriteLuckyGame.prototype.canvasToLocalX = function(x) {
+SpriteLuckyGame.prototype.canvasToLocalX = function(touchInputX) {
     let node = this;
 
     while (node) {
-        x -= node.x;
+        touchInputX -= node.x;
         node = node.parent;
     }
-    return x;
+    return touchInputX;
 };
 
-SpriteLuckyGame.prototype.canvasToLocalY = function(y) {
+SpriteLuckyGame.prototype.canvasToLocalY = function(touchInputY) {
     let node = this;
 
     while (node) {
-        y -= node.y;
+        touchInputY -= node.y;
         node = node.parent;
     }
-    return y;
-};
-
-SpriteLuckyGame.prototype.cursorRight = function() {
-    if (this.maxCardsCollection() && this.getIndexSelector() < this.maxCardsCollection() - 1) {
-        this.setIndexSelector(this.getIndexSelector() + 1);
-    }
-};
-
-SpriteLuckyGame.prototype.cursorLeft = function() {
-    if (this.maxCardsCollection() && this.getIndexSelector()) {
-        this.setIndexSelector(this.getIndexSelector() - 1);
-    }
+    return touchInputY;
 };
 
 SpriteLuckyGame.prototype.updateCardCursor = function() {
@@ -214,10 +220,11 @@ SpriteLuckyGame.prototype.updateCardSelect = function() {
             }
         }
     });
+    this._SpriteCollection.highChild(this.getIndexSelector());
 };
 
 SpriteLuckyGame.prototype.updateGame = function() {
-    if (Input.isTriggered('ok') || TouchInput.isTriggered() && this.touchTurnCard()) {
+    if (Input.isTriggered('ok') || (TouchInput.isTriggered() && this.touchTurnCard())) {
         let index = this.getIndexSelector();
 
         this.closeMoviment();
