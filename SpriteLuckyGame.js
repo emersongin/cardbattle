@@ -133,7 +133,7 @@ SpriteLuckyGame.prototype.updateCardCursorMove = function() {
         this.cursorMove(this.getIndexSelector() + 1);
     }
 
-    if (TouchInput.isTriggered() && this.touchChild() >= 0) {
+    if (TouchInput.isTriggered()) {
         this.cursorMove(this.touchChild());
     }
 
@@ -152,14 +152,15 @@ SpriteLuckyGame.prototype.cursorMove = function(index) {
                 this.setIndexSelector(this.maxCardsCollection() - 1);
             }
         } else {
-            this.setIndexSelector(0);
+            if (index !== undefined) {
+                this.setIndexSelector(0);
+            }
         }
     }
-    console.log(this.getIndexSelector())
 };
 
 SpriteLuckyGame.prototype.touchChild = function() {
-    let childTouched = 0;
+    let childTouched;
 
     this._GameCardCollection.forEach((GameCard, index) => {
         if (this.isTouchSpriteChild(index)) {
@@ -172,8 +173,8 @@ SpriteLuckyGame.prototype.touchChild = function() {
 
 SpriteLuckyGame.prototype.isTouchSpriteChild = function(index) {
     let child = this._SpriteCollection.selectChild(index);
-    let childX = this.canvasToLocalX.call(child, TouchInput.x);
-    let childY = this.canvasToLocalY.call(child, TouchInput.y);
+    let childX = this.targetTouchX.call(child, TouchInput.x);
+    let childY = this.targetTouchY.call(child, TouchInput.y);
     let delimiterX = 104;
     let delimiterY = 120;
 
@@ -181,17 +182,18 @@ SpriteLuckyGame.prototype.isTouchSpriteChild = function(index) {
     (childY >= 0 && childY <= delimiterY);
 };
 
-SpriteLuckyGame.prototype.canvasToLocalX = function(touchInputX) {
+SpriteLuckyGame.prototype.targetTouchX = function(touchInputX) {
     let node = this;
 
     while (node) {
         touchInputX -= node.x;
         node = node.parent;
     }
+
     return touchInputX;
 };
 
-SpriteLuckyGame.prototype.canvasToLocalY = function(touchInputY) {
+SpriteLuckyGame.prototype.targetTouchY = function(touchInputY) {
     let node = this;
 
     while (node) {
@@ -268,6 +270,7 @@ SpriteLuckyGame.prototype.closeMoviment = function() {
 SpriteLuckyGame.prototype.openCards = function() {
     this._GameCardCollection.forEach((GameCard, index) => {
         this._SpriteCollection.positionCollection(index);
+        this._SpriteCollection.waitMoment(index, index * 8);
         this._SpriteCollection.open(index);
     });
 };

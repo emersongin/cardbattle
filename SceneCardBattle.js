@@ -17,10 +17,10 @@ SceneCardBattle.prototype.create = function() {
     
     // this.testeTrashWindow();
     // this.testeZoneWindow();
-    // this.testeCard();
     // this.testeWin();
-    //this.testeCollection();
-    //this.testeGameLuck();
+    // this.testeCard();
+    // this.testeCollection();
+    // this.testeGameLuck();
     //this.testeSpriteBattlefield();
 
 };
@@ -98,8 +98,20 @@ SceneCardBattle.prototype.updateCardBattle = function() {
             }
             break;
         case 'START_PHASE':
-            this._spriteset.showLuckyGame();
-            CardBattleManager.setPhase('WAIT');
+                if (this._spriteset.isHideBattlefield()) {
+                    this._spriteset.showBattlefield();
+                    this._spriteset.openWindowStartPhase();
+                };
+
+                if (this._spriteset.isDisableWindowStartPhase()) {
+                    if (this._wait > 60) {
+                        this._spriteset.showLuckyGame();
+                        CardBattleManager.setPhase('WAIT');
+                        this._wait = 0;
+                    } else {
+                        this._wait++;
+                    }
+                }
             break;
         case 'DRAW_PHASE':
 
@@ -142,14 +154,20 @@ SceneCardBattle.prototype.testeSpriteBattlefield = function() {
     this._Battlefield = new SpriteBattlefield();
     this.addChild(this._Battlefield);
 
-    this._Battlefield.moveInPlayerBackground();
-    this._Battlefield.moveInPlayerTrash();
-    this._Battlefield.moveInPlayerScore();
+    this._Battlefield.openWindowStartPhase();
+    // this._Battlefield.openWindowDrawPhase();
+    // this._Battlefield.openWindowLoadPhase();
+    // this._Battlefield.openWindowSummonPhase();
+    // this._Battlefield.openWindowCompilePhase();
+    // this._Battlefield.openWindowBattlePhase();
 
-    this._Battlefield.moveInEnemyBackground();
-    this._Battlefield.moveInEnemyTrash();
-    this._Battlefield.moveInEnemyScore();
+    // this._Battlefield.moveInPlayerBackground();
+    // this._Battlefield.moveInPlayerTrash();
+    // this._Battlefield.moveInPlayerScore();
 
+    // this._Battlefield.moveInEnemyBackground();
+    // this._Battlefield.moveInEnemyTrash();
+    // this._Battlefield.moveInEnemyScore();
 };
 
 // SceneCardBattle.prototype.testeGameLuck = function() {

@@ -14,6 +14,7 @@ SpritesetCardBattle.prototype.createSprites = function() {
     this._challenger = new SpriteChallenger();
     this._chooseFolder = new SpriteChooseFolder();
     this._luckyGame = new SpriteLuckyGame();
+    this._battlefield = new SpriteBattlefield();
     this.start();
 };
 
@@ -26,6 +27,7 @@ SpritesetCardBattle.prototype.update = function() {
     this._opening.update();
     this._challenger.update();
     this._luckyGame.update();
+    this._battlefield.update();
 };
 
 SpritesetCardBattle.prototype.layers = function() {
@@ -34,7 +36,8 @@ SpritesetCardBattle.prototype.layers = function() {
         this._opening,
         this._challenger,
         this._chooseFolder,
-        this._luckyGame
+        this._luckyGame,
+        this._battlefield
     ]
 };
 
@@ -62,6 +65,14 @@ SpritesetCardBattle.prototype.showLuckyGame  = function() {
     this._luckyGame.openCards();
 };
 
+SpritesetCardBattle.prototype.showBattlefield  = function() {
+    this._battlefield.show();
+};
+
+SpritesetCardBattle.prototype.openWindowStartPhase  = function() {
+    this._battlefield.openWindowStartPhase();
+};
+
 SpritesetCardBattle.prototype.isHideBackground = function() {
     return this._background.isHidden();
 };
@@ -82,6 +93,10 @@ SpritesetCardBattle.prototype.isHideLuckyGame = function() {
     return this._luckyGame.isHidden();
 };
 
+SpritesetCardBattle.prototype.isHideBattlefield = function() {
+    return this._battlefield.isHidden();
+};
+
 SpritesetCardBattle.prototype.isDisabledBackground = function() {
     return !this._background.isActive();
 };
@@ -100,4 +115,12 @@ SpritesetCardBattle.prototype.isDisabledChooseFolder = function() {
 
 SpritesetCardBattle.prototype.isDisabledLuckyGame = function() {
     return !this._luckyGame.isActive();
+};
+
+SpritesetCardBattle.prototype.isDisabledBattlefield = function() {
+    return !this._battlefield.isActive();
+};
+
+SpritesetCardBattle.prototype.isDisableWindowStartPhase  = function() {
+    return this._battlefield.isDisableWindowStartPhase();
 };
