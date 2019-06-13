@@ -59,18 +59,22 @@ SpritesetCardBattle.prototype.showChooseFolder = function() {
     this._chooseFolder.openWindows();
 };
 
-SpritesetCardBattle.prototype.showLuckyGame  = function() {
+SpritesetCardBattle.prototype.showLuckyGame = function() {
     this._luckyGame.setup();
     this._luckyGame.show();
     this._luckyGame.openCards();
 };
 
-SpritesetCardBattle.prototype.showBattlefield  = function() {
+SpritesetCardBattle.prototype.showBattlefield = function() {
     this._battlefield.show();
 };
 
-SpritesetCardBattle.prototype.openWindowStartPhase  = function() {
+SpritesetCardBattle.prototype.openWindowStartPhase = function() {
     this._battlefield.openWindowStartPhase();
+};
+
+SpritesetCardBattle.prototype.openWindowDrawPhase = function() {
+    this._battlefield.openWindowDrawPhase();
 };
 
 SpritesetCardBattle.prototype.isHideBackground = function() {
@@ -97,6 +101,30 @@ SpritesetCardBattle.prototype.isHideBattlefield = function() {
     return this._battlefield.isHidden();
 };
 
+SpritesetCardBattle.prototype.isHideWindowStartPhase = function() {
+    return this._battlefield.isHideWindowStartPhase();
+};
+
+SpritesetCardBattle.prototype.isHideWindowDrawPhase = function() {
+    return this._battlefield.isHideWindowDrawPhase();
+};
+
+SpritesetCardBattle.prototype.isHideWindowLoadPhase = function() {
+    return this._battlefield.isHideWindowLoadPhase();
+};
+
+SpritesetCardBattle.prototype.isHideWindowSummonPhase = function() {
+    return this._battlefield.isHideWindowSummonPhase();
+};
+
+SpritesetCardBattle.prototype.isHideWindowCompilePhase = function() {
+    return this._battlefield.isHideWindowCompilePhase();
+};
+
+SpritesetCardBattle.prototype.isHideWindowBattlePhase = function() {
+    return this._battlefield.isHideWindowBattlePhase();
+};
+
 SpritesetCardBattle.prototype.isDisabledBackground = function() {
     return !this._background.isActive();
 };
@@ -121,6 +149,59 @@ SpritesetCardBattle.prototype.isDisabledBattlefield = function() {
     return !this._battlefield.isActive();
 };
 
-SpritesetCardBattle.prototype.isDisableWindowStartPhase  = function() {
+SpritesetCardBattle.prototype.isDisableWindowStartPhase = function() {
     return this._battlefield.isDisableWindowStartPhase();
 };
+
+SpritesetCardBattle.prototype.isDisableWindowDrawPhase = function() {
+    return this._battlefield.isDisableWindowDrawPhase();
+};
+
+SpritesetCardBattle.prototype.isDisableWindowLoadPhase = function() {
+    return this._battlefield.isDisableWindowLoadPhase();
+};
+
+SpritesetCardBattle.prototype.isDisableWindowSummonPhase = function() {
+    return this._battlefield.isDisableWindowSummonPhase();
+};
+
+SpritesetCardBattle.prototype.isDisableWindowCompilePhase = function() {
+    return this._battlefield.isDisableWindowCompilePhase();
+};
+
+SpritesetCardBattle.prototype.isDisableWindowBattlePhase = function() {
+    return this._battlefield.isDisableWindowBattlePhase();
+};
+
+SpritesetCardBattle.prototype.luckGameResult = function() {
+    return this._luckyGame.getGameResult();
+};
+
+SpritesetCardBattle.prototype.moveInBattlefield = function() {
+    this._battlefield.moveInPlayerBackground();
+    this._battlefield.moveInPlayerScore();
+    this._battlefield.moveInPlayerTrash();
+    this._battlefield.moveInEnemyBackground();
+    this._battlefield.moveInEnemyScore();
+    this._battlefield.moveInEnemyTrash();
+};
+
+SpritesetCardBattle.prototype.moveOutBattlefield = function() {
+    this._battlefield.moveOutPlayerBackground();
+    this._battlefield.moveOutPlayerScore();
+    this._battlefield.moveOutPlayerTrash();
+    this._battlefield.moveOutEnemyBackground();
+    this._battlefield.moveOutEnemyScore();
+    this._battlefield.moveOutEnemyTrash();
+};
+
+SpritesetCardBattle.prototype.refreshBattleCards = function() {
+    this._battlefield.refreshPlayerSpriteCollection();
+    this._battlefield.refreshEnemySpriteCollection();
+};
+
+SpritesetCardBattle.prototype.moveHandToField = function() {
+    this._battlefield.playerMoveCardToField();
+    this._battlefield.enemyMoveCardToField();
+};
+

@@ -110,7 +110,7 @@ SpriteCollection.prototype.positionCollection = function(index) {
 
 SpriteCollection.prototype.moveField = function(index) {
     this.selectChild(index).setActions([
-        {type: 'MOVE_FIELD', index, frame: 16}
+        {type: 'MOVE_FIELD', index, frame: 40}
     ]);
 };
 

@@ -22,8 +22,28 @@ GameDuelist.prototype.setEnemy = function(ID) {
     this._enemyInformation = $dataCardBattleEnemies[ID];
 };
 
+GameDuelist.prototype.getPack = function() {
+    return this._pack;
+};
+
+GameDuelist.prototype.getHand = function() {
+    return this._hand;
+};
+
+GameDuelist.prototype.getTrash = function() {
+    return this._trash;
+};
+
+GameDuelist.prototype.getField = function() {
+    return this._field;
+};
+
 GameDuelist.prototype.setPack = function(cardBattlePack) {
     this._pack = cardBattlePack;
+};
+
+GameDuelist.prototype.pushToFolder = function(source, destination) {
+    destination.push(source.shift());
 };
 
 GameDuelist.prototype.getWins = function() {

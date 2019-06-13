@@ -175,11 +175,11 @@ WindowScore.prototype.refreshMove = function() {
 };
 
 WindowScore.prototype.setFrameX = function() {
-    return parseInt(Math.abs(this.x - this._targetX) / 10);
+    return parseInt(Math.abs(this.x - this._targetX) / 4);
 };
 
 WindowScore.prototype.setFrameY = function() {
-    return parseInt(Math.abs(this.y - this._targetY) / 10);
+    return parseInt(Math.abs(this.y - this._targetY) / 4);
 };
 
 WindowScore.prototype.rateX = function() {

@@ -8,6 +8,7 @@ CardBattleManager.setup = function() {
 
 CardBattleManager.initMembers = function() {
     this._phase = 'INITIALIZE';
+    this._playerFirst = false;
     this._player = new GameDuelist();
     this._enemy = new GameDuelist();
 };
@@ -18,6 +19,14 @@ CardBattleManager.getPhase = function() {
 
 CardBattleManager.setPhase = function(phase) {
     this._phase = phase;
+};
+
+CardBattleManager.getPlayerFirst = function() {
+    return this._playerFirst;
+};
+
+CardBattleManager.setPlayerFirst = function(player) {
+    this._playerFirst = player;
 };
 
 CardBattleManager.getEnemyInformation = function() {
@@ -36,20 +45,63 @@ CardBattleManager.getEnemyWins = function() {
     return this._enemy.getWins();
 };
 
-CardBattleManager.setPlayerBattleCollection = function(cardBattlePack) {
-    this._player.setPack(cardBattlePack);
+CardBattleManager.getPlayerFieldCollection = function() {
+    return this._player.getField();
+};
+
+CardBattleManager.getEnemyFieldCollection = function() {
+    return this._enemy.getField();
+};
+
+CardBattleManager.setPlayerBattleCollection = function(gameBattleCollection) {
+    this._player.setPack(gameBattleCollection);
+};
+
+CardBattleManager.setEnemyBattleCollection = function(gameBattleCollection) {
+    this._enemy.setPack(gameBattleCollection);
+};
+
+CardBattleManager.drawSixCards = function() {
+    for (let index = 0; index < 6; index++) {
+        this.playerPushPackToField();
+        this.enemyPushPackToField();
+    }
+};
+
+CardBattleManager.playerPushPackToHand = function() {
+    this._player.pushToFolder(this._player.getPack(), this._player.getHand());
+};
+
+CardBattleManager.playerPushPackToField = function() {
+    this._player.pushToFolder(this._player.getPack(), this._player.getField());
+};
+
+CardBattleManager.playerPushHandToField = function() {
+    this._player.pushToFolder(this._player.getHand(), this._player.getField());
+};
+
+CardBattleManager.enemyPushPackToHand = function() {
+    this._enemy.pushToFolder(this._enemy.getPack(), this._enemy.getHand());
+};
+
+CardBattleManager.enemyPushPackToField = function() {
+    this._enemy.pushToFolder(this._enemy.getPack(), this._enemy.getField());
+};
+
+CardBattleManager.enemyPushHandToField = function() {
+    this._enemy.pushToFolder(this._enemy.getHand(), this._enemy.getField());
 };
 
 CardBattleManager.createGameBattleCollection = function(GameCardCollection) {
-    let cardBattlePack = [];
+    let gameBattleCollection = [];
 
     GameCardCollection.forEach(GameCardStored => {
         for (let index = 0; index < GameCardStored.amount; index++) {
-            cardBattlePack.push(new GameCard(GameCardStored.id));
+            gameBattleCollection.push(new GameCard(GameCardStored.id));
         }
     });
 
-    return cardBattlePack;
+    return gameBattleCollection;
 };
 
 CardBattleManager.randomCollection = function(GameBattlePack) {
@@ -58,7 +110,7 @@ CardBattleManager.randomCollection = function(GameBattlePack) {
 
     while (oldBattlePack.length) {
         let random = Math.floor(Math.random() * oldBattlePack.length);
-        randomBattlePack.push(oldBattlePack.splice(random, 1)[0]);
+        randomBattlePack.push(oldBattlePack.splice(random, 1).shift());
     }
 
     return randomBattlePack; 

@@ -15,6 +15,7 @@ SpriteBattlefield.prototype.initialize = function() {
 SpriteBattlefield.prototype.setup = function() {
     this.createPlayerZone();
     this.createEnemyZone();
+    this.createCollections();
     this.createWindowPhases();
     this.addChildren();
 };
@@ -29,6 +30,57 @@ SpriteBattlefield.prototype.createEnemyZone = function() {
     this._enemyBattleground = new WindowBattleground({ player: false });
     this._enemyTrash = new WindowTrash({ player: false });
     this._enemyScore = new WindowScore({ player: false });
+};
+
+SpriteBattlefield.prototype.createCollections = function() {
+    this.playerCollection();
+    this.enemyCollection();
+};
+
+SpriteBattlefield.prototype.playerCollection = function() {
+    this._playerSpriteCollection = new SpriteCollection();
+    this._playerSpriteCollection.x = 48;
+    this._playerSpriteCollection.y = 64;
+};
+
+SpriteBattlefield.prototype.enemyCollection = function() {
+    this._enemySpriteCollection = new SpriteCollection();
+    this._enemySpriteCollection.x = 48;
+    this._enemySpriteCollection.y = 440;
+};
+
+SpriteBattlefield.prototype.refreshPlayerSpriteCollection = function() {
+    this._playerSpriteCollection.removeChildren();
+    this._playerSpriteCollection.refreshCollections(CardBattleManager.getPlayerFieldCollection());
+    this._playerSpriteCollection.addChildren();
+};
+
+SpriteBattlefield.prototype.refreshEnemySpriteCollection = function() {
+    this._enemySpriteCollection.removeChildren();
+    this._enemySpriteCollection.refreshCollections(CardBattleManager.getEnemyFieldCollection());
+    this._enemySpriteCollection.addChildren();
+};
+
+SpriteBattlefield.prototype.playerMoveCardToField = function() {
+    let gameCardCollection = CardBattleManager.getPlayerFieldCollection();
+
+    gameCardCollection.forEach((GameCard, index) => {
+        this._playerSpriteCollection.positionHand(index);
+        this._playerSpriteCollection.open(index);
+        this._playerSpriteCollection.waitMoment(index, index * 8);
+        this._playerSpriteCollection.moveField(index);
+    });
+};
+
+SpriteBattlefield.prototype.enemyMoveCardToField = function() {
+    let gameCardCollection = CardBattleManager.getEnemyFieldCollection();
+
+    gameCardCollection.forEach((GameCard, index) => {
+        this._enemySpriteCollection.positionHand(index);
+        this._enemySpriteCollection.open(index);
+        this._enemySpriteCollection.waitMoment(index, index * 10);
+        this._enemySpriteCollection.moveField(index);
+    });
 };
 
 SpriteBattlefield.prototype.createWindowPhases = function() {
@@ -66,6 +118,7 @@ SpriteBattlefield.prototype.refreshTexts = function() {
 
 SpriteBattlefield.prototype.addChildren = function() {
     this.addBattleChildren();
+    this.addCollectionChildren();
     this.addWindowChildren();
 };
 
@@ -76,6 +129,11 @@ SpriteBattlefield.prototype.addBattleChildren = function() {
     this.addChild(this._enemyBattleground);
     this.addChild(this._enemyTrash);
     this.addChild(this._enemyScore);
+};
+
+SpriteBattlefield.prototype.addCollectionChildren = function() {
+    this.addChild(this._playerSpriteCollection);
+    this.addChild(this._enemySpriteCollection);
 };
 
 SpriteBattlefield.prototype.addWindowChildren = function() {
@@ -197,6 +255,50 @@ SpriteBattlefield.prototype.openWindowBattlePhase = function() {
     this._windowBattlePhase.openWindows();
 };
 
+SpriteBattlefield.prototype.isHideWindowStartPhase = function() {
+    return this._windowStartPhase.isHidden();
+};
+
+SpriteBattlefield.prototype.isHideWindowDrawPhase = function() {
+    return this._windowDrawPhase.isHidden();
+};
+
+SpriteBattlefield.prototype.isHideWindowLoadPhase = function() {
+    return this._windowLoadPhase.isHidden();
+};
+
+SpriteBattlefield.prototype.isHideWindowSummonPhase = function() {
+    return this._windowSummonPhase.isHidden();
+};
+
+SpriteBattlefield.prototype.isHideWindowCompilePhase = function() {
+    return this._windowCompilePhase.isHidden();
+};
+
+SpriteBattlefield.prototype.isHideWindowBattlePhase = function() {
+    return this._windowBattlePhase.isHidden();
+};
+
 SpriteBattlefield.prototype.isDisableWindowStartPhase = function() {
     return !this._windowStartPhase.isActive();
+};
+
+SpriteBattlefield.prototype.isDisableWindowDrawPhase = function() {
+    return !this._windowDrawPhase.isActive();
+};
+
+SpriteBattlefield.prototype.isDisableWindowLoadPhase = function() {
+    return !this._windowLoadPhase.isActive();
+};
+
+SpriteBattlefield.prototype.isDisableWindowSummonPhase = function() {
+    return !this._windowSummonPhase.isActive();
+};
+
+SpriteBattlefield.prototype.isDisableWindowCompilePhase = function() {
+    return !this._windowCompilePhase.isActive();
+};
+
+SpriteBattlefield.prototype.isDisableWindowBattlePhase = function() {
+    return !this._windowBattlePhase.isActive();
 };

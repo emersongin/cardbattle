@@ -94,6 +94,14 @@ SpriteLuckyGame.prototype.setLastIndexSelector = function(index) {
     this._lastIndexSelector = index;
 };
 
+SpriteLuckyGame.prototype.getGameResult = function() {
+    this._gameResult;
+};
+
+SpriteLuckyGame.prototype.setGameResult = function(result) {
+    this._gameResult = result;
+};
+
 SpriteLuckyGame.prototype.maxCardsCollection = function() {
     return this._GameCardCollection.length;
 };
@@ -231,7 +239,7 @@ SpriteLuckyGame.prototype.updateGame = function() {
 
         this.closeMoviment();
         if (this._GameCardCollection[index].getID() === 1) {
-            this._gameResult = true;
+            this.setGameResult(true);
         }
         this.gameOff();
     }
