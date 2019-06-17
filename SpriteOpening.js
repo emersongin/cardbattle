@@ -5,7 +5,7 @@ function SpriteOpening() {
 SpriteOpening.prototype = Object.create(Sprite.prototype);
 SpriteOpening.prototype.constructor = SpriteOpening;
 
-SpriteOpening.prototype.initialize = function() {
+SpriteOpening.prototype.initialize = function () {
     Sprite.prototype.initialize.call(this);
     this._previousSceneLayer = new Sprite();
     this._imageLayer = new Sprite();
@@ -17,57 +17,57 @@ SpriteOpening.prototype.initialize = function() {
     this.create();
 };
 
-SpriteOpening.prototype.isActive = function() {
+SpriteOpening.prototype.isActive = function () {
     return this._active;
 };
 
-SpriteOpening.prototype.enable = function() {
+SpriteOpening.prototype.enable = function () {
     this._active = true;
 };
 
-SpriteOpening.prototype.disable = function() {
+SpriteOpening.prototype.disable = function () {
     this._active = false;
 };
 
-SpriteOpening.prototype.isShown = function() {
+SpriteOpening.prototype.isShown = function () {
     return this.visible;
 };
 
-SpriteOpening.prototype.isHidden = function() {
+SpriteOpening.prototype.isHidden = function () {
     return !this.visible;
 };
 
-SpriteOpening.prototype.show = function() {
+SpriteOpening.prototype.show = function () {
     this.visible = true;
 };
 
-SpriteOpening.prototype.hide = function() {
+SpriteOpening.prototype.hide = function () {
     this.visible = false;
 };
 
-SpriteOpening.prototype.visibility = function() {
+SpriteOpening.prototype.visibility = function () {
     return this.opacity;
 };
 
-SpriteOpening.prototype.create = function() {
+SpriteOpening.prototype.create = function () {
     this.snapForPreviousScene(); 
     this.imageLayer();
     this.blackLayer();
     this.addChildren();
 };
 
-SpriteOpening.prototype.snapForPreviousScene = function() {
+SpriteOpening.prototype.snapForPreviousScene = function () {
     this._previousSceneLayer.bitmap = SceneManager.backgroundBitmap();
 };
 
-SpriteOpening.prototype.imageLayer = function() {
+SpriteOpening.prototype.imageLayer = function () {
     let imageLayer = this._imageLayer;
 
     imageLayer.bitmapCloned = ImageManager.loadPicture('OpeningBackground');
     imageLayer.rectangleClear = new Rectangle(0, 0, 816, 624);
 };
 
-SpriteOpening.prototype.blackLayer = function() {
+SpriteOpening.prototype.blackLayer = function () {
     let blackLayer = this._blackLayer;
 
     blackLayer.bitmapBlack = new Bitmap(816, 624);
@@ -75,36 +75,36 @@ SpriteOpening.prototype.blackLayer = function() {
     blackLayer.rectangleClear = new Rectangle(0, 0, 816, 624);
 };
 
-SpriteOpening.prototype.addChildren = function() {
+SpriteOpening.prototype.addChildren = function () {
     this.addChildAt(this._previousSceneLayer, 0);
     this.addChildAt(this._imageLayer, 1);
     this.addChildAt(this._blackLayer, 2);
 };
 
-SpriteOpening.prototype.update = function() {
+SpriteOpening.prototype.update = function () {
     Sprite.prototype.update.call(this);
     if (this.isActive()) {
         this.updateOpening();
     }
 }
 
-SpriteOpening.prototype.rectWidth = function(Sprite) {
+SpriteOpening.prototype.rectWidth = function (Sprite) {
     return Sprite.rectangleClear.width;
 };
 
-SpriteOpening.prototype.rectHeight = function(Sprite) {
+SpriteOpening.prototype.rectHeight = function (Sprite) {
     return Sprite.rectangleClear.height;
 };
 
-SpriteOpening.prototype.rectWidthClosed = function(Sprite) {
+SpriteOpening.prototype.rectWidthClosed = function (Sprite) {
     return !Sprite.rectangleClear.width;
 };
 
-SpriteOpening.prototype.rectHeightClosed = function(Sprite) {
+SpriteOpening.prototype.rectHeightClosed = function (Sprite) {
     return !Sprite.rectangleClear.height;
 };
 
-SpriteOpening.prototype.updateOpening = function() {
+SpriteOpening.prototype.updateOpening = function () {
     //Fechamento retangular da imagem de fundo
     if (this.rectWidth(this._imageLayer) && this.rectHeight(this._imageLayer)) {
         this.updateRectClearImage();
@@ -134,7 +134,7 @@ SpriteOpening.prototype.updateOpening = function() {
     }
 };
 
-SpriteOpening.prototype.updateRectClearImage = function(time = 2) {
+SpriteOpening.prototype.updateRectClearImage = function (time = 2) {
     let imageLayer = this._imageLayer;
 
     imageLayer.rectangleClear.x += time;
@@ -143,7 +143,7 @@ SpriteOpening.prototype.updateRectClearImage = function(time = 2) {
     imageLayer.rectangleClear.height += time ? -time * 2 : +time * 2;
 };
 
-SpriteOpening.prototype.renderRectClearImage = function() {
+SpriteOpening.prototype.renderRectClearImage = function () {
     let imageLayer = this._imageLayer;
     let rect = this._imageLayer.rectangleClear;
 
@@ -156,14 +156,14 @@ SpriteOpening.prototype.renderRectClearImage = function() {
     imageLayer.bitmap.clearRect(rect.x, rect.y, rect.width, rect.height);
 };
 
-SpriteOpening.prototype.updateRectClearBlack = function(time = 6) {
+SpriteOpening.prototype.updateRectClearBlack = function (time = 6) {
     let blackLayer = this._blackLayer;
 
     blackLayer.rectangleClear.x += time;
     blackLayer.rectangleClear.width += time ? -time * 2: +time * 2;
 };
 
-SpriteOpening.prototype.renderRectClearBlack = function() {
+SpriteOpening.prototype.renderRectClearBlack = function () {
     let blackLayer = this._blackLayer;
     let rect = blackLayer.rectangleClear;
     

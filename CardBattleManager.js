@@ -2,116 +2,123 @@ function CardBattleManager() {
     throw new Error('This is a static class');
 }
 
-CardBattleManager.setup = function() {
+CardBattleManager.setup = function (args) {
     this.initMembers();
+    CardBattleManager.createEnemyDuelist(args[0]);
 };
 
-CardBattleManager.initMembers = function() {
+CardBattleManager.initMembers = function () {
     this._phase = 'INITIALIZE';
     this._playerFirst = false;
-    this._player = new GameDuelist();
-    this._enemy = new GameDuelist();
+
+    $gameCardPlayer.storageCards(new GameCardStored(3, 40));
+    $gameCardPlayer.storageCardsFolder([
+        new GameCardStored(1, 10),
+        new GameCardStored(2, 10),
+        new GameCardStored(3, 20)
+    ], 0);
+    $gameCardPlayer.storageCardsFolder(new GameCardStored(3, 40), 1);
+    $gameCardPlayer.storageCardsFolder(new GameCardStored(3, 40), 2);
 };
 
-CardBattleManager.getPhase = function() {
+CardBattleManager.createPlayerDuelist = function (index) {
+    this._player = new GameDuelist($gameCardPlayer.createDuelist(index));
+};
+
+CardBattleManager.createEnemyDuelist = function (index) {
+    this._enemy = new GameDuelist(CardBattleManager.getEnemyDatabase(index));
+};
+
+CardBattleManager.getPhase = function () {
     return this._phase;
 };
 
-CardBattleManager.setPhase = function(phase) {
-    this._phase = phase;
-};
-
-CardBattleManager.getPlayerFirst = function() {
+CardBattleManager.getPlayerFirst = function () {
     return this._playerFirst;
 };
 
-CardBattleManager.setPlayerFirst = function(player) {
+CardBattleManager.getEnemyDatabase = function (ID) {
+    return $dataCardBattleEnemies[ID];
+};
+
+CardBattleManager.setPhase = function (phase) {
+    this._phase = phase;
+};
+
+CardBattleManager.setPlayerFirst = function (player) {
     this._playerFirst = player;
 };
 
-CardBattleManager.getEnemyInformation = function() {
-    return this._enemy.getEnemyInformation();
+CardBattleManager.getEnemyName = function () {
+    return this._enemy.getName();
 };
 
-CardBattleManager.setIdEnemy = function(ID) {
-    this._enemy.setEnemy(ID);
+CardBattleManager.getEnemyLevel = function () {
+    return this._enemy.getLevel();
 };
 
-CardBattleManager.getPlayerWins = function() {
+CardBattleManager.getEnemyFolderName = function () {
+    return this._enemy.getFolderName();
+};
+
+CardBattleManager.createGameCardCollections = function () {
+    this.createPlayerCollection();
+    this.createEnemyCollection();
+};
+
+CardBattleManager.createPlayerCollection = function () {
+    this._player.createPackCollection();
+    this._player.randomPackCollection();
+};
+
+CardBattleManager.createEnemyCollection = function () {
+    this._enemy.createPackCollection();
+    this._enemy.randomPackCollection();
+};
+
+CardBattleManager.drawCards = function (Duelist) {
+    let collectionOrigin = Duelist.origin;
+    let collectionDestiny = Duelist.destiny;
+    let times = Duelist.times;
+
+    for (let index = 0; index < times; index++) {
+        this._player.pushToCollection(collectionOrigin, collectionDestiny);
+    }
+};
+
+CardBattleManager.drawSixCardsToField = function (Duelist) {
+    this.drawCards({
+        origin: this.getPlayerPackCollection(),
+        destiny: this.getPlayerFieldCollection(),
+        times: 6
+    });
+    this.drawCards({
+        origin: this.getEnemyPackCollection(),
+        destiny: this.getEnemyFieldCollection(),
+        times: 6
+    });
+};
+
+CardBattleManager.getPlayerPackCollection = function () {
+    return this._player.getPackCollection();
+};
+
+CardBattleManager.getEnemyPackCollection = function () {
+    return this._enemy.getPackCollection();
+};
+
+CardBattleManager.getPlayerFieldCollection = function () {
+    return this._player.getFieldCollection();
+};
+
+CardBattleManager.getEnemyFieldCollection = function () {
+    return this._enemy.getFieldCollection();
+};
+
+CardBattleManager.getPlayerWins = function () {
     return this._player.getWins();
 };
 
-CardBattleManager.getEnemyWins = function() {
+CardBattleManager.getEnemyWins = function () {
     return this._enemy.getWins();
-};
-
-CardBattleManager.getPlayerFieldCollection = function() {
-    return this._player.getField();
-};
-
-CardBattleManager.getEnemyFieldCollection = function() {
-    return this._enemy.getField();
-};
-
-CardBattleManager.setPlayerBattleCollection = function(gameBattleCollection) {
-    this._player.setPack(gameBattleCollection);
-};
-
-CardBattleManager.setEnemyBattleCollection = function(gameBattleCollection) {
-    this._enemy.setPack(gameBattleCollection);
-};
-
-CardBattleManager.drawSixCards = function() {
-    for (let index = 0; index < 6; index++) {
-        this.playerPushPackToField();
-        this.enemyPushPackToField();
-    }
-};
-
-CardBattleManager.playerPushPackToHand = function() {
-    this._player.pushToFolder(this._player.getPack(), this._player.getHand());
-};
-
-CardBattleManager.playerPushPackToField = function() {
-    this._player.pushToFolder(this._player.getPack(), this._player.getField());
-};
-
-CardBattleManager.playerPushHandToField = function() {
-    this._player.pushToFolder(this._player.getHand(), this._player.getField());
-};
-
-CardBattleManager.enemyPushPackToHand = function() {
-    this._enemy.pushToFolder(this._enemy.getPack(), this._enemy.getHand());
-};
-
-CardBattleManager.enemyPushPackToField = function() {
-    this._enemy.pushToFolder(this._enemy.getPack(), this._enemy.getField());
-};
-
-CardBattleManager.enemyPushHandToField = function() {
-    this._enemy.pushToFolder(this._enemy.getHand(), this._enemy.getField());
-};
-
-CardBattleManager.createGameBattleCollection = function(GameCardCollection) {
-    let gameBattleCollection = [];
-
-    GameCardCollection.forEach(GameCardStored => {
-        for (let index = 0; index < GameCardStored.amount; index++) {
-            gameBattleCollection.push(new GameCard(GameCardStored.id));
-        }
-    });
-
-    return gameBattleCollection;
-};
-
-CardBattleManager.randomCollection = function(GameBattlePack) {
-    let oldBattlePack = GameBattlePack;
-    let randomBattlePack = [];
-
-    while (oldBattlePack.length) {
-        let random = Math.floor(Math.random() * oldBattlePack.length);
-        randomBattlePack.push(oldBattlePack.splice(random, 1).shift());
-    }
-
-    return randomBattlePack; 
 };

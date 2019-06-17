@@ -5,13 +5,12 @@ function SceneCardBattle() {
 SceneCardBattle.prototype = Object.create(Scene_Base.prototype);
 SceneCardBattle.prototype.constructor = SceneCardBattle;
 
-SceneCardBattle.prototype.initialize = function() {
+SceneCardBattle.prototype.initialize = function () {
     Scene_Base.prototype.initialize.call(this);
     this._wait = 0;
-    this.gamePlayerTest();
 };
 
-SceneCardBattle.prototype.create = function() {
+SceneCardBattle.prototype.create = function () {
     Scene_Base.prototype.create.call(this);
     this.createDisplayObjects();
 
@@ -25,37 +24,37 @@ SceneCardBattle.prototype.create = function() {
 
 };
 
-SceneCardBattle.prototype.start = function() {
+SceneCardBattle.prototype.start = function () {
     Scene_Base.prototype.start.call(this);
 };
 
-SceneCardBattle.prototype.update = function() {
+SceneCardBattle.prototype.update = function () {
     Scene_Base.prototype.update.call(this);
     this._spriteset.update();
     this.updatePreBattle();
     this.updateCardBattle();
 };
 
-SceneCardBattle.prototype.stop = function() {
+SceneCardBattle.prototype.stop = function () {
     Scene_Base.prototype.stop.call(this);
 };
 
-SceneCardBattle.prototype.terminate = function() {
+SceneCardBattle.prototype.terminate = function () {
     Scene_Base.prototype.terminate.call(this);
 };
 
-SceneCardBattle.prototype.createDisplayObjects = function() {
+SceneCardBattle.prototype.createDisplayObjects = function () {
     this.createSpriteset();
 };
 
-SceneCardBattle.prototype.createSpriteset = function() {
+SceneCardBattle.prototype.createSpriteset = function () {
     this._spriteset = new SpritesetCardBattle();
     this._spriteset.layers().forEach(sprite =>{
         this.addChild(sprite);
     })
 };
 
-SceneCardBattle.prototype.updatePreBattle = function() {
+SceneCardBattle.prototype.updatePreBattle = function () {
     if (CardBattleManager.getPhase() === 'INITIALIZE') {
         if (this._spriteset.isHideBackground() && this._spriteset.isHideOpening()) {
             this._spriteset.showBackground();
@@ -88,7 +87,7 @@ SceneCardBattle.prototype.updatePreBattle = function() {
     }
 };
 
-SceneCardBattle.prototype.updateCardBattle = function() {
+SceneCardBattle.prototype.updateCardBattle = function () {
     switch (CardBattleManager.getPhase()) {
         case 'CARD_BATTLE':
             if (CardBattleManager.getPlayerWins() < 2 && CardBattleManager.getEnemyWins() < 2) {
@@ -118,6 +117,7 @@ SceneCardBattle.prototype.updateCardBattle = function() {
                 if (this._spriteset.isDisabledLuckyGame()) {
                     if (this._wait > 60) {
                         CardBattleManager.setPlayerFirst(this._spriteset.luckGameResult());
+                        CardBattleManager.createGameCardCollections();
                         CardBattleManager.setPhase('DRAW_PHASE');
                         this._wait = 0;
                     } else {
@@ -128,7 +128,7 @@ SceneCardBattle.prototype.updateCardBattle = function() {
         case 'DRAW_PHASE':
                 if (this._spriteset.isHideWindowDrawPhase()) {
                     this._spriteset.openWindowDrawPhase();
-                    CardBattleManager.drawSixCards();
+                    CardBattleManager.drawSixCardsToField();
                     this._spriteset.refreshBattleCards();
                 };
 
@@ -136,6 +136,7 @@ SceneCardBattle.prototype.updateCardBattle = function() {
                     if (this._wait > 60) {
                         this._spriteset.moveInBattlefield();
                         this._spriteset.moveHandToField();
+                        this._spriteset.toTurn();
                         CardBattleManager.setPhase('WAIT');
                         this._wait = 0;
                     } else {
@@ -163,23 +164,13 @@ SceneCardBattle.prototype.updateCardBattle = function() {
     }
 };
 
-SceneCardBattle.prototype.gamePlayerTest = function() {
-    $gameCardPlayer.addCardsToStorage(new GameCardStored(3, 40));
-    $gameCardPlayer.addDeck(new GameFolder('Folder 1', [new GameCardStored(3, 40)]));
-
-    let enemyInformation = CardBattleManager.getEnemyInformation();
-    let gameBattleCollection = CardBattleManager.createGameBattleCollection(enemyInformation.pack);
-    CardBattleManager.setEnemyBattleCollection(gameBattleCollection);
-};
 
 
 
 
 
 
-
-
-// SceneCardBattle.prototype.testeSpriteBattlefield = function() {
+// SceneCardBattle.prototype.testeSpriteBattlefield = function () {
 //     this._Battlefield = new SpriteBattlefield();
 //     this.addChild(this._Battlefield);
 
@@ -199,7 +190,7 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
 //     this._Battlefield.moveInEnemyScore();
 // };
 
-// SceneCardBattle.prototype.testeGameLuck = function() {
+// SceneCardBattle.prototype.testeGameLuck = function () {
 //     this._gameLuck = new SpriteGameLuck();
 //     this._gameLuck.visible = true;
 //     this.addChild(this._gameLuck);
@@ -207,7 +198,7 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
 //     this._gameLuck.openCards();
 // };
 
-// SceneCardBattle.prototype.testeCollection = function() {
+// SceneCardBattle.prototype.testeCollection = function () {
 //     this._testeColection = new SpriteCollection();
 //     this._testeColection.x = Graphics.boxWidth / 16;
 //     this._testeColection.y = Graphics.boxHeight / 2;
@@ -267,7 +258,7 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
     
 // };
 
-// SceneCardBattle.prototype.testeWin = function() {
+// SceneCardBattle.prototype.testeWin = function () {
 //     this.windowWinPlayer = new WindowWin(true);
 //     this.windowWinEnemy = new WindowWin();
 
@@ -286,7 +277,7 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
     
 // }
 
-// SceneCardBattle.prototype.testeZoneWindow = function() {
+// SceneCardBattle.prototype.testeZoneWindow = function () {
 //     this.windowZone = new WindowZone(true);
 //     this.windowZone2 = new WindowZone();
 
@@ -310,7 +301,7 @@ SceneCardBattle.prototype.gamePlayerTest = function() {
     
 // }
 
-// SceneCardBattle.prototype.testeTrashWindow = function() {
+// SceneCardBattle.prototype.testeTrashWindow = function () {
 //     this.windowTrashPlayer = new WindowTrash(true);
 //     this.windowTrashEnemy = new WindowTrash();
 

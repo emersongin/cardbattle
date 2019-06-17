@@ -9,25 +9,25 @@ function WindowText() {
 WindowText.prototype = Object.create(Window_Base.prototype);
 WindowText.prototype.constructor = WindowText;
 
-WindowText.prototype.initialize = function() {
+WindowText.prototype.initialize = function () {
     Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._textBox = [];
     this.openness = 0;
 };
 
-WindowText.prototype.changePosition = function(x, y) {
+WindowText.prototype.changePosition = function (x, y) {
     this.move(x, y, this.width, this.height);
 };
 
-WindowText.prototype.resize = function(width, height) {
+WindowText.prototype.resize = function (width, height) {
     this.move(this.x, this.y , width, height);
 };
 
-WindowText.prototype.cleanContent = function() {
+WindowText.prototype.cleanContent = function () {
     this._textBox = [];
 };
 
-WindowText.prototype.changeFontSize = function(size = 24) {
+WindowText.prototype.changeFontSize = function (size = 24) {
     if (size > 12) {
         this.contents.fontSize = size;
     }else{
@@ -35,11 +35,11 @@ WindowText.prototype.changeFontSize = function(size = 24) {
     }
 };
 
-WindowText.prototype.changeTextColor = function(color = '#FFF') {
+WindowText.prototype.changeTextColor = function (color = '#FFF') {
     this.contents.textColor = color;
 };
 
-WindowText.prototype.addText = function(text) {
+WindowText.prototype.addText = function (text) {
     let marginLeftText = '     ';
 
     if (Array.isArray(text) === false) {
@@ -55,7 +55,7 @@ WindowText.prototype.addText = function(text) {
     });
 };
 
-WindowText.prototype.renderText = function() {
+WindowText.prototype.renderText = function () {
     let lineLength = 0;
     let lineTarget = 0;
     let lineAmount = this._textBox.length;

@@ -4,7 +4,7 @@ function GameCard() {
 
 GameCard.prototype.constructor = GameCard;
 
-GameCard.prototype.initialize = function(ID) {
+GameCard.prototype.initialize = function (ID) {
     let card = $dataCards[ID];
     
     this._id = ID;
@@ -21,70 +21,70 @@ GameCard.prototype.initialize = function(ID) {
     this._active = true;
 };
 
-GameCard.prototype.getID = function() {
+GameCard.prototype.getID = function () {
     return this._id;
 };
 
-GameCard.prototype.getName = function() {
+GameCard.prototype.getName = function () {
     return this._name;
 };
 
-GameCard.prototype.getDescription = function() {
+GameCard.prototype.getDescription = function () {
     return this._description;
 };
 
-GameCard.prototype.getAttackPoint = function() {
+GameCard.prototype.getAttackPoint = function () {
     return this._attackPoint;
 };
 
-GameCard.prototype.setAttackPoint = function(attack) {
+GameCard.prototype.setAttackPoint = function (attack) {
     return this._attackPoint = attack;
 };
 
-GameCard.prototype.getHealthPoint = function() {
+GameCard.prototype.getHealthPoint = function () {
     return this._healthPoint;
 };
 
-GameCard.prototype.setHealthPoint = function(health) {
+GameCard.prototype.setHealthPoint = function (health) {
     return this._healthPoint = health;
 };
 
-GameCard.prototype.getType = function() {
+GameCard.prototype.getType = function () {
     return this._type;
 };
 
-GameCard.prototype.getEffect = function() {
+GameCard.prototype.getEffect = function () {
     return this._effect;
 };
 
-GameCard.prototype.getColor = function() {
+GameCard.prototype.getColor = function () {
     return this._color;
 };
 
-GameCard.prototype.getCost = function() {
+GameCard.prototype.getCost = function () {
     return this._cost;
 };
 
-GameCard.prototype.getFilename = function() {
+GameCard.prototype.getFilename = function () {
     return this._filename;
 };
 
-GameCard.prototype.isPlayer = function() {
+GameCard.prototype.isPlayer = function () {
     return this._player;
 };
 
-GameCard.prototype.setPlayer = function(player) {
+GameCard.prototype.setPlayer = function (player) {
     this._player = player;
 };
 
-GameCard.prototype.isActive = function() {
+GameCard.prototype.isActive = function () {
     return this._active;
 };
 
-GameCard.prototype.active = function() {
+GameCard.prototype.active = function () {
     this._active = true;
 };
 
-GameCard.prototype.deactive = function() {
+GameCard.prototype.deactive = function () {
     this._active = false;
 };

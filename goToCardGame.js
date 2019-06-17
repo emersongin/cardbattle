@@ -1,4 +1,4 @@
-Scene_Boot.prototype.start = function() {
+Scene_Boot.prototype.start = function () {
     Scene_Base.prototype.start.call(this);
     SoundManager.preloadImportantSounds();
     if (DataManager.isBattleTest()) {
@@ -11,8 +11,7 @@ Scene_Boot.prototype.start = function() {
         this.checkPlayerLocation();
         DataManager.setupNewGame();
 
-        CardBattleManager.setup();
-        CardBattleManager.setIdEnemy(1);
+        CardBattleManager.setup([1]);
         SceneManager.goto(SceneCardBattle);
         
         Window_TitleCommand.initCommandPosition();

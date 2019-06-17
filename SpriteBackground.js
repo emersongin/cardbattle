@@ -5,7 +5,7 @@ function SpriteBackground() {
 SpriteBackground.prototype = Object.create(Sprite.prototype);
 SpriteBackground.prototype.constructor = SpriteBackground;
 
-SpriteBackground.prototype.initialize = function() {
+SpriteBackground.prototype.initialize = function () {
     Sprite.prototype.initialize.call(this);
     this._backgroundTiles = [];
     this._speed = 0.5;
@@ -16,58 +16,58 @@ SpriteBackground.prototype.initialize = function() {
     this.createTiles();
 };
 
-SpriteBackground.prototype.isActive = function() {
+SpriteBackground.prototype.isActive = function () {
     return this._active;
 };
 
-SpriteBackground.prototype.enable = function() {
+SpriteBackground.prototype.enable = function () {
     this._active = true;
 };
 
-SpriteBackground.prototype.disable = function() {
+SpriteBackground.prototype.disable = function () {
     this._active = false;
 };
 
-SpriteBackground.prototype.isShown = function() {
+SpriteBackground.prototype.isShown = function () {
     return this.visible;
 };
 
-SpriteBackground.prototype.isHidden = function() {
+SpriteBackground.prototype.isHidden = function () {
     return !this.visible;
 };
 
-SpriteBackground.prototype.show = function() {
+SpriteBackground.prototype.show = function () {
     this.visible = true;
 };
 
-SpriteBackground.prototype.hide = function() {
+SpriteBackground.prototype.hide = function () {
     this.visible = false;
 };
 
-SpriteBackground.prototype.createTiles = function() {
+SpriteBackground.prototype.createTiles = function () {
     this.loadTilesImage();
     this.setTilesPosition();
     this.addChildren();
 };
 
-SpriteBackground.prototype.loadTilesImage = function() {
+SpriteBackground.prototype.loadTilesImage = function () {
     for(var index = 0; index < 4; index++) {
         this._backgroundTiles.push(this.loadImage());
     }
 };
 
-SpriteBackground.prototype.loadImage = function() {
+SpriteBackground.prototype.loadImage = function () {
     return new Sprite(ImageManager.loadParallax('GrayField'));
 };
 
-SpriteBackground.prototype.setTilesPosition = function() {
+SpriteBackground.prototype.setTilesPosition = function () {
     this.positionTile(this._backgroundTiles[0], 'center');
     this.positionTile(this._backgroundTiles[1], 'left-center');
     this.positionTile(this._backgroundTiles[2], 'upper');
     this.positionTile(this._backgroundTiles[3], 'left-upper');
 };
 
-SpriteBackground.prototype.positionTile = function(tile, position) {
+SpriteBackground.prototype.positionTile = function (tile, position) {
     switch (position) {
         case 'center':
             tile.move(0, 0, 816, 816);
@@ -102,13 +102,13 @@ SpriteBackground.prototype.positionTile = function(tile, position) {
     }
 };
 
-SpriteBackground.prototype.addChildren = function() {
+SpriteBackground.prototype.addChildren = function () {
     this._backgroundTiles.forEach(tile => {
         this.addChild(tile);
     });   
 };
 
-SpriteBackground.prototype.movePosition = function(typeMove) {
+SpriteBackground.prototype.movePosition = function (typeMove) {
     let valueX = 0;
     let valueY = 0;
 
@@ -135,21 +135,21 @@ SpriteBackground.prototype.movePosition = function(typeMove) {
     this._moveY = valueY;
 };
 
-SpriteBackground.prototype.update = function() {
+SpriteBackground.prototype.update = function () {
     Sprite.prototype.update.call(this);
     if (this.isActive() && this.isShown()) {
         this.moveTiles();
     }
 };
 
-SpriteBackground.prototype.moveTiles = function() {
+SpriteBackground.prototype.moveTiles = function () {
     this.children.forEach(tile => {
         this.limitMoving(tile);
         this.refreshMoving(tile);
     });
 };
 
-SpriteBackground.prototype.limitMoving = function(tile) {
+SpriteBackground.prototype.limitMoving = function (tile) {
     if (this._moveX > 0) {
         if (tile.x >= 816) {
             tile.x = -816;
@@ -171,7 +171,7 @@ SpriteBackground.prototype.limitMoving = function(tile) {
     }
 };
 
-SpriteBackground.prototype.refreshMoving = function(tile) {
+SpriteBackground.prototype.refreshMoving = function (tile) {
     tile.x += (this._speed * this._moveX);
     tile.y += (this._speed * this._moveY);
 };

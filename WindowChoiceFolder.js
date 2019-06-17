@@ -5,75 +5,75 @@ function WindowChoiceFolder() {
 WindowChoiceFolder.prototype = Object.create(Window_Command.prototype);
 WindowChoiceFolder.prototype.constructor = WindowChoiceFolder;
     
-WindowChoiceFolder.prototype.initialize = function(x, y) {
+WindowChoiceFolder.prototype.initialize = function (x, y) {
     Window_Command.prototype.initialize.apply(this, arguments);
     this._folders = [];
     this.openness = 0;
     this.create();
 };
 
-WindowChoiceFolder.prototype.create = function() {
+WindowChoiceFolder.prototype.create = function () {
     this.createElementsFolder();
 };
 
-WindowChoiceFolder.prototype.createElementsFolder = function() {
-    let folders = $gameCardPlayer.getStoredDecks();
+WindowChoiceFolder.prototype.createElementsFolder = function () {
+    let folders = $gameCardPlayer.getFolders();
 
-    folders.forEach((deck, index) => {
-        this.addFolder(deck.folder);
+    folders.forEach((folder, index) => {
+        this.addCollection(folder.getCollection());
         this.redrawItem(index);
     });
 };
 
-WindowChoiceFolder.prototype.addFolder = function(folder) {
-    let elementsFolder = new GameColorFolder();
+WindowChoiceFolder.prototype.addCollection = function (collection) {
+    let colorFolder = new GameFolderColor();
 
-    folder.forEach(card => {
-        elementsFolder[$dataCards[card.id].color] += card.amount;
+    collection.forEach(CardStore => {
+        colorFolder[$dataCards[CardStore.id].color] += CardStore.amount;
     });
 
-    this._folders.push(elementsFolder);
+    this._folders.push(colorFolder);
 };
 
-WindowChoiceFolder.prototype.windowWidth = function() {
+WindowChoiceFolder.prototype.windowWidth = function () {
     return 714;
 };
 
-WindowChoiceFolder.prototype.numVisibleRows = function() {
+WindowChoiceFolder.prototype.numVisibleRows = function () {
     return 3;
 };
 
-WindowChoiceFolder.prototype.windowHeight = function() {
+WindowChoiceFolder.prototype.windowHeight = function () {
     return Graphics.boxHeight / 2;
 };
 
-WindowChoiceFolder.prototype.itemHeight = function() {
+WindowChoiceFolder.prototype.itemHeight = function () {
     let clientHeight = this.height - this.padding * 2;
     return Math.floor(clientHeight / this.numVisibleRows());
 };
 
-WindowChoiceFolder.prototype.changePosition = function(x, y) {
+WindowChoiceFolder.prototype.changePosition = function (x, y) {
     this.move(x, y, this.width, this.height);
 };
 
-WindowChoiceFolder.prototype.resize = function(width, height) {
+WindowChoiceFolder.prototype.resize = function (width, height) {
     this.move(this.x, this.y , width, height);
 };
 
-WindowChoiceFolder.prototype.makeCommandList = function() {
+WindowChoiceFolder.prototype.makeCommandList = function () {
     for (let index = 0; index < $gameCardPlayer.getFoldersLength(); index++) {
-        this.addCommand($gameCardPlayer.getNameFolder(index), 'folder' + index);
+        this.addCommand($gameCardPlayer.getFolderName(index), 'folder' + index);
     }
 };
 
-WindowChoiceFolder.prototype.drawItem = function(index) {
+WindowChoiceFolder.prototype.drawItem = function (index) {
     var rect = this.itemRectForText(index);
     this.drawTextEx(this.commandName(index), rect.x, rect.y + 10);
     this.drawTextEx(this.createElementString(index), rect.x, rect.y + 50);
 };
 
-WindowChoiceFolder.prototype.createElementString = function(index) {
-    let elementFolder = new GameColorFolder();
+WindowChoiceFolder.prototype.createElementString = function (index) {
+    let elementFolder = new GameFolderColor();
     let elementString = '';
 
     if (this._folders) {

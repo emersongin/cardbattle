@@ -5,7 +5,7 @@ function SpriteChallenger() {
 SpriteChallenger.prototype = Object.create(Sprite.prototype);
 SpriteChallenger.prototype.constructor = SpriteChallenger;
 
-SpriteChallenger.prototype.initialize = function() {
+SpriteChallenger.prototype.initialize = function () {
     Sprite.prototype.initialize.call(this);
     this._title = new WindowTitle();
     this._text = new WindowText();
@@ -14,74 +14,76 @@ SpriteChallenger.prototype.initialize = function() {
     this.create();
 };
 
-SpriteChallenger.prototype.isActive = function() {
+SpriteChallenger.prototype.isActive = function () {
     return this._active;
 };
 
-SpriteChallenger.prototype.enable = function() {
+SpriteChallenger.prototype.enable = function () {
     this._active = true;
 };
 
-SpriteChallenger.prototype.disable = function() {
+SpriteChallenger.prototype.disable = function () {
     this._active = false;
 };
 
-SpriteChallenger.prototype.isShown = function() {
+SpriteChallenger.prototype.isShown = function () {
     return this.visible;
 };
 
-SpriteChallenger.prototype.isHidden = function() {
+SpriteChallenger.prototype.isHidden = function () {
     return !this.visible;
 };
 
-SpriteChallenger.prototype.show = function() {
+SpriteChallenger.prototype.show = function () {
     this.visible = true;
 };
 
-SpriteChallenger.prototype.hide = function() {
+SpriteChallenger.prototype.hide = function () {
     this.visible = false;
 };
 
-SpriteChallenger.prototype.create = function() {
+SpriteChallenger.prototype.create = function () {
     this.createTitleChallenger();
     this.createTextChallenger();
     this.addChildren();
 };
 
-SpriteChallenger.prototype.createTitleChallenger = function() {
+SpriteChallenger.prototype.createTitleChallenger = function () {
     this._title.changePosition(0, Graphics.boxHeight / 3);
     this._title.changeTextColor('#FF7F53');
     this._title.addText('Card Battle Challenge');
     this._title.renderText();
 };
 
-SpriteChallenger.prototype.createTextChallenger = function() {
-    let enemyInformation = CardBattleManager.getEnemyInformation();
+SpriteChallenger.prototype.createTextChallenger = function () {
+    let enemyName = CardBattleManager.getEnemyName();
+    let enemyLevel = CardBattleManager.getEnemyLevel();
+    let enemyFolderName = CardBattleManager.getEnemyFolderName();
 
     this._text.changePosition(0, Graphics.boxHeight / 2.3);
     this._text.addText([
-        'Lv. ' + enemyInformation.level,
-        enemyInformation.name + ', ' + enemyInformation.description
+        'Lv. ' + enemyLevel,
+        enemyName + ', ' + enemyFolderName
     ]);
     this._text.renderText();
 };
 
-SpriteChallenger.prototype.addChildren = function() {
+SpriteChallenger.prototype.addChildren = function () {
     this.addChild(this._title);
     this.addChild(this._text);
 };
 
-SpriteChallenger.prototype.openWindows = function() {
+SpriteChallenger.prototype.openWindows = function () {
     this._title.open();
     this._text.open();
 };
 
-SpriteChallenger.prototype.closeWindows = function() {
+SpriteChallenger.prototype.closeWindows = function () {
     this._title.close();
     this._text.close();
 };
 
-SpriteChallenger.prototype.update = function() {
+SpriteChallenger.prototype.update = function () {
     Sprite.prototype.update.call(this);
     if ((Input.isTriggered('ok') || TouchInput.isTriggered()) && this._text.openness) {
         this.closeWindows();

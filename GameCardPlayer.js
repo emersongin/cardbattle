@@ -2,37 +2,34 @@ function GameCardPlayer() {
     this.initialize.apply(this, arguments);
 }
 
-GameCardPlayer.prototype.initialize = function() {
+GameCardPlayer.prototype.initialize = function () {
+    this._name = '';
+    this._folders = [];
     this._storedCards = [];
-    this._storedDecks = [];
 };
 
-GameCardPlayer.prototype.getStoredCards = function() {
+GameCardPlayer.prototype.getName = function () {
+    return this._name;
+};
+
+GameCardPlayer.prototype.getFolders = function () {
+    return this._folders;
+};
+
+GameCardPlayer.prototype.getStoredCards = function () {
     return this._storedCards;
 };
 
-GameCardPlayer.prototype.getStoredDecks = function() {
-    return this._storedDecks;
-};
-
-GameCardPlayer.prototype.setStoredCards = function(storageToChange) {
-    this._storedCards = storageToChange;
-};
-
-GameCardPlayer.prototype.setStoredDecks = function(decksToChange) {
-    this._storedDecks = decksToChange;
-};
-
 // toStore Object {id: amount: } or [{},{}]
-GameCardPlayer.prototype.addCards = function(toStore, storage) {
-    if (Array.isArray(toStore) === false) {
-        if (!toStore) {
-            toStore = [];
-        }else{
+GameCardPlayer.prototype.addCards = function (toStore, storage) {
+    if (toStore) {
+        if (Array.isArray(toStore) === false) {
             toStore = [toStore];
         }
+    }else{
+        toStore = [];
     }
-    
+
     NextCard:
     for (let index = 0; index < toStore.length; index++) {
         if (!toStore[index].id && !toStore[index].amount) {
@@ -50,13 +47,13 @@ GameCardPlayer.prototype.addCards = function(toStore, storage) {
 };
 
 // toRemove Object {id: amount: } or [{},{}]
-GameCardPlayer.prototype.removeCards = function(toRemove, storage) {
-    if (Array.isArray(toRemove) === false) {
-        if (!toRemove) {
-            toRemove = [];
-        }else{
+GameCardPlayer.prototype.removeCards = function (toRemove, storage) {
+    if (toRemove) {
+        if (Array.isArray(toRemove) === false) {
             toRemove = [toRemove];
         }
+    }else{
+        toRemove = [];
     }
 
     for (let index = 0; index < toRemove.length; index++) {
@@ -76,54 +73,66 @@ GameCardPlayer.prototype.removeCards = function(toRemove, storage) {
     }
 };
 
-GameCardPlayer.prototype.addCardsToStorage = function(toStored) {
-    this.addCards(toStored, this._storedCards);
+GameCardPlayer.prototype.storageCards = function (cards) {
+    this.addCards(cards, this._storedCards);
 };
 
-GameCardPlayer.prototype.addCardsToDeck = function(toStored, indexDeck) {
-    if (this._storedDecks[indexDeck] === undefined) {
-        this._storedDecks[indexDeck] = 
-        {
-            name: 'setName', 
-            folder: []
-        };
+GameCardPlayer.prototype.withdrawCards = function (cards) {
+    this.removeCards(cards, this._storedCards);
+};
+
+GameCardPlayer.prototype.storageCardsFolder = function (cards, index) {
+    if (this._folders[index] === undefined) {
+        this._folders[index] = this.createFolder();
     }
 
-    this.addCards(toStored, this._storedDecks[indexDeck].folder);
+    this.addCards(cards, this.getFolderCollection(index));
 };
 
-GameCardPlayer.prototype.removeCardsToStorage = function(toRemove) {
-    this.addCards(toRemove, this._storedCards);
-};
-
-GameCardPlayer.prototype.removeCardsToDeck = function(toRemove, indexDeck) {
-    if (this._storedDecks[indexDeck] === undefined) {
-        return false;
+GameCardPlayer.prototype.withdrawCardsFolder = function (cards, index) {
+    if (this._folders[index]) {
+        this.removeCards(cards, this.getFolderCollection(index));
     }
-
-    this.removeCards(toRemove, this._storedDecks[indexDeck].folder);
 };
 
-GameCardPlayer.prototype.addDeck = function(deckNew) {
-    this._storedDecks.push(deckNew);
+GameCardPlayer.prototype.createFolder = function () {
+    return new GameFolder({ name: 'setName', collection: [] });
 };
 
-GameCardPlayer.prototype.removeDeck = function(index) {
-    this._storedDecks.splice(index, 1);
+GameCardPlayer.prototype.addFolder = function () {
+    this._folders.push(this.createFolder());
 };
 
-GameCardPlayer.prototype.getGameCardCollection = function(index) {
-    return this._storedDecks[index].folder;
+GameCardPlayer.prototype.removeFolder = function (index) {
+    this._folders.splice(index, 1);
 };
 
-GameCardPlayer.prototype.getNameFolder = function(index) {
-    return this._storedDecks[index].name;
+GameCardPlayer.prototype.getFolder = function (index) {
+    return this._folders[index];
 };
 
-GameCardPlayer.prototype.setNameFolder = function(name, index) {
-    this._storedDecks[index].name = name;
+GameCardPlayer.prototype.getFolderName = function (index) {
+    return this._folders[index].getName();
 };
 
-GameCardPlayer.prototype.getFoldersLength = function() {
-    return this._storedDecks.length;
+GameCardPlayer.prototype.getFolderCollection = function (index) {
+    return this._folders[index].getCollection();
+};
+
+GameCardPlayer.prototype.setNameFolder = function (name, index) {
+    this._folders[index].setName(name);
+};
+
+GameCardPlayer.prototype.getFoldersLength = function () {
+    return this._folders.length;
+};
+
+GameCardPlayer.prototype.createDuelist = function (index) {
+    return {
+        name: this.getName(),
+        folders: {
+            name: this.getFolderName(index),
+            collection: this.getFolderCollection(index)
+        }
+    }
 };

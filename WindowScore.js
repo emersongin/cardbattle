@@ -5,7 +5,7 @@ function WindowScore() {
 WindowScore.prototype = Object.create(Window_Base.prototype);
 WindowScore.prototype.constructor = WindowScore;
 
-WindowScore.prototype.initialize = function(Setup) {
+WindowScore.prototype.initialize = function (Setup) {
     Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._player = Setup.player;
     this._background = new Sprite(new Bitmap(144, 56));
@@ -21,11 +21,11 @@ WindowScore.prototype.initialize = function(Setup) {
     this.setup();
 };
 
-WindowScore.prototype.isPlayer = function() {
+WindowScore.prototype.isPlayer = function () {
     return this._player;
 };
 
-WindowScore.prototype.setup = function() {
+WindowScore.prototype.setup = function () {
     this.padding = 0;
     this.opacity = 0;
     this.openness = 0;
@@ -35,12 +35,12 @@ WindowScore.prototype.setup = function() {
     this.open();
 };
 
-WindowScore.prototype.createBackground = function() {
+WindowScore.prototype.createBackground = function () {
     this._background.bitmap = ImageManager.loadSystem('BackgroundWin');
     this.addChildToBack(this._background);
 };
 
-WindowScore.prototype.createVictoryIcons = function() {
+WindowScore.prototype.createVictoryIcons = function () {
     if (this._player) {
         this._icon = ImageManager.loadSystem('BackgroundWin1');
     } else {
@@ -48,7 +48,7 @@ WindowScore.prototype.createVictoryIcons = function() {
     }
 };
 
-WindowScore.prototype.initialPosition = function() {
+WindowScore.prototype.initialPosition = function () {
     if (this.isPlayer()) {
         this._targetY = this.height - (64 + this._background.height);
     }else{
@@ -58,15 +58,15 @@ WindowScore.prototype.initialPosition = function() {
     this.move(this._targetX, this._targetY, this.width, this.height);
 };
 
-WindowScore.prototype.moveIn = function() {
+WindowScore.prototype.moveIn = function () {
     this._targetX = this.width - this._background.width;
 };
 
-WindowScore.prototype.moveOut = function() {
+WindowScore.prototype.moveOut = function () {
     this._targetX = this.width;
 };
 
-WindowScore.prototype.refresh = function() {
+WindowScore.prototype.refresh = function () {
     this.contents.clear();
     if (this._winPoints >= 1) {
         this.contents.blt(this._icon, 0, 0, 32, 32, 30, 12);
@@ -76,7 +76,7 @@ WindowScore.prototype.refresh = function() {
     }
 }
 
-WindowScore.prototype.update = function() {
+WindowScore.prototype.update = function () {
     Window_Base.prototype.update.call(this);
     this.updateMove();
     this.updateBackgroundOpacity();
@@ -85,7 +85,7 @@ WindowScore.prototype.update = function() {
     this.reducerDelay();
 };
 
-WindowScore.prototype.updateMove = function() {
+WindowScore.prototype.updateMove = function () {
     if (this.isUpdateMove() && this.isOpen()) {
         if (!this._frameInterval) {
             this._frameInterval = 1;
@@ -95,7 +95,7 @@ WindowScore.prototype.updateMove = function() {
     }
 };
 
-WindowScore.prototype.updateBackgroundOpacity = function() {
+WindowScore.prototype.updateBackgroundOpacity = function () {
     if (this._background && this.isOpen()) {
         this._background.opacity = this.openness;
     }else if (this._background.opacity) {
@@ -103,7 +103,7 @@ WindowScore.prototype.updateBackgroundOpacity = function() {
     }
 };
 
-WindowScore.prototype.updateFirstVictory = function() {
+WindowScore.prototype.updateFirstVictory = function () {
     if (this.isFirstVictory() && this.isOpen()) {
         this._firstVictoryDelay++
         if (this._firstVictoryDelay === 6) {
@@ -117,7 +117,7 @@ WindowScore.prototype.updateFirstVictory = function() {
     }
 };
 
-WindowScore.prototype.updateSecondVictory = function() {
+WindowScore.prototype.updateSecondVictory = function () {
     if (this.isSecondVictory() && this.isOpen()) {
         this._secondVictoryDelay++
         if (this._secondVictoryDelay === 6) {
@@ -131,58 +131,58 @@ WindowScore.prototype.updateSecondVictory = function() {
     }
 };
 
-WindowScore.prototype.reducerDelay = function() {
+WindowScore.prototype.reducerDelay = function () {
     if (this._frameInterval) {
         this._frameInterval--;
     }
 };
 
-WindowScore.prototype.isFirstVictory = function() {
+WindowScore.prototype.isFirstVictory = function () {
     return this._firstVictory;
 };
 
-WindowScore.prototype.firstVictory = function() {
+WindowScore.prototype.firstVictory = function () {
     this._firstVictory = true;
 };
 
-WindowScore.prototype.isSecondVictory = function() {
+WindowScore.prototype.isSecondVictory = function () {
     return this._secondVictory;
 };
 
-WindowScore.prototype.secondVictory = function() {
+WindowScore.prototype.secondVictory = function () {
     this._secondVictory = true;
 };
 
-WindowScore.prototype.winner = function() {
+WindowScore.prototype.winner = function () {
     this._winPoints++;
 };
 
-WindowScore.prototype.isUpdateMove = function() {
+WindowScore.prototype.isUpdateMove = function () {
     return this.isUpdateMoveX() || this.isUpdateMoveY();
 };
 
-WindowScore.prototype.isUpdateMoveX = function() {
+WindowScore.prototype.isUpdateMoveX = function () {
     return this.x !== this._targetX;
 };
 
-WindowScore.prototype.isUpdateMoveY = function() {
+WindowScore.prototype.isUpdateMoveY = function () {
     return this.y !== this._targetY;
 };
 
-WindowScore.prototype.refreshMove = function() {
+WindowScore.prototype.refreshMove = function () {
     this.x = this.rateX();
     this.y = this.rateY();
 };
 
-WindowScore.prototype.setFrameX = function() {
+WindowScore.prototype.setFrameX = function () {
     return parseInt(Math.abs(this.x - this._targetX) / 4);
 };
 
-WindowScore.prototype.setFrameY = function() {
+WindowScore.prototype.setFrameY = function () {
     return parseInt(Math.abs(this.y - this._targetY) / 4);
 };
 
-WindowScore.prototype.rateX = function() {
+WindowScore.prototype.rateX = function () {
 	if (this.isUpdateMoveX()) {
         this._frameScale = this.setFrameX();
 		return parseInt((this.x * (this._frameScale - 1) + this._targetX) / this._frameScale, 10);
@@ -190,7 +190,7 @@ WindowScore.prototype.rateX = function() {
     return this.x;
 };
 
-WindowScore.prototype.rateY = function() {
+WindowScore.prototype.rateY = function () {
 	if (this.isUpdateMoveY()) {
         this._frameScale = this.setFrameY();
 		return parseInt((this.y * (this._frameScale - 1) + this._targetY) / this._frameScale, 10);

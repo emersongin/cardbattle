@@ -12,7 +12,7 @@ DataManager._databaseFiles.push(
     {name: '$dataCardBattleEnemies', src: 'CardBattleEnemies.json'}
 );
 
-DataManager.createGameObjects = function() {
+DataManager.createGameObjects = function () {
     $gameTemp          = new Game_Temp();
     $gameSystem        = new Game_System();
     $gameScreen        = new Game_Screen();
@@ -29,7 +29,7 @@ DataManager.createGameObjects = function() {
     $gameCardPlayer    = new GameCardPlayer();
 };
 
-DataManager.makeSaveContents = function() {
+DataManager.makeSaveContents = function () {
     // A save data does not contain $gameTemp, $gameMessage, and $gameTroop.
     var contents = {};
     contents.system       = $gameSystem;
@@ -47,7 +47,7 @@ DataManager.makeSaveContents = function() {
     return contents;
 };
 
-DataManager.extractSaveContents = function(contents) {
+DataManager.extractSaveContents = function (contents) {
     $gameSystem        = contents.system;
     $gameScreen        = contents.screen;
     $gameTimer         = contents.timer;

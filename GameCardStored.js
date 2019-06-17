@@ -4,7 +4,7 @@ function GameCardStored() {
 
 GameCardStored.prototype.constructor = GameCardStored;
 
-GameCardStored.prototype.initialize = function(id = 0, amount = 0) {
+GameCardStored.prototype.initialize = function (id, amount) {
     this.id = id;
     this.amount = amount;
 };
