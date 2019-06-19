@@ -50,7 +50,7 @@ SpritePhase.prototype.create = function () {
 
 SpritePhase.prototype.createTitle = function () {
     this._title.changePosition(0, Graphics.boxHeight / 3);
-    this._title.changeTextColor('#FF7F53');
+    this._title.changeTextColor('#ed9100');
 };
 
 SpritePhase.prototype.createText = function () {

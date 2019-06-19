@@ -49,70 +49,93 @@ SpriteBattlefield.prototype.enemyCollection = function () {
     this._enemySpriteCollection.y = 64;
 };
 
-SpriteBattlefield.prototype.refreshPlayerSpriteCollection = function () {
+SpriteBattlefield.prototype.refreshPlayerHandSpriteCollection = function () {
     this._playerSpriteCollection.removeChildren();
-    this._playerSpriteCollection.refreshCollections(CardBattleManager.getPlayerFieldCollection());
+    this._playerSpriteCollection.refreshCollections(CardBattleManager.getPlayerHandCollection());
     this._playerSpriteCollection.addChildren();
 };
 
-SpriteBattlefield.prototype.refreshEnemySpriteCollection = function () {
+SpriteBattlefield.prototype.refreshEnemyHandSpriteCollection = function () {
     this._enemySpriteCollection.removeChildren();
-    this._enemySpriteCollection.refreshCollections(CardBattleManager.getEnemyFieldCollection());
+    this._enemySpriteCollection.refreshCollections(CardBattleManager.getEnemyHandCollection());
     this._enemySpriteCollection.addChildren();
 };
 
-SpriteBattlefield.prototype.playerCardsMoveToField = function () {
-    let gameCardCollection = CardBattleManager.getPlayerFieldCollection();
+SpriteBattlefield.prototype.playerShowHandCards = function (index) {
+    let gameCardCollection = CardBattleManager.getPlayerHandCollection();
+    let collection = this._playerSpriteCollection;
+    let actions = [];
+    
+    if (gameCardCollection[index]) {
+        actions.push(collection.positionHand(index));
+        actions.push(collection.open(index));
+        actions.push(collection.moveField(index));
+    }
+
+    collection.addActions(actions);
+};
+
+SpriteBattlefield.prototype.enemyShowHandCards = function (index) {
+    let gameCardCollection = CardBattleManager.getEnemyHandCollection();
+    let collection = this._enemySpriteCollection;
+    let actions = [];
+    
+    if (gameCardCollection[index]) {
+        actions.push(collection.positionHand(index));
+        actions.push(collection.open(index));
+        actions.push(collection.moveField(index));
+    }
+
+    collection.addActions(actions);
+};
+
+SpriteBattlefield.prototype.playerCloseHandCards = function () {
+    let gameCardCollection = CardBattleManager.getPlayerHandCollection();
+    let collection = this._playerSpriteCollection;
+    let actions = [];
+    
+    gameCardCollection.forEach((GameCard, index) => {
+        actions.push(collection.close(index));
+    });
+
+    collection.addActions(actions);
+};
+
+SpriteBattlefield.prototype.enemyCloseHandCards = function () {
+    let gameCardCollection = CardBattleManager.getEnemyHandCollection();
+    let collection = this._enemySpriteCollection;
+    let actions = [];
+    
+    gameCardCollection.forEach((GameCard, index) => {
+        actions.push(collection.close(index));
+    });
+
+    collection.addActions(actions);
+};
+
+SpriteBattlefield.prototype.playerCardsToTurn = function (index) {
+    let gameCardCollection = CardBattleManager.getPlayerHandCollection();
     let collection = this._playerSpriteCollection;
     let actions = [];
 
-    gameCardCollection.forEach((GameCard, index) => {
-        actions.push(collection.positionHand(index));
-        actions.push(collection.open(index));
-        actions.push(collection.waitMoment(index, index * 16));
-        actions.push(collection.moveField(index));
-    });
+    if (gameCardCollection[index]) {
+        
+        actions.push(collection.waitMoment(index, 4));
+        actions.push(collection.toTurn(index));
+    }
 
     collection.addActions(actions);
 };
 
-SpriteBattlefield.prototype.enemyCardsMoveToField = function () {
-    let gameCardCollection = CardBattleManager.getEnemyFieldCollection();
+SpriteBattlefield.prototype.enemyCardsToTurn = function (index) {
+    let gameCardCollection = CardBattleManager.getEnemyHandCollection();
     let collection = this._enemySpriteCollection;
     let actions = [];
 
-    gameCardCollection.forEach((GameCard, index) => {
-        actions.push(collection.positionHand(index));
-        actions.push(collection.open(index));
-        actions.push(collection.waitMoment(index, index * 16));
-        actions.push(collection.moveField(index));
-    });
-
-    collection.addActions(actions);
-};
-
-SpriteBattlefield.prototype.playerCardsToTurn = function () {
-    let gameCardCollection = CardBattleManager.getPlayerFieldCollection();
-    let collection = this._playerSpriteCollection;
-    let actions = [];
-
-    gameCardCollection.forEach((GameCard, index) => {
-        actions.push(collection.waitMoment(index, index * 8));
+    if (gameCardCollection[index]) {
+        actions.push(collection.waitMoment(index, 4));
         actions.push(collection.toTurn(index));
-    });
-
-    collection.addActions(actions);
-};
-
-SpriteBattlefield.prototype.enemyCardsToTurn = function () {
-    let gameCardCollection = CardBattleManager.getEnemyFieldCollection();
-    let collection = this._enemySpriteCollection;
-    let actions = [];
-
-    gameCardCollection.forEach((GameCard, index) => {
-        actions.push(collection.waitMoment(index, index * 8));
-        actions.push(collection.toTurn(index));
-    });
+    }
 
     collection.addActions(actions);
 };
@@ -209,6 +232,22 @@ SpriteBattlefield.prototype.hide = function () {
 
 SpriteBattlefield.prototype.update = function () {
     Sprite.prototype.update.call(this);
+};
+
+SpriteBattlefield.prototype.IsMoveInPlayerBackground = function () {
+    return this._playerBattleground.IsMoveIn();
+};
+
+SpriteBattlefield.prototype.IsMoveOutPlayerBackground = function () {
+    return this._playerBattleground.IsMoveOut();
+};
+
+SpriteBattlefield.prototype.IsMoveInEnemyBackground = function () {
+    return this._enemyBattleground.IsMoveIn();
+};
+
+SpriteBattlefield.prototype.IsMoveOutEnemyBackground = function () {
+    return this._enemyBattleground.IsMoveOut();
 };
 
 SpriteBattlefield.prototype.moveInPlayerBackground = function () {
@@ -335,4 +374,84 @@ SpriteBattlefield.prototype.isDisableWindowCompilePhase = function () {
 
 SpriteBattlefield.prototype.isDisableWindowBattlePhase = function () {
     return !this._windowBattlePhase.isActive();
+};
+
+SpriteBattlefield.prototype.addPlayerColor = function (index) {
+    let gameCardCollection = CardBattleManager.getPlayerHandCollection();
+    let gameCardColor = gameCardCollection[index].getColor();
+    let collection = this._playerSpriteCollection;
+    let actions = [];
+    
+    actions.push(collection.waitMoment(index, 8));
+    if (gameCardColor !== 'brown') {
+        actions.push(collection.flash(index));
+        CardBattleManager.setPlayerColors({
+            name: gameCardColor,
+            value: 1
+        });
+    }
+
+    collection.addActions(actions);
+};
+
+SpriteBattlefield.prototype.addEnemyColor = function (index) {
+    let gameCardCollection = CardBattleManager.getEnemyHandCollection();
+    let gameCardColor = gameCardCollection[index].getColor();
+    let collection = this._enemySpriteCollection;
+    let actions = [];
+    
+    actions.push(collection.waitMoment(index, 8));
+    if (gameCardColor !== 'brown') {
+        actions.push(collection.flash(index));
+        CardBattleManager.setEnemyColors({
+            name: gameCardColor,
+            value: 1
+        });
+    }
+
+    collection.addActions(actions);
+};
+
+SpriteBattlefield.prototype.refreshPlayerColorPoints = function () {
+    let Colors = CardBattleManager.getPlayerColors();
+
+    this._playerBattleground.setWhitePoints(Colors.white);
+    this._playerBattleground.setBluePoints(Colors.blue);
+    this._playerBattleground.setGreenPoints(Colors.green);
+    this._playerBattleground.setRedPoints(Colors.red);
+    this._playerBattleground.setBlackPoints(Colors.black);
+};
+
+SpriteBattlefield.prototype.refreshEnemyColorPoints = function () {
+    let Colors = CardBattleManager.getEnemyColors();
+
+    this._enemyBattleground.setWhitePoints(Colors.white);
+    this._enemyBattleground.setBluePoints(Colors.blue);
+    this._enemyBattleground.setGreenPoints(Colors.green);
+    this._enemyBattleground.setRedPoints(Colors.red);
+    this._enemyBattleground.setBlackPoints(Colors.black);
+};
+
+SpriteBattlefield.prototype.refreshPlayerPackHandPoints = function () {
+    let packLength = CardBattleManager.getPlayerPackLength();
+    let handLength = CardBattleManager.getPlayerHandLength();
+    this._playerBattleground.setPackPoints(packLength);
+    this._playerBattleground.setHandPoints(handLength);
+};
+
+SpriteBattlefield.prototype.refreshEnemyPackHandPoints = function () {
+    let packLength = CardBattleManager.getEnemyPackLength();
+    let handLength = CardBattleManager.getEnemyHandLength();
+    this._enemyBattleground.setPackPoints(packLength);
+    this._enemyBattleground.setHandPoints(handLength);
+};
+
+SpriteBattlefield.prototype.stopMovePlayerSpriteCollection = function () {
+    return this._playerSpriteCollection.voidFramesCollection() && 
+    this._playerSpriteCollection.voidActions();
+};
+
+SpriteBattlefield.prototype.stopMoveEnemySpriteCollection = function () {
+    return this._enemySpriteCollection.voidFramesCollection() && 
+    this._enemySpriteCollection.voidActions();
 };

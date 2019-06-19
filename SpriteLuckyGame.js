@@ -78,6 +78,11 @@ SpriteLuckyGame.prototype.hide = function () {
     this.visible = false;
 };
 
+SpriteLuckyGame.prototype.stopMove = function () {
+    return this._SpriteCollection.voidActions() && 
+    this._SpriteCollection.voidFramesCollection();
+};
+
 SpriteLuckyGame.prototype.getIndexSelector = function () {
     return this._indexSelector;
 };
@@ -120,7 +125,7 @@ SpriteLuckyGame.prototype.gameOff = function () {
 
 SpriteLuckyGame.prototype.update = function () {
     Sprite.prototype.update.call(this);
-    if (this.isActive() && this.isShown() && this.isGameOn()) {
+    if (this.isActive() && this.isShown() && this.isGameOn() && this.stopMove()) {
         this.updateCardCursorMove();
         this.updateCardCursor();
         this.updateGame();

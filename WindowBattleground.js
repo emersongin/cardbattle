@@ -45,7 +45,7 @@ WindowBattleground.prototype.intervalPoints = function() {
 };
 
 WindowBattleground.prototype.delayPoints = function() {
-    return 16;
+    return 30;
 };
 
 WindowBattleground.prototype.standardFontSize = function() {
@@ -56,6 +56,8 @@ WindowBattleground.prototype.setup = function() {
     this.padding = 0;
     this.opacity = 0;
     this.openness = 0;
+    this._packPoints = 40;
+    this._targetPackPoints = 40;
     this.createBackground();
     this.createSpriteAnimation();
     this.refresh();
@@ -86,6 +88,22 @@ WindowBattleground.prototype.moveOut = function() {
         this._targetY = 624;
     }else{
         this._targetY = -184;
+    }
+};
+
+WindowBattleground.prototype.IsMoveIn = function() {
+    if (this._player) {
+        return this.y === 440;
+    }else{
+        return this.y === 0;
+    }
+};
+
+WindowBattleground.prototype.IsMoveOut = function() {
+    if (this._player) {
+        return this.y === 624;
+    }else{
+        return this.y === -184;
     }
 };
 
@@ -188,13 +206,13 @@ WindowBattleground.prototype.updateBackgroundOpacity = function() {
 };
 
 WindowBattleground.prototype.isUpdateZonePoints = function() {
-    return this.iisUpdateWhitePoints() || this.isUpdateBluePoints() || 
+    return this.isUpdateWhitePoints() || this.isUpdateBluePoints() || 
     this.isUpdateGreenPoints() || this.isUpdateRedPoints() || 
     this.isUpdateBlackPoints() || this.isUpdatePackPoints() || 
     this.isUpdateHandPoints();
 };
 
-WindowBattleground.prototype.iisUpdateWhitePoints = function() {
+WindowBattleground.prototype.isUpdateWhitePoints = function() {
     return this._whitePoints !== this._targetWhitePoints;
 };
 
@@ -251,7 +269,7 @@ WindowBattleground.prototype.setFrameWhitePoints = function() {
 };
 
 WindowBattleground.prototype.setFrameBluePoints = function() {
-    return parseInt(Math.abs(this._bluePoints - this._targetBlackPoints) / this.intervalPoints());
+    return parseInt(Math.abs(this._bluePoints - this._targetBluePoints) / this.intervalPoints());
 };
 
 WindowBattleground.prototype.setFrameGreenPoints = function() {
@@ -329,7 +347,7 @@ WindowBattleground.prototype.refreshMove = function() {
 };
 
 WindowBattleground.prototype.rateWhitePoints = function() {
-	if (this.iisUpdateWhitePoints()) {
+	if (this.isUpdateWhitePoints()) {
         this._frame = this.setFrameWhitePoints();
         return parseInt((this._whitePoints * (this._frame - 1) + this._targetWhitePoints) / this._frame, 10);
     }
@@ -501,8 +519,8 @@ WindowBattleground.prototype.positionAnimation = function(position) {
     }else{
         this._spriteAnimation.y = 30;
     }
-}
+};
 
 WindowBattleground.prototype.showWinAnimation = function(index) {
     this._spriteAnimation.startAnimation($dataAnimations[index], true, 1);
-}
+};

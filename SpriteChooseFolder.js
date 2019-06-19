@@ -50,7 +50,7 @@ SpriteChooseFolder.prototype.create = function () {
 
 SpriteChooseFolder.prototype.createTitle = function () {
     this._title.changePosition(0, Graphics.boxHeight / 8);
-    this._title.changeTextColor('#FF7F53');
+    this._title.changeTextColor('#ed9100');
     this._title.addText('Choose a folder');
     this._title.renderText();
 };

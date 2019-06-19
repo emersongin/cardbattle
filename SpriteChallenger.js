@@ -50,7 +50,7 @@ SpriteChallenger.prototype.create = function () {
 
 SpriteChallenger.prototype.createTitleChallenger = function () {
     this._title.changePosition(0, Graphics.boxHeight / 3);
-    this._title.changeTextColor('#FF7F53');
+    this._title.changeTextColor('#ed9100');
     this._title.addText('Card Battle Challenge');
     this._title.renderText();
 };

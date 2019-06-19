@@ -41,8 +41,16 @@ GameDuelist.prototype.getPackCollection = function () {
     return this._pack;
 };
 
+GameDuelist.prototype.getPackLength = function () {
+    return this._pack.length;
+};
+
 GameDuelist.prototype.getHandCollection = function () {
     return this._hand;
+};
+
+GameDuelist.prototype.getHandLength = function () {
+    return this._hand.length;
 };
 
 GameDuelist.prototype.getTrashCollection = function () {
@@ -51,6 +59,10 @@ GameDuelist.prototype.getTrashCollection = function () {
 
 GameDuelist.prototype.getFieldCollection = function () {
     return this._field;
+};
+
+GameDuelist.prototype.getColors = function () {
+    return this._colors;
 };
 
 GameDuelist.prototype.createPackCollection = function () {
@@ -92,4 +104,8 @@ GameDuelist.prototype.pushToCollection = function (collectionOrigin, collectionD
 
 GameDuelist.prototype.getWins = function () {
     return this._wins;
+};
+
+GameDuelist.prototype.setColor = function (Color) {
+    this._colors[Color.name] = ( this._colors[Color.name] + Color.value );
 };

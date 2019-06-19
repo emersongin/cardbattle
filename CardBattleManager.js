@@ -86,15 +86,15 @@ CardBattleManager.drawCards = function (Duelist) {
     }
 };
 
-CardBattleManager.drawSixCardsToField = function (Duelist) {
+CardBattleManager.drawSixCards = function (Duelist) {
     this.drawCards({
         origin: this.getPlayerPackCollection(),
-        destiny: this.getPlayerFieldCollection(),
+        destiny: this.getPlayerHandCollection(),
         times: 6
     });
     this.drawCards({
         origin: this.getEnemyPackCollection(),
-        destiny: this.getEnemyFieldCollection(),
+        destiny: this.getEnemyHandCollection(),
         times: 6
     });
 };
@@ -105,6 +105,14 @@ CardBattleManager.getPlayerPackCollection = function () {
 
 CardBattleManager.getEnemyPackCollection = function () {
     return this._enemy.getPackCollection();
+};
+
+CardBattleManager.getPlayerHandCollection = function () {
+    return this._player.getHandCollection();
+};
+
+CardBattleManager.getEnemyHandCollection = function () {
+    return this._enemy.getHandCollection();
 };
 
 CardBattleManager.getPlayerFieldCollection = function () {
@@ -121,4 +129,36 @@ CardBattleManager.getPlayerWins = function () {
 
 CardBattleManager.getEnemyWins = function () {
     return this._enemy.getWins();
+};
+
+CardBattleManager.getPlayerColors = function () {
+    return this._player.getColors();
+};
+
+CardBattleManager.getEnemyColors = function () {
+    return this._enemy.getColors();
+};
+
+CardBattleManager.setPlayerColors = function (Color) {
+    return this._player.setColor(Color);
+};
+
+CardBattleManager.setEnemyColors = function (Color) {
+    return this._enemy.setColor(Color);
+};
+
+CardBattleManager.getPlayerPackLength = function () {
+    return this._player.getPackLength();
+};
+
+CardBattleManager.getEnemyPackLength = function () {
+    return this._enemy.getPackLength();
+};
+
+CardBattleManager.getPlayerHandLength = function () {
+    return this._player.getHandLength();
+};
+
+CardBattleManager.getEnemyHandLength = function () {
+    return this._enemy.getHandLength();
 };
