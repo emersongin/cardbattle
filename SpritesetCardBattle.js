@@ -77,6 +77,10 @@ SpritesetCardBattle.prototype.openWindowDrawPhase = function () {
     this._battlefield.openWindowDrawPhase();
 };
 
+SpritesetCardBattle.prototype.openWindowLoadPhase = function () {
+    this._battlefield.openWindowLoadPhase();
+};
+
 SpritesetCardBattle.prototype.isHideBackground = function () {
     return this._background.isHidden();
 };
@@ -205,38 +209,53 @@ SpritesetCardBattle.prototype.moveOutBattlefield = function () {
     this._battlefield.moveOutEnemyTrash();
 };
 
+SpritesetCardBattle.prototype.addAndRefreshSpriteCardPlayer = function (index) {
+    this._battlefield.addAndRefreshSpriteCardPlayer(index);
+};
+
+SpritesetCardBattle.prototype.addAndRefreshSpriteCardEnemy = function (index) {
+    this._battlefield.addAndRefreshSpriteCardEnemy(index);
+};
+
 SpritesetCardBattle.prototype.refreshHandBattleCards = function () {
     this._battlefield.refreshPlayerHandSpriteCollection();
     this._battlefield.refreshEnemyHandSpriteCollection();
 };
 
-SpritesetCardBattle.prototype.showHandCards = function (index) {
-    this._battlefield.playerShowHandCards(index);
-    this._battlefield.enemyShowHandCards(index);
+SpritesetCardBattle.prototype.showHandCardsPlayer = function (index) {
+    this._battlefield.showHandCardsPlayer(index);
 };
 
-SpritesetCardBattle.prototype.closeHandCards = function () {
-    this._battlefield.playerCloseHandCards();
-    this._battlefield.enemyCloseHandCards();
+SpritesetCardBattle.prototype.showHandCardsEnemy = function (index) {
+    this._battlefield.showHandCardsEnemy(index);
 };
 
-SpritesetCardBattle.prototype.playerCardsToTurn = function (index) {
-    this._battlefield.playerCardsToTurn(index);
+SpritesetCardBattle.prototype.closeHandCardsPlayer = function () {
+    this._battlefield.closeHandCardsPlayer();
 };
 
-SpritesetCardBattle.prototype.addColors = function (index) {
+SpritesetCardBattle.prototype.closeHandCardsEnemy = function () {
+    this._battlefield.closeHandCardsEnemy();
+};
+
+SpritesetCardBattle.prototype.playerHandCardsToTurn = function (index) {
+    this._battlefield.playerHandCardsToTurn(index);
+};
+
+SpritesetCardBattle.prototype.addPlayerColor = function (index) {
     this._battlefield.addPlayerColor(index);
+};
+
+SpritesetCardBattle.prototype.addEnemyColor = function (index) {
     this._battlefield.addEnemyColor(index);
 };
 
-SpritesetCardBattle.prototype.refreshBattlefieldColors = function () {
-    this._battlefield.refreshPlayerColorPoints();
-    this._battlefield.refreshEnemyColorPoints();
+SpritesetCardBattle.prototype.refreshPlayerBattleField = function () {
+    this._battlefield.refreshPlayerBattlefieldPoints();
 };
 
-SpritesetCardBattle.prototype.refreshBattlefieldPacks = function () {
-    this._battlefield.refreshPlayerPackHandPoints();
-    this._battlefield.refreshEnemyPackHandPoints();
+SpritesetCardBattle.prototype.refreshEnemyBattleField = function () {
+    this._battlefield.refreshEnemyBattlefieldPoints();
 };
 
 SpritesetCardBattle.prototype.stopMoveCards = function () {

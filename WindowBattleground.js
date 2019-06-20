@@ -45,7 +45,7 @@ WindowBattleground.prototype.intervalPoints = function() {
 };
 
 WindowBattleground.prototype.delayPoints = function() {
-    return 30;
+    return 10;
 };
 
 WindowBattleground.prototype.standardFontSize = function() {

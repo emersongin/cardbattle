@@ -37,6 +37,14 @@ CardBattleManager.getPlayerFirst = function () {
     return this._playerFirst;
 };
 
+CardBattleManager.getPlayerDuelist = function () {
+    return this._player;
+};
+
+CardBattleManager.getEnemyDuelist = function () {
+    return this._enemy;
+};
+
 CardBattleManager.getEnemyDatabase = function (ID) {
     return $dataCardBattleEnemies[ID];
 };
@@ -79,24 +87,27 @@ CardBattleManager.createEnemyCollection = function () {
 CardBattleManager.drawCards = function (Duelist) {
     let collectionOrigin = Duelist.origin;
     let collectionDestiny = Duelist.destiny;
-    let times = Duelist.times;
+    let amount = Duelist.amount;
 
-    for (let index = 0; index < times; index++) {
+    for (let index = 0; index < amount; index++) {
         this._player.pushToCollection(collectionOrigin, collectionDestiny);
     }
 };
 
-CardBattleManager.drawSixCards = function (Duelist) {
+CardBattleManager.pushPackToHand = function (amount, Duelist) {
     this.drawCards({
-        origin: this.getPlayerPackCollection(),
-        destiny: this.getPlayerHandCollection(),
-        times: 6
+        origin: Duelist.getPackCollection(),
+        destiny: Duelist.getHandCollection(),
+        amount
     });
-    this.drawCards({
-        origin: this.getEnemyPackCollection(),
-        destiny: this.getEnemyHandCollection(),
-        times: 6
-    });
+};
+
+CardBattleManager.drawCardPlayer = function (amount) {
+    CardBattleManager.pushPackToHand(amount, CardBattleManager.getPlayerDuelist());
+};
+
+CardBattleManager.drawCardEnemy = function (amount) {
+    CardBattleManager.pushPackToHand(amount, CardBattleManager.getEnemyDuelist());
 };
 
 CardBattleManager.getPlayerPackCollection = function () {

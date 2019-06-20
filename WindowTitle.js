@@ -1,7 +1,3 @@
-/*
-// Janela para exibir apenas uma linha de texto
-*/
-
 function WindowTitle() {
     this.initialize.apply(this, arguments);
 }

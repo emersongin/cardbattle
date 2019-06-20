@@ -1,7 +1,3 @@
-/*
-// Janela para exibir texto com mais de uma linha
-*/
-
 function WindowText() {
     this.initialize.apply(this, arguments);
 }

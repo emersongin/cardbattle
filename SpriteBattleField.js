@@ -49,6 +49,30 @@ SpriteBattlefield.prototype.enemyCollection = function () {
     this._enemySpriteCollection.y = 64;
 };
 
+SpriteBattlefield.prototype.getPlayerSpriteCollection = function () {
+    return this._playerSpriteCollection;
+};
+
+SpriteBattlefield.prototype.getEnemySpriteCollection = function () {
+    return this._enemySpriteCollection;
+};
+
+SpriteBattlefield.prototype.addAndRefreshSpriteCardPlayer = function (index) {
+    let gameHandCollection = CardBattleManager.getPlayerHandCollection();
+
+    this._playerSpriteCollection.addCard(gameHandCollection[index]);
+    this._playerSpriteCollection.addSprite(gameHandCollection[index]);
+    this._playerSpriteCollection.addChildIndex(index);
+};
+
+SpriteBattlefield.prototype.addAndRefreshSpriteCardEnemy = function (index) {
+    let gameHandCollection = CardBattleManager.getEnemyHandCollection();
+
+    this._enemySpriteCollection.addCard(gameHandCollection[index]);
+    this._enemySpriteCollection.addSprite(gameHandCollection[index]);
+    this._enemySpriteCollection.addChildIndex(index);
+};
+
 SpriteBattlefield.prototype.refreshPlayerHandSpriteCollection = function () {
     this._playerSpriteCollection.removeChildren();
     this._playerSpriteCollection.refreshCollections(CardBattleManager.getPlayerHandCollection());
@@ -61,7 +85,7 @@ SpriteBattlefield.prototype.refreshEnemyHandSpriteCollection = function () {
     this._enemySpriteCollection.addChildren();
 };
 
-SpriteBattlefield.prototype.playerShowHandCards = function (index) {
+SpriteBattlefield.prototype.showHandCardsPlayer = function (index) {
     let gameCardCollection = CardBattleManager.getPlayerHandCollection();
     let collection = this._playerSpriteCollection;
     let actions = [];
@@ -75,7 +99,7 @@ SpriteBattlefield.prototype.playerShowHandCards = function (index) {
     collection.addActions(actions);
 };
 
-SpriteBattlefield.prototype.enemyShowHandCards = function (index) {
+SpriteBattlefield.prototype.showHandCardsEnemy = function (index) {
     let gameCardCollection = CardBattleManager.getEnemyHandCollection();
     let collection = this._enemySpriteCollection;
     let actions = [];
@@ -89,7 +113,7 @@ SpriteBattlefield.prototype.enemyShowHandCards = function (index) {
     collection.addActions(actions);
 };
 
-SpriteBattlefield.prototype.playerCloseHandCards = function () {
+SpriteBattlefield.prototype.closeHandCardsPlayer = function () {
     let gameCardCollection = CardBattleManager.getPlayerHandCollection();
     let collection = this._playerSpriteCollection;
     let actions = [];
@@ -101,7 +125,7 @@ SpriteBattlefield.prototype.playerCloseHandCards = function () {
     collection.addActions(actions);
 };
 
-SpriteBattlefield.prototype.enemyCloseHandCards = function () {
+SpriteBattlefield.prototype.closeHandCardsEnemy = function () {
     let gameCardCollection = CardBattleManager.getEnemyHandCollection();
     let collection = this._enemySpriteCollection;
     let actions = [];
@@ -113,13 +137,12 @@ SpriteBattlefield.prototype.enemyCloseHandCards = function () {
     collection.addActions(actions);
 };
 
-SpriteBattlefield.prototype.playerCardsToTurn = function (index) {
+SpriteBattlefield.prototype.playerHandCardsToTurn = function (index) {
     let gameCardCollection = CardBattleManager.getPlayerHandCollection();
     let collection = this._playerSpriteCollection;
     let actions = [];
 
     if (gameCardCollection[index]) {
-        
         actions.push(collection.waitMoment(index, 4));
         actions.push(collection.toTurn(index));
     }
@@ -412,36 +435,30 @@ SpriteBattlefield.prototype.addEnemyColor = function (index) {
     collection.addActions(actions);
 };
 
-SpriteBattlefield.prototype.refreshPlayerColorPoints = function () {
+SpriteBattlefield.prototype.refreshPlayerBattlefieldPoints = function () {
     let Colors = CardBattleManager.getPlayerColors();
+    let packLength = CardBattleManager.getPlayerPackLength();
+    let handLength = CardBattleManager.getPlayerHandLength();
 
     this._playerBattleground.setWhitePoints(Colors.white);
     this._playerBattleground.setBluePoints(Colors.blue);
     this._playerBattleground.setGreenPoints(Colors.green);
     this._playerBattleground.setRedPoints(Colors.red);
     this._playerBattleground.setBlackPoints(Colors.black);
+    this._playerBattleground.setPackPoints(packLength);
+    this._playerBattleground.setHandPoints(handLength);
 };
 
-SpriteBattlefield.prototype.refreshEnemyColorPoints = function () {
+SpriteBattlefield.prototype.refreshEnemyBattlefieldPoints = function () {
     let Colors = CardBattleManager.getEnemyColors();
+    let packLength = CardBattleManager.getEnemyPackLength();
+    let handLength = CardBattleManager.getEnemyHandLength();
 
     this._enemyBattleground.setWhitePoints(Colors.white);
     this._enemyBattleground.setBluePoints(Colors.blue);
     this._enemyBattleground.setGreenPoints(Colors.green);
     this._enemyBattleground.setRedPoints(Colors.red);
     this._enemyBattleground.setBlackPoints(Colors.black);
-};
-
-SpriteBattlefield.prototype.refreshPlayerPackHandPoints = function () {
-    let packLength = CardBattleManager.getPlayerPackLength();
-    let handLength = CardBattleManager.getPlayerHandLength();
-    this._playerBattleground.setPackPoints(packLength);
-    this._playerBattleground.setHandPoints(handLength);
-};
-
-SpriteBattlefield.prototype.refreshEnemyPackHandPoints = function () {
-    let packLength = CardBattleManager.getEnemyPackLength();
-    let handLength = CardBattleManager.getEnemyHandLength();
     this._enemyBattleground.setPackPoints(packLength);
     this._enemyBattleground.setHandPoints(handLength);
 };

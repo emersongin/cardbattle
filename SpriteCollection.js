@@ -48,6 +48,10 @@ SpriteCollection.prototype.addChildren = function () {
     });
 };
 
+SpriteCollection.prototype.addChildIndex = function (index) {
+    this.addChild(this._spriteCollection[index]);
+};
+
 SpriteCollection.prototype.hasActions = function () {
     return this._actionCollection.length;
 }
@@ -89,9 +93,12 @@ SpriteCollection.prototype.hasFramesCollection = function () {
 
     this._spriteCollection.forEach((SpriteCard, index) => {
         let child = this.selectChild(index);
-        if (child.hasSequence() || child.hasFrameMove()) {
-            activeMovementove = true;
-        };
+
+        if (child) {
+            if (child.hasSequence() || child.hasFrameMove()) {
+                activeMovementove = true;
+            };
+        }
     });
 
     return activeMovementove;
@@ -155,7 +162,7 @@ SpriteCollection.prototype.moveField = function (index) {
     return {
         index,
         moves: [
-            {type: 'MOVE_FIELD', index, frame: 16}
+            {type: 'MOVE_FIELD', index, frame: 12}
         ]
     };
 };
