@@ -22,14 +22,6 @@ SpritesetCardBattle.prototype.start = function () {
     this._background.movePosition('down-right');
 };
 
-SpritesetCardBattle.prototype.update = function () {
-    this._background.update();
-    this._opening.update();
-    this._challenger.update();
-    this._luckyGame.update();
-    this._battlefield.update();
-};
-
 SpritesetCardBattle.prototype.layers = function () {
     return [
         this._background,
@@ -181,29 +173,49 @@ SpritesetCardBattle.prototype.luckGameResult = function () {
     return this._luckyGame.getGameResult();
 };
 
-SpritesetCardBattle.prototype.IsBackgroundsMoveIn = function () {
-    return this._battlefield.IsMoveInPlayerBackground() && 
-    this._battlefield.IsMoveInEnemyBackground();
+SpritesetCardBattle.prototype.IsMoveInBackgrounds = function () {
+    return this.IsMoveInPlayerBackground() && this.IsMoveInEnemyBackground();
 };
 
-SpritesetCardBattle.prototype.IsBackgroundsMoveOut = function () {
-    return this._battlefield.IsMoveOutPlayerBackground() && 
-    this._battlefield.IsMoveOutEnemyBackground();
+SpritesetCardBattle.prototype.IsMoveInPlayerBackground = function () {
+    return this._battlefield.IsMoveInPlayerBackground();
 };
 
-SpritesetCardBattle.prototype.moveInBattlefield = function () {
+SpritesetCardBattle.prototype.IsMoveInEnemyBackground = function () {
+    return this._battlefield.IsMoveInEnemyBackground();
+};
+
+SpritesetCardBattle.prototype.IsMoveOutBackgrounds = function () {
+    return this.IsMoveOutPlayerBackground() && this.IsMoveOutEnemyBackground();
+};
+
+SpritesetCardBattle.prototype.IsMoveOutPlayerBackground = function () {
+    return this._battlefield.IsMoveOutPlayerBackground();
+};
+
+SpritesetCardBattle.prototype.IsMoveOutEnemyBackground = function () {
+    return this._battlefield.IsMoveOutEnemyBackground();
+};
+
+SpritesetCardBattle.prototype.moveInPlayerBattlefield = function () {
     this._battlefield.moveInPlayerBackground();
     this._battlefield.moveInPlayerScore();
     this._battlefield.moveInPlayerTrash();
+};
+
+SpritesetCardBattle.prototype.moveInEnemyBattlefield = function () {
     this._battlefield.moveInEnemyBackground();
     this._battlefield.moveInEnemyScore();
     this._battlefield.moveInEnemyTrash();
 };
 
-SpritesetCardBattle.prototype.moveOutBattlefield = function () {
+SpritesetCardBattle.prototype.moveOutPlayerBattlefield = function () {
     this._battlefield.moveOutPlayerBackground();
     this._battlefield.moveOutPlayerScore();
     this._battlefield.moveOutPlayerTrash();
+};
+
+SpritesetCardBattle.prototype.moveOutEnemyBattlefield = function () {
     this._battlefield.moveOutEnemyBackground();
     this._battlefield.moveOutEnemyScore();
     this._battlefield.moveOutEnemyTrash();
@@ -261,4 +273,64 @@ SpritesetCardBattle.prototype.refreshEnemyBattleField = function () {
 SpritesetCardBattle.prototype.stopMoveCards = function () {
     return this._battlefield.stopMovePlayerSpriteCollection() &&
     this._battlefield.stopMoveEnemySpriteCollection();
+};
+
+SpritesetCardBattle.prototype.isOpenAlertLoadWindow = function () {
+    return this._battlefield.isOpenAlertLoadWindow();
+}
+
+SpritesetCardBattle.prototype.isOpenAlertCompileWindow = function () {
+    return this._battlefield.isOpenAlertCompileWindow();
+}
+
+SpritesetCardBattle.prototype.isOpenAlertCardBattleWindow = function () {
+    return this._battlefield.isOpenAlertCardBattleWindow();
+}
+
+SpritesetCardBattle.prototype.isOpenAlertNextSetWindow = function () {
+    return this._battlefield.isOpenAlertNextSetWindow();
+}
+
+SpritesetCardBattle.prototype.openAlertLoadWindow = function () {
+    this._battlefield.openAlertLoadWindow();
+};
+
+SpritesetCardBattle.prototype.openAlertCompileWindow = function () {
+    this._battlefield.openAlertCompileWindow();
+};
+
+SpritesetCardBattle.prototype.openAlertCardBattleWindow = function () {
+    this._battlefield.openAlertCardBattleWindow();
+};
+
+SpritesetCardBattle.prototype.openAlertNextSetWindow = function () {
+    this._battlefield.openAlertNextSetWindow();
+};
+
+SpritesetCardBattle.prototype.closeAlertLoadWindow = function () {
+    this._battlefield.closeAlertLoadWindow();
+};
+
+SpritesetCardBattle.prototype.closeAlertCompileWindow = function () {
+    this._battlefield.closeAlertCompileWindow();
+};
+
+SpritesetCardBattle.prototype.closeAlertCardBattleWindow = function () {
+    this._battlefield.closeAlertCardBattleWindow();
+};
+
+SpritesetCardBattle.prototype.closeAlertNextSetWindow = function () {
+    this._battlefield.closeAlertNextSetWindow();
+};
+
+SpritesetCardBattle.prototype.openOptionLoadWindow = function () {
+    this._battlefield.openOptionLoadWindow();
+};
+
+SpritesetCardBattle.prototype.closeOptionLoadWindow = function () {
+    this._battlefield.closeOptionLoadWindow();
+};
+
+SpritesetCardBattle.prototype.setHandlerLoadWindow = function (tag, link) {
+    this._battlefield.setHandlerLoadWindow(tag, link);
 };

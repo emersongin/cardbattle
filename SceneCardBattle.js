@@ -9,7 +9,7 @@ SceneCardBattle.prototype.initialize = function () {
     Scene_Base.prototype.initialize.call(this);
     this._wait = 0;
     this._times = 0;
-    this._state = '';
+    this._state = 'TAG';
 
 };
 
@@ -56,6 +56,7 @@ SceneCardBattle.prototype.create = function () {
     // this.testeCollection();
     // this.testeGameLuck();
     // this.testeSpriteBattlefield();
+    // this.testeWindowsOption();
 
 };
 
@@ -65,7 +66,6 @@ SceneCardBattle.prototype.start = function () {
 
 SceneCardBattle.prototype.update = function () {
     Scene_Base.prototype.update.call(this);
-    this._spriteset.update();
     this.updatePreBattle();
     this.updateCardBattle();
 };
@@ -150,14 +150,15 @@ SceneCardBattle.prototype.updateCardBattle = function () {
                 }
             };
             if (this._spriteset.isDisableWindowDrawPhase()) {
-                if (this._spriteset.IsBackgroundsMoveOut()) {
+                if (this._spriteset.IsMoveOutBackgrounds()) {
                     if (this.waiting(60)) {
-                        this._spriteset.moveInBattlefield();
+                        this._spriteset.moveInPlayerBattlefield();
+                        this._spriteset.moveInEnemyBattlefield();
                         this.setStatus('DRAW_REFRESH_CARDS');
                     }
                 }
             }
-            if (this._spriteset.IsBackgroundsMoveIn() && this._spriteset.stopMoveCards() && this.currentStatus('DRAW_REFRESH_CARDS')) {
+            if (this._spriteset.stopMoveCards() && this._spriteset.IsMoveInBackgrounds() && this.currentStatus('DRAW_REFRESH_CARDS')) {
                 if (this.times(6)) {
                     CardBattleManager.drawCardPlayer(1);
                     CardBattleManager.drawCardEnemy(1);
@@ -191,7 +192,8 @@ SceneCardBattle.prototype.updateCardBattle = function () {
             }
             if (this._spriteset.stopMoveCards() && this.currentStatus('DRAW_CLOSE_CARDS')) {
                 if (this.waiting(120)) {
-                    this._spriteset.moveOutBattlefield();
+                    this._spriteset.moveOutPlayerBattlefield();
+                    this._spriteset.moveOutEnemyBattlefield();
                     this._spriteset.closeHandCardsPlayer();
                     this._spriteset.closeHandCardsEnemy();
                     CardBattleManager.setPhase('LOAD_PHASE');
@@ -204,6 +206,34 @@ SceneCardBattle.prototype.updateCardBattle = function () {
                     this._spriteset.openWindowLoadPhase();
                 }
             };
+            if (this._spriteset.isDisableWindowLoadPhase()) {
+                if (this._spriteset.IsMoveOutBackgrounds()) {
+                    if (this.waiting(60)) {
+                        this._spriteset.moveInPlayerBattlefield();
+                        this._spriteset.moveInEnemyBattlefield();
+                        this.setStatus('LOAD_BEGIN');
+                    }
+                }
+            }
+            if (this._spriteset.IsMoveInBackgrounds() && this.currentStatus('LOAD_BEGIN')) {
+                if (this._spriteset.isOpenAlertLoadWindow()) {
+                    if (this.waiting(120)) {
+                        this._spriteset.closeAlertLoadWindow();
+                        this.setStatus('LOAD_POWERCARD_PLAYER');
+                    }
+                } else {
+                    this._spriteset.openAlertLoadWindow();
+                }
+                
+            }
+            if (this.currentStatus('LOAD_POWERCARD_PLAYER')) {
+                if (this.waiting(60)) {
+                    this._spriteset.openOptionLoadWindow();
+                    this._spriteset.setHandlerLoadWindow('OPTION_CONFIRM', this.testeSelect.bind(this, 0));
+                    this._spriteset.setHandlerLoadWindow('OPTION_CANCEL', this.testeSelect.bind(this, 1));
+                    CardBattleManager.setPhase('SUMMON_PHASE');
+                }
+            }
             break;
         case 'SUMMON_PHASE':
 
@@ -222,11 +252,61 @@ SceneCardBattle.prototype.updateCardBattle = function () {
     }
 };
 
+SceneCardBattle.prototype.testeSelect = function (index) {
+    if (index) {
+        console.log('No');
+    } else {
+        console.log('Yes');
+    }
+    this._spriteset.closeOptionLoadWindow();
+};
 
+// SceneCardBattle.prototype.testeWindowsOption = function () {
+//     this.window = new SpriteOption(0, 20, 816, [
+//         {label: 'Hand', tag: 'OPTION_HAND'},
+//         {label: 'Field', tag: 'OPTION_FIELD'},
+//         {label: 'Trash', tag: 'OPTION_TRASH'},
+//         {label: 'Cancel', tag: 'OPTION_CANCEL'},
+//         {label: 'Surrender', tag: 'OPTION_SURRENDER'}
+//     ]);
 
+//     this.window.refreshTitle('');
+//     this.window.resizeWidthWindows(300);
 
+//     this.window.changePositionTitle(40, Graphics.boxHeight / 3);
+//     this.window.changePositionOptions(40, Graphics.boxHeight / 2.4);
 
+//     this.addChild(this.window);
 
+//     this.window.show();
+//     this.window.openOptionsWindow();
+
+//     this.window.setHandler('OPTION_HAND', this.testeSelect.bind(this, 0));
+// 	this.window.setHandler('OPTION_FIELD', this.testeSelect.bind(this, 1));
+// 	this.window.setHandler('OPTION_TRASH', this.testeSelect.bind(this, 2));
+// 	this.window.setHandler('OPTION_CANCEL', this.testeSelect.bind(this, 3));
+//     this.window.setHandler('OPTION_SURRENDER', this.testeSelect.bind(this, 4));
+// };
+
+// SceneCardBattle.prototype.testeWindowsOption = function () {
+    // this.window = new SpriteOption(0, 20, 816, [
+    //     {label: 'Yes', tag: 'OPTION_CONFIRM'},
+    //     {label: 'No', tag: 'OPTION_CANCEL'}
+    // ]);
+    // let marginLeft = ' ';
+    // this.window.refreshTitle(marginLeft + 'Use a Power Card?');
+
+    // this.window.resizeWidthWindows(776);
+    // this.window.changePositionTitle(20, Graphics.boxHeight / 2);
+    // this.window.changePositionOptions(20, Graphics.boxHeight / 1.7);
+    // this.addChild(this.window);
+
+    // this.window.show();
+    // this.window.openWindows();
+
+    // this.window.setHandler('OPTION_CONFIRM', this.testeSelect.bind(this, 0));
+    // this.window.setHandler('OPTION_CANCEL', this.testeSelect.bind(this, 1));
+// };
 
 // SceneCardBattle.prototype.testeSpriteBattlefield = function () {
 //     this._Battlefield = new SpriteBattlefield();

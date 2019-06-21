@@ -8,18 +8,28 @@ WindowTitle.prototype.constructor = WindowTitle;
 WindowTitle.prototype.initialize = function() {
     Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
     this._displayTitle = '';
+    this._titleAlign = 'center';
     this.openness = 0;
     this.padding = 6;
 };
 
-WindowTitle.prototype.addText = function(text) {
-    this._displayTitle = text || '';
+WindowTitle.prototype.addText = function(title) {
+    this._displayTitle = title || '';
+};
+
+WindowTitle.prototype.setTitleAlign = function(tag) {
+    this._titleAlign = tag || 'center';
 };
 
 WindowTitle.prototype.renderText = function() {
     this.contents.clear();
     this.resize(Graphics.boxWidth, 1 * this.contents.fontSize + 24);
-    this.drawText(this._displayTitle, 0, 0, this.width - 10, 'center');
+    this.drawText(this._displayTitle, 0, 0, this.width - 10, this._titleAlign);
+};
+
+WindowTitle.prototype.refreshTitle = function(title) {
+    this.addText(title);
+    this.renderText();
 };
 
 WindowTitle.prototype.resize = function(width, height) {

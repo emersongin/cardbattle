@@ -162,7 +162,7 @@ SpriteCollection.prototype.moveField = function (index) {
     return {
         index,
         moves: [
-            {type: 'MOVE_FIELD', index, frame: 12}
+            {type: 'MOVE_FIELD', index, frame: 6}
         ]
     };
 };
@@ -185,7 +185,7 @@ SpriteCollection.prototype.open = function (index) {
         index,
         moves: [
             {type: 'REFRESH'},
-            {type: 'OPEN', index, frame: 8}
+            {type: 'OPEN', index, frame: 6}
         ]
     };
 };
@@ -194,7 +194,7 @@ SpriteCollection.prototype.close = function (index) {
     return {
         index,
         moves: [
-            {type: 'CLOSE', index, frame: 8}
+            {type: 'CLOSE', index, frame: 6}
         ]
     };
 };
@@ -203,10 +203,10 @@ SpriteCollection.prototype.toTurn = function (index) {
     return {
         index,
         moves: [
-            {type: 'CLOSE', frame: 8},
+            {type: 'CLOSE', frame: 4},
             {type: 'TO_TURN'},
             {type: 'REFRESH'},
-            {type: 'OPEN', frame: 8}
+            {type: 'OPEN', frame: 4}
         ]
     };
 };
@@ -215,7 +215,7 @@ SpriteCollection.prototype.flash = function (index) {
     return {
         index,
         moves: [
-            {type: 'ANIMATION', index: 121, frame: 10}
+            {type: 'ANIMATION', index: 121, frame: 6}
         ]
     };
 };

@@ -21,14 +21,6 @@ SpriteOpening.prototype.isActive = function () {
     return this._active;
 };
 
-SpriteOpening.prototype.enable = function () {
-    this._active = true;
-};
-
-SpriteOpening.prototype.disable = function () {
-    this._active = false;
-};
-
 SpriteOpening.prototype.isShown = function () {
     return this.visible;
 };
@@ -45,40 +37,44 @@ SpriteOpening.prototype.hide = function () {
     this.visible = false;
 };
 
+SpriteOpening.prototype.enable = function () {
+    this._active = true;
+};
+
+SpriteOpening.prototype.disable = function () {
+    this._active = false;
+};
+
 SpriteOpening.prototype.visibility = function () {
     return this.opacity;
 };
 
 SpriteOpening.prototype.create = function () {
-    this.snapForPreviousScene(); 
-    this.imageLayer();
-    this.blackLayer();
+    this.createSnapForPreviousScene(); 
+    this.createImageLayer();
+    this.createBlackLayer();
     this.addChildren();
 };
 
-SpriteOpening.prototype.snapForPreviousScene = function () {
+SpriteOpening.prototype.createSnapForPreviousScene = function () {
     this._previousSceneLayer.bitmap = SceneManager.backgroundBitmap();
 };
 
-SpriteOpening.prototype.imageLayer = function () {
-    let imageLayer = this._imageLayer;
-
-    imageLayer.bitmapCloned = ImageManager.loadPicture('OpeningBackground');
-    imageLayer.rectangleClear = new Rectangle(0, 0, 816, 624);
+SpriteOpening.prototype.createImageLayer = function () {
+    this._imageLayer.bitmapCloned = ImageManager.loadPicture('OpeningBackground');
+    this._imageLayer.rectangleClear = new Rectangle(0, 0, 816, 624);
 };
 
-SpriteOpening.prototype.blackLayer = function () {
-    let blackLayer = this._blackLayer;
-
-    blackLayer.bitmapBlack = new Bitmap(816, 624);
-    blackLayer.bitmapBlack.fillAll('black');
-    blackLayer.rectangleClear = new Rectangle(0, 0, 816, 624);
+SpriteOpening.prototype.createBlackLayer = function () {
+    this._blackLayer.bitmapBlack = new Bitmap(816, 624);
+    this._blackLayer.bitmapBlack.fillAll('black');
+    this._blackLayer.rectangleClear = new Rectangle(0, 0, 816, 624);
 };
 
 SpriteOpening.prototype.addChildren = function () {
-    this.addChildAt(this._previousSceneLayer, 0);
-    this.addChildAt(this._imageLayer, 1);
-    this.addChildAt(this._blackLayer, 2);
+    this.addChild(this._previousSceneLayer);
+    this.addChild(this._imageLayer);
+    this.addChild(this._blackLayer);
 };
 
 SpriteOpening.prototype.update = function () {
@@ -105,69 +101,65 @@ SpriteOpening.prototype.rectHeightClosed = function (Sprite) {
 };
 
 SpriteOpening.prototype.updateOpening = function () {
+    let imageLayer = this._imageLayer;
+    let backLayer = this._blackLayer;
+
     //Fechamento retangular da imagem de fundo
-    if (this.rectWidth(this._imageLayer) && this.rectHeight(this._imageLayer)) {
-        this.updateRectClearImage();
-        this.renderRectClearImage();
+    if (this.rectWidth(imageLayer) && this.rectHeight(imageLayer)) {
+        this.updateRectclearImage();
+        this.refreshRectClearImage();
     }
 
     //Fechamento horizontal dos retangulos
-    if (this.rectHeightClosed(this._imageLayer) && this.rectWidth(this._blackLayer)) {
-        this.updateRectClearBlack();
-        this.renderRectClearBlack();
+    if (this.rectHeightClosed(imageLayer) && this.rectWidth(backLayer)) {
+        this.updateRectclearBlack();
+        this.refreshRectclearBlack();
     }
 
     //Transição de desaparecer gradualmente
-    if (this.rectWidthClosed(this._blackLayer) && this.visibility()) {
-        if (this._frameCount > 100) {
+    if (this.rectWidthClosed(backLayer) && this.visibility()) {
+        if (this._frameCount > 60) {
             this.removeChild(this._previousSceneLayer);
-            this.removeChild(this._imageLayer);
-            this.opacity -= 2;
+            this.removeChild(imageLayer);
+            this.opacity -= 3;
         }
-
-        if (!this.visibility()) {
+        if (this.visibility()) {
+            this._frameCount++
+        } else {
             this._frameCount = 0;
             this.disable();
         }
-
-        this._frameCount++
     }
 };
 
-SpriteOpening.prototype.updateRectClearImage = function (time = 2) {
-    let imageLayer = this._imageLayer;
-
-    imageLayer.rectangleClear.x += time;
-    imageLayer.rectangleClear.y += time;
-    imageLayer.rectangleClear.width += time ? -time * 2 : +time * 2;
-    imageLayer.rectangleClear.height += time ? -time * 2 : +time * 2;
+SpriteOpening.prototype.updateRectclearImage = function (time = 4) {
+    this._imageLayer.rectangleClear.x += time;
+    this._imageLayer.rectangleClear.y += time;
+    this._imageLayer.rectangleClear.width += time ? -time * 2 : +time * 2;
+    this._imageLayer.rectangleClear.height += time ? -time * 2 : +time * 2;
 };
 
-SpriteOpening.prototype.renderRectClearImage = function () {
-    let imageLayer = this._imageLayer;
+SpriteOpening.prototype.refreshRectClearImage = function () {
     let rect = this._imageLayer.rectangleClear;
 
-    if (imageLayer.opacity < 255) {
-        imageLayer.opacity  += 8;
+    if (this._imageLayer.opacity < 255) {
+        this._imageLayer.opacity  += 8;
     }
     
-    imageLayer.bitmap = new Bitmap(816, 624);
-    imageLayer.bitmap.blt(imageLayer.bitmapCloned, 0, 0, 816, 624, 0, 0);
-    imageLayer.bitmap.clearRect(rect.x, rect.y, rect.width, rect.height);
+    this._imageLayer.bitmap = new Bitmap(816, 624);
+    this._imageLayer.bitmap.blt(this._imageLayer.bitmapCloned, 0, 0, 816, 624, 0, 0);
+    this._imageLayer.bitmap.clearRect(rect.x, rect.y, rect.width, rect.height);
 };
 
-SpriteOpening.prototype.updateRectClearBlack = function (time = 6) {
-    let blackLayer = this._blackLayer;
-
-    blackLayer.rectangleClear.x += time;
-    blackLayer.rectangleClear.width += time ? -time * 2: +time * 2;
+SpriteOpening.prototype.updateRectclearBlack = function (time = 8) {
+    this._blackLayer.rectangleClear.x += time;
+    this._blackLayer.rectangleClear.width += time ? -time * 2: +time * 2;
 };
 
-SpriteOpening.prototype.renderRectClearBlack = function () {
-    let blackLayer = this._blackLayer;
-    let rect = blackLayer.rectangleClear;
+SpriteOpening.prototype.refreshRectclearBlack = function () {
+    let rect = this._blackLayer.rectangleClear;
     
-    blackLayer.bitmap = new Bitmap(816, 624);
-    blackLayer.bitmap.blt(blackLayer.bitmapBlack, 0, 0, 816, 624, 0, 0);
-    blackLayer.bitmap.clearRect(rect.x, rect.y, rect.width, rect.height);
+    this._blackLayer.bitmap = new Bitmap(816, 624);
+    this._blackLayer.bitmap.blt(this._blackLayer.bitmapBlack, 0, 0, 816, 624, 0, 0);
+    this._blackLayer.bitmap.clearRect(rect.x, rect.y, rect.width, rect.height);
 };

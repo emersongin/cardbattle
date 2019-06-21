@@ -21,6 +21,10 @@ WindowScore.prototype.initialize = function (Setup) {
     this.setup();
 };
 
+WindowScore.prototype.intervalMove = function() {
+    return 8;
+};
+
 WindowScore.prototype.isPlayer = function () {
     return this._player;
 };
@@ -175,11 +179,11 @@ WindowScore.prototype.refreshMove = function () {
 };
 
 WindowScore.prototype.setFrameX = function () {
-    return parseInt(Math.abs(this.x - this._targetX) / 4);
+    return parseInt(Math.abs(this.x - this._targetX) / this.intervalMove());
 };
 
 WindowScore.prototype.setFrameY = function () {
-    return parseInt(Math.abs(this.y - this._targetY) / 4);
+    return parseInt(Math.abs(this.y - this._targetY) / this.intervalMove());
 };
 
 WindowScore.prototype.rateX = function () {

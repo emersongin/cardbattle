@@ -30,6 +30,10 @@ WindowTrash.prototype.pointsDelay = function () {
     return 10;
 };
 
+WindowTrash.prototype.intervalMove = function() {
+    return 8;
+};
+
 WindowTrash.prototype.standardFontSize = function () {
     return 20;
 };
@@ -154,11 +158,11 @@ WindowTrash.prototype.setFrameTrashPoints = function () {
 };
 
 WindowTrash.prototype.setFrameX = function () {
-    return parseInt(Math.abs(this.x - this._targetX) / 4);
+    return parseInt(Math.abs(this.x - this._targetX) / this.intervalMove());
 };
 
 WindowTrash.prototype.setFrameY = function () {
-    return parseInt(Math.abs(this.y - this._targetY) / 4);
+    return parseInt(Math.abs(this.y - this._targetY) / this.intervalMove());
 };
 
 WindowTrash.prototype.refreshWindowPoints = function () {

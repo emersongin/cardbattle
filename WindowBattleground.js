@@ -40,6 +40,10 @@ WindowBattleground.prototype.isPlayer = function() {
     return this._player;
 };
 
+WindowBattleground.prototype.intervalMove = function() {
+    return 8;
+};
+
 WindowBattleground.prototype.intervalPoints = function() {
     return 1;
 };
@@ -293,11 +297,11 @@ WindowBattleground.prototype.setFrameHandPoints = function() {
 };
 
 WindowBattleground.prototype.setFrameX = function() {
-    return parseInt(Math.abs(this.x - this._targetX) / 4);
+    return parseInt(Math.abs(this.x - this._targetX) / this.intervalMove());
 };
 
 WindowBattleground.prototype.setFrameY = function() {
-    return parseInt(Math.abs(this.y - this._targetY) / 4);
+    return parseInt(Math.abs(this.y - this._targetY) / this.intervalMove());
 };
 
 WindowBattleground.prototype.setFrameAttackPoints = function() {

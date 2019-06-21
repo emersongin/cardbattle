@@ -16,7 +16,9 @@ SpriteBattlefield.prototype.setup = function () {
     this.createPlayerZone();
     this.createEnemyZone();
     this.createCollections();
-    this.createWindowPhases();
+    this.createPhaseWindows();
+    this.createOptionWindows();
+    this.createOtherWindows();
     this.addChildren();
 };
 
@@ -163,17 +165,17 @@ SpriteBattlefield.prototype.enemyCardsToTurn = function (index) {
     collection.addActions(actions);
 };
 
-SpriteBattlefield.prototype.createWindowPhases = function () {
+SpriteBattlefield.prototype.createPhaseWindows = function () {
     this._windowStartPhase = new SpritePhase();
     this._windowDrawPhase = new SpritePhase();
     this._windowLoadPhase = new SpritePhase();
     this._windowSummonPhase = new SpritePhase();
     this._windowCompilePhase = new SpritePhase();
     this._windowBattlePhase = new SpritePhase();
-    this.refreshWindows();
+    this.refreshPhaseWindows();
 };
 
-SpriteBattlefield.prototype.refreshWindows = function () {
+SpriteBattlefield.prototype.refreshPhaseWindows = function () {
     this.refreshTitles();
     this.refreshTexts();
 };
@@ -194,6 +196,111 @@ SpriteBattlefield.prototype.refreshTexts = function () {
     this._windowSummonPhase.refreshText('Select your Battler');
     this._windowCompilePhase.refreshText('Select and use a Power Card.');
     this._windowBattlePhase.refreshText('Start Battle!');
+};
+
+SpriteBattlefield.prototype.createOptionWindows = function () {
+    let objectYesNo = [
+        {label: 'Yes', tag: 'OPTION_CONFIRM'},
+        {label: 'No', tag: 'OPTION_CANCEL'}
+    ];
+
+    this._windowOptionLoad = new SpriteOption(0, 20, 816, objectYesNo);
+    //this._windowOptionCompile = new SpriteOption(0, 20, 816, objectYesNo);
+    this.refreshOptionWindows();
+};
+
+SpriteBattlefield.prototype.refreshOptionWindows = function () {
+    let marginLeft = ' ';
+
+    this._windowOptionLoad.refreshTitle(marginLeft + 'Use a Power Card?');
+    this._windowOptionLoad.resizeWidthWindows(776);
+    this._windowOptionLoad.changePositionTitle(20, Graphics.boxHeight / 2);
+    this._windowOptionLoad.changePositionOptions(20, Graphics.boxHeight / 1.7);
+
+    //this._windowOptionCompile.refreshTitle(marginLeft + 'Use a Power Card?');
+};
+
+SpriteBattlefield.prototype.createOtherWindows = function () {
+    this._windowAlertLoad = new WindowTitle();
+    this._windowAlertCompile = new WindowTitle();
+    this._windowAlertCardBattle = new WindowTitle();
+    this._windowAlertNextSet = new WindowTitle();
+    this.refreshAlertWindows();
+};
+
+SpriteBattlefield.prototype.refreshAlertWindows = function () {
+    let fontSize = this._windowAlertLoad.contents.fontSize;
+    let heightWindow = (Graphics.boxHeight / 2) - fontSize;
+
+    this._windowAlertLoad.changePosition(0, heightWindow);
+    this._windowAlertCompile.changePosition(0, heightWindow);
+    this._windowAlertCardBattle.changePosition(0, heightWindow);
+    this._windowAlertNextSet.changePosition(0, heightWindow);
+    this._windowAlertLoad.refreshTitle('Begin Load Phase');
+    this._windowAlertCompile.refreshTitle('Begin Compile Phase');
+    this._windowAlertCardBattle.refreshTitle('Card Battle');
+    this._windowAlertNextSet.refreshTitle('Next Set');
+};
+
+SpriteBattlefield.prototype.isOpenAlertLoadWindow = function () {
+    return this._windowAlertLoad.openness === 255;
+};
+
+SpriteBattlefield.prototype.isOpenAlertCompileWindow = function () {
+    return this._windowAlertCompile.openness === 255;
+};
+
+SpriteBattlefield.prototype.isOpenAlertCardBattleWindow = function () {
+    return this._windowAlertCardBattle.openness === 255;
+};
+
+SpriteBattlefield.prototype.isOpenAlertNextSetWindow = function () {
+    return this._windowAlertNextSet.openness === 255;
+};
+
+SpriteBattlefield.prototype.openAlertLoadWindow = function () {
+    this._windowAlertLoad.open();
+};
+
+SpriteBattlefield.prototype.openAlertCompileWindow = function () {
+    this._windowAlertCompile.open();
+};
+
+SpriteBattlefield.prototype.openAlertCardBattleWindow = function () {
+    this._windowAlertCardBattle.open();
+};
+
+SpriteBattlefield.prototype.openAlertNextSetWindow = function () {
+    this._windowAlertNextSet.open();
+};
+
+SpriteBattlefield.prototype.closeAlertLoadWindow = function () {
+    this._windowAlertLoad.close();
+};
+
+SpriteBattlefield.prototype.closeAlertCompileWindow = function () {
+    this._windowAlertCompile.close();
+};
+
+SpriteBattlefield.prototype.closeAlertCardBattleWindow = function () {
+    this._windowAlertCardBattle.close();
+};
+
+SpriteBattlefield.prototype.closeAlertNextSetWindow = function () {
+    this._windowAlertNextSet.close();
+};
+
+SpriteBattlefield.prototype.openOptionLoadWindow = function () {
+    this._windowOptionLoad.show();
+    this._windowOptionLoad.openWindows();
+};
+
+SpriteBattlefield.prototype.closeOptionLoadWindow = function () {
+    this._windowOptionLoad.closeWindows();
+};
+
+SpriteBattlefield.prototype.setHandlerLoadWindow = function (tag, link) {
+    this._windowOptionLoad.setHandler(tag, link);
 };
 
 SpriteBattlefield.prototype.addChildren = function () {
@@ -223,6 +330,11 @@ SpriteBattlefield.prototype.addWindowChildren = function () {
     this.addChild(this._windowSummonPhase);
     this.addChild(this._windowCompilePhase);
     this.addChild(this._windowBattlePhase);
+    this.addChild(this._windowAlertLoad);
+    this.addChild(this._windowAlertCompile);
+    this.addChild(this._windowAlertCardBattle);
+    this.addChild(this._windowAlertNextSet);
+    this.addChild(this._windowOptionLoad);
 };
 
 SpriteBattlefield.prototype.isActive = function () {
@@ -251,10 +363,6 @@ SpriteBattlefield.prototype.show = function () {
 
 SpriteBattlefield.prototype.hide = function () {
     this.visible = false;
-};
-
-SpriteBattlefield.prototype.update = function () {
-    Sprite.prototype.update.call(this);
 };
 
 SpriteBattlefield.prototype.IsMoveInPlayerBackground = function () {

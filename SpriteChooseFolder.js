@@ -57,9 +57,9 @@ SpriteChooseFolder.prototype.createTitle = function () {
 
 SpriteChooseFolder.prototype.createFolders = function () {
     this._choiceFolder.changePosition(Graphics.boxWidth / 16, Graphics.boxHeight / 3.5);
-    this._choiceFolder.setHandler('folder0', this.selectFolder.bind(this, 0));
-    this._choiceFolder.setHandler('folder1', this.selectFolder.bind(this, 1));
-    this._choiceFolder.setHandler('folder2', this.selectFolder.bind(this, 2));
+    this._choiceFolder.setHandler('OPTION_FOLDER_0', this.selectFolder.bind(this, 0));
+    this._choiceFolder.setHandler('OPTION_FOLDER_1', this.selectFolder.bind(this, 1));
+    this._choiceFolder.setHandler('OPTION_FOLDER_2', this.selectFolder.bind(this, 2));
 };
 
 SpriteChooseFolder.prototype.selectFolder = function (index) {
