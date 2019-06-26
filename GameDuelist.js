@@ -5,10 +5,12 @@ function GameDuelist() {
 GameDuelist.prototype.constructor = GameDuelist;
 
 GameDuelist.prototype.initialize = function (Duelist) {
-    this._id = Duelist.id || false;
-    this._level = Duelist.level || false;
-    this._name = Duelist.name;
-    this._folder = new GameFolder(Duelist.folders);
+    let {id, name, level, folders} = Duelist;
+    
+    this._id = id || false;
+    this._level = level || false;
+    this._name = name;
+    this._folder = new GameFolder(folders);
     this._colors = new GameFolderColor();
     this._field = [];
     this._hand = [];

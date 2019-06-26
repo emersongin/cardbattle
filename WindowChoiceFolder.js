@@ -83,7 +83,7 @@ WindowChoiceFolder.prototype.drawStringColors = function (index) {
 
     for (let key in gameFolderColor) {        
         if (gameFolderColor.hasOwnProperty(key)) {
-            label += " \\I[" + indexIcon + "] " + gameFolderColor[key];
+            label += " \\I[" + indexIcon + "] " + gameFolderColor[key].padZero(2);
             indexIcon++;
         }
     }

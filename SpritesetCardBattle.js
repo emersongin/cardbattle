@@ -169,7 +169,7 @@ SpritesetCardBattle.prototype.isDisableWindowBattlePhase = function () {
     return this._battlefield.isDisableWindowBattlePhase();
 };
 
-SpritesetCardBattle.prototype.luckGameResult = function () {
+SpritesetCardBattle.prototype.luckyGameResult = function () {
     return this._luckyGame.getGameResult();
 };
 

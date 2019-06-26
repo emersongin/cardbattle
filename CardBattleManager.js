@@ -33,6 +33,10 @@ CardBattleManager.getPhase = function () {
     return this._phase;
 };
 
+CardBattleManager.isPhase = function (tag) {
+    return this._phase === tag;
+};
+
 CardBattleManager.getPlayerFirst = function () {
     return this._playerFirst;
 };

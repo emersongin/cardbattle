@@ -6,67 +6,97 @@ WindowBattleground.prototype = Object.create(Window_Base.prototype);
 WindowBattleground.prototype.constructor = WindowBattleground;
 
 WindowBattleground.prototype.initialize = function(Setup) {
-    Window_Base.prototype.initialize.call(this, 0, 0, Graphics.boxWidth, Graphics.boxHeight);
-    this._player = Setup.player;
-    this._background = new Sprite(new Bitmap(816, 184));
-    this._spriteAnimation = new Sprite_Base();
-    this._delay = 0;
-    this._frame = 0;
-    this._targetX = 0;
-    this._targetY = 0;
-    this._display = '';
-    this._attackPoints = 0;
-    this._healthPoints = 0;
-    this._whitePoints = 0;
-    this._bluePoints = 0;
-    this._greenPoints = 0;
-    this._redPoints = 0;
-    this._blackPoints = 0;
-    this._packPoints = 0;
-    this._handPoints = 0;
-    this._targetAttackPoints = 0;
-    this._targetHealthPoints = 0;
-    this._targetWhitePoints = 0;
-    this._targetBluePoints = 0;
-    this._targetGreenPoints = 0;
-    this._targetRedPoints = 0;
-    this._targetBlackPoints = 0;
-    this._targetPackPoints = 0;
-    this._targetHandPoints = 0;
+    Window_Base.prototype.initialize.call(this, 0, 0, 
+        Graphics.boxWidth, Graphics.boxHeight);
+    this._player = Setup.player || false;
     this.setup();
-};
-
-WindowBattleground.prototype.isPlayer = function() {
-    return this._player;
-};
-
-WindowBattleground.prototype.intervalMove = function() {
-    return 8;
-};
-
-WindowBattleground.prototype.intervalPoints = function() {
-    return 1;
-};
-
-WindowBattleground.prototype.delayPoints = function() {
-    return 10;
-};
-
-WindowBattleground.prototype.standardFontSize = function() {
-    return 20;
+    this.create();
+    this.init();
 };
 
 WindowBattleground.prototype.setup = function() {
+    this.setTargets();
+    this.setAttributes();
+    this.setConfig();
+};
+
+WindowBattleground.prototype.setTargets = function() {
+    this.x = 0;
+    this.y = 0;
+    this._targetX = 0;
+    this._targetY = 0;
+};
+
+WindowBattleground.prototype.setAttributes = function() {
+    this._attackPoints = 0;
+    this._healthPoints = 0;
+    this._targetAttackPoints = 0;
+    this._targetHealthPoints = 0;
+    this._packPoints = 0;
+    this._handPoints = 0;
+    this._targetPackPoints = 0;
+    this._targetHandPoints = 0;
+    this._colorPoints = new GameFolderColor();
+    this._targetColorPoints = new GameFolderColor();
+};
+
+WindowBattleground.prototype.setConfig = function() {
+    this._delay = 0;
+    this._frame = 0;
     this.padding = 0;
     this.opacity = 0;
     this.openness = 0;
-    this._packPoints = 40;
-    this._targetPackPoints = 40;
+};
+
+WindowBattleground.prototype.create = function() {
     this.createBackground();
-    this.createSpriteAnimation();
-    this.refresh();
+    this.createAnimation();
+    this.createDisplay();
+};
+
+WindowBattleground.prototype.createBackground = function() {
+    this._background = new Sprite(new Bitmap(816, 184));
+
+    if (this.isPlayer()) {
+        this._background.bitmap = ImageManager.loadSystem('BackgroundZone1');
+    }else{
+        this._background.bitmap = ImageManager.loadSystem('BackgroundZone2');
+    }
+
+    this.addChildToBack(this._background);
+};
+
+WindowBattleground.prototype.createAnimation = function() {
+    this._spriteAnimation = new Sprite_Base();
+    this.addChild(this._spriteAnimation);
+};
+
+WindowBattleground.prototype.createDisplay = function() {
+    this._display = new Sprite(new Bitmap(100, 20));
+    this._display.bitmap.fontSize = this.standardFontSize();
+    this._display.bitmap.drawText('Pass', 0, 0, 100, 20, 'right');
+    this._display.show = false;
+
+    if (this.isPlayer()) {
+        this._display.x = 350;
+        this._display.y = 120;
+    }else{
+        this._display.x = 350;
+        this._display.y = 36;
+    }
+
+    this.addChild(this._display);
+};
+
+WindowBattleground.prototype.init = function() {
+    this.refreshContents();
     this.initialPosition();
     this.open();
+};
+
+WindowBattleground.prototype.refreshContents = function() {
+    this.contents.clear();
+    this.drawPoints();
 };
 
 WindowBattleground.prototype.initialPosition = function() {
@@ -79,8 +109,52 @@ WindowBattleground.prototype.initialPosition = function() {
     this.move(this._targetX, this._targetY, this.width, this.height);
 };
 
+WindowBattleground.prototype.isPlayer = function() {
+    return this._player;
+};
+
+WindowBattleground.prototype.hasDelay = function() {
+    return this._delay;
+};
+
+WindowBattleground.prototype.voidDelay = function() {
+    return !this._delay;
+};
+
+WindowBattleground.prototype.intervalMove = function() {
+    return 8;
+};
+
+WindowBattleground.prototype.intervalPoints = function() {
+    return 1;
+};
+
+WindowBattleground.prototype.moveDelay = function() {
+    return 1;
+};
+
+WindowBattleground.prototype.battlePointsDelay = function() {
+    return 1;
+};
+
+WindowBattleground.prototype.pointsDelay = function() {
+    return 10;
+};
+
+WindowBattleground.prototype.standardFontSize = function() {
+    return 20;
+};
+
+WindowBattleground.prototype.showDisplay = function() {
+    this._display.show = true;
+};
+
+WindowBattleground.prototype.hideDisplay = function() {
+    this._display.show = false;
+};
+
 WindowBattleground.prototype.moveIn = function() {
-    if (this._player) {
+    if (this.isPlayer()) {
         this._targetY = 440;
     }else{
         this._targetY = 0;
@@ -88,7 +162,7 @@ WindowBattleground.prototype.moveIn = function() {
 };
 
 WindowBattleground.prototype.moveOut = function() {
-    if (this._player) {
+    if (this.isPlayer()) {
         this._targetY = 624;
     }else{
         this._targetY = -184;
@@ -96,7 +170,7 @@ WindowBattleground.prototype.moveOut = function() {
 };
 
 WindowBattleground.prototype.IsMoveIn = function() {
-    if (this._player) {
+    if (this.isPlayer()) {
         return this.y === 440;
     }else{
         return this.y === 0;
@@ -104,54 +178,77 @@ WindowBattleground.prototype.IsMoveIn = function() {
 };
 
 WindowBattleground.prototype.IsMoveOut = function() {
-    if (this._player) {
+    if (this.isPlayer()) {
         return this.y === 624;
     }else{
         return this.y === -184;
     }
 };
 
-WindowBattleground.prototype.createBackground = function() {
-    if (this._player) {
-        this._background.bitmap = ImageManager.loadSystem('BackgroundZone1');
-    }else{
-        this._background.bitmap = ImageManager.loadSystem('BackgroundZone2');
-    }
-    this.addChildToBack(this._background);
-};
-
-WindowBattleground.prototype.createSpriteAnimation = function() {
-    this.addChild(this._spriteAnimation);
-};
-
-WindowBattleground.prototype.refresh = function() {
-    this.contents.clear();
-    this.drawPoints();
-};
-
 WindowBattleground.prototype.drawPoints = function() {
-    let heightPositionItens,
-        heightPositionOfficer,
-        paddingItens = 80;
+    this.drawStringBattlePoints();
+    this.drawStringColorPoints();
+    this.drawStringOtherPoints();
+};
 
-    if (this._player) {
-        heightPositionItens = 148;
-        heightPositionOfficer = 120;
+WindowBattleground.prototype.drawStringBattlePoints = function() {
+    let padding = 120;
+
+    if (this.isPlayer()) {
+        itemHeight = 120;
     }else{
-        heightPositionItens = 0;
-        heightPositionOfficer = 36;
+        itemHeight = 36;
     }
 
-    this.drawTextEx('AP ' + this._attackPoints, paddingItens + 40, heightPositionOfficer);
-    this.drawTextEx('HP ' + this._healthPoints, paddingItens * 2 + 60, heightPositionOfficer);
+    this.drawTextEx('AP' + ' ' + this._attackPoints, padding, itemHeight);
+    this.drawTextEx('HP' + ' ' + this._healthPoints, padding + 100, itemHeight);
+};
 
-    this.drawTextEx('\\I[160] ' + this._whitePoints.padZero(2), paddingItens, heightPositionItens);
-    this.drawTextEx('\\I[165] ' + this._bluePoints.padZero(2), paddingItens * 2, heightPositionItens);
-    this.drawTextEx('\\I[164] ' + this._greenPoints.padZero(2), paddingItens * 3, heightPositionItens);
-    this.drawTextEx('\\I[162] ' + this._redPoints.padZero(2), paddingItens * 4, heightPositionItens);
-    this.drawTextEx('\\I[161] ' + this._blackPoints.padZero(2), paddingItens * 5, heightPositionItens);
-    this.drawTextEx('\\I[187] ' + this._packPoints.padZero(2), paddingItens * 6, heightPositionItens);
-    this.drawTextEx('\\I[188] ' + this._handPoints.padZero(2), paddingItens * 7, heightPositionItens);
+WindowBattleground.prototype.drawStringColorPoints = function() {
+    let padding = 80;
+    let index = 1;
+    let gameFolderColor = this._colorPoints;
+    let indexIcon = 160;
+
+    if (this.isPlayer()) {
+        itemHeight = 148;
+    }else{
+        itemHeight = 0;
+    }
+
+    for (let key in gameFolderColor) {     
+        if (gameFolderColor.hasOwnProperty(key) && key !== 'brown') {
+            let stringIcon = this.createStringIcon(indexIcon);
+            let paddingItem = padding * index;
+            let colorValue = gameFolderColor[key].padZero(2);
+
+            this.drawTextEx(stringIcon + ' ' + colorValue, paddingItem, itemHeight);
+
+            indexIcon++;
+            index++;
+        }
+    }
+};
+
+WindowBattleground.prototype.drawStringOtherPoints = function() {
+    let padding = 80;
+    let packIcon = this.createStringIcon(187);
+    let handIcon = this.createStringIcon(188);
+    let packPoints = this._packPoints.padZero(2);
+    let handPoints = this._handPoints.padZero(2);
+
+    if (this.isPlayer()) {
+        itemHeight = 148;
+    }else{
+        itemHeight = 0;
+    }
+
+    this.drawTextEx(packIcon + ' ' + packPoints, padding * 6, itemHeight);
+    this.drawTextEx(handIcon + ' ' + handPoints, padding * 7, itemHeight);
+};
+
+WindowBattleground.prototype.createStringIcon = function(indexIcon) {
+    return '\\I[' + indexIcon + ']';
 };
 
 WindowBattleground.prototype.update = function() {
@@ -160,43 +257,140 @@ WindowBattleground.prototype.update = function() {
     this.updatePoints();
     this.updateBattlePoints();
     this.updateBackgroundOpacity();
+    this.updateDisplay();
     this.reducerDelay();
-};
-
-WindowBattleground.prototype.updatePoints = function() {
-    if (this.isUpdateZonePoints() && this.isOpen()) {
-        if (!this._delay) {
-            this._delay = this.delayPoints();
-            this.refreshPoints();
-            this._frame--;
-        }
-    }
-};
-
-WindowBattleground.prototype.updateBattlePoints = function() {
-    if (this.isUpdateBattlePoints() && this.isOpen()) {
-        if (!this._delay) {
-            this._delay = 1;
-            this.refreshBattlePoints();
-            this._frame--;
-        }
-    }
 };
 
 WindowBattleground.prototype.updateMove = function() {
     if (this.isUpdateMove() && this.isOpen()) {
-        if (!this._delay) {
-            this._delay = 1;
+        if (this.voidDelay()) {
+            this._delay = this.moveDelay();
             this.refreshMove();
-            this._frame--;
         }
     }
 };
 
-WindowBattleground.prototype.reducerDelay = function() {
-    if (this._delay) {
-        this._delay--;
+WindowBattleground.prototype.isUpdateMove = function() {
+    return this.noEquals(this.x, this._targetX) || 
+        this.noEquals(this.y, this._targetY);
+};
+
+WindowBattleground.prototype.noEquals = function(attr, target) {
+    return attr !== target;
+};
+
+WindowBattleground.prototype.refreshMove = function() {
+    this.x = this.rateMove(this.x, this._targetX);
+    this.y = this.rateMove(this.y, this._targetY);
+};
+
+WindowBattleground.prototype.rateMove = function(coord, target) {
+	if (this.noEquals(coord, target)) {
+        let frame = this._frame;
+
+        frame = this.setFrameMove(coord, target);
+		return parseInt((coord * (frame - 1) + target) / frame, 10);
     }
+    return coord;
+};
+
+WindowBattleground.prototype.setFrameMove = function(attr, target) {
+    return parseInt(Math.abs(attr - target) / this.intervalMove());
+};
+
+WindowBattleground.prototype.updatePoints = function() {
+    if (this.isUpdatePoints() && this.isOpen()) {
+        if (this.voidDelay()) {
+            this._delay = this.pointsDelay();
+            this.refreshPoints();
+        }
+    }
+};
+
+WindowBattleground.prototype.isUpdatePoints = function() {
+    let color = this._colorPoints;
+    let target = this._targetColorPoints;
+
+    return this.noEquals(color.white, target.white) || 
+        this.noEquals(color.blue, target.blue) || 
+        this.noEquals(color.green, target.green) || 
+        this.noEquals(color.red, target.red) || 
+        this.noEquals(color.black, target.black) || 
+        this.noEquals(this._packPoints, this._targetPackPoints) || 
+        this.noEquals(this._handPoints, this._targetHandPoints);
+};
+
+WindowBattleground.prototype.refreshPoints = function() {
+    let color = this._colorPoints;
+    let target = this._targetColorPoints;
+
+    color.white = this.ratePoints(color.white, target.white);
+    color.blue = this.ratePoints(color.blue, target.blue);
+    color.green = this.ratePoints(color.green, target.green);
+    color.red = this.ratePoints(color.red, target.red);
+    color.black = this.ratePoints(color.black, target.black);
+    this._packPoints = this.ratePoints(this._packPoints, this._targetPackPoints);
+    this._handPoints = this.ratePoints(this._handPoints, this._targetHandPoints);
+    this.refreshContents();
+};
+
+WindowBattleground.prototype.ratePoints = function(attr, target) {
+	if (this.noEquals(attr, target)) {
+        let frame = this._frame;
+
+        frame = this.setFramePoints(attr, target);
+        return parseInt((attr * (frame - 1) + target) / frame, 10);
+    }
+    return attr;
+};
+
+WindowBattleground.prototype.setFramePoints = function(attr, target) {
+    return parseInt(Math.abs(attr - target) / this.intervalPoints());
+};
+
+WindowBattleground.prototype.updateBattlePoints = function() {
+    if (this.isUpdateBattlePoints() && this.isOpen()) {
+        if (this.voidDelay()) {
+            this._delay = this.battlePointsDelay();
+            this.refreshBattlePoints();
+        }
+    }
+};
+
+WindowBattleground.prototype.isUpdateBattlePoints = function() {
+    return this.noEquals(this._attackPoints, this._targetAttackPoints) || 
+        this.noEquals(this._healthPoints, this._targetHealthPoints);
+};
+
+WindowBattleground.prototype.refreshBattlePoints = function() {
+    this._attackPoints = this.rateBattlePoints(this._attackPoints, this._targetAttackPoints);
+    this._healthPoints = this.rateBattlePoints(this._healthPoints, this._targetHealthPoints);
+    this.refreshContents();
+};
+
+WindowBattleground.prototype.rateBattlePoints = function(attr, target) {
+	if (this.noEquals(attr, target)) {
+        let frame = this._frame;
+
+        frame = this.setFrameBattlePoints(attr, target);
+        return parseInt((attr * (frame - 1) + target) / frame, 10);
+    }
+    return attr;
+};
+
+WindowBattleground.prototype.setFrameBattlePoints = function(attr, target) {
+    let absolute = Math.abs(attr - target);
+    let intervalPoint = this.setIntervalBattlePoints(absolute);
+    return parseInt(absolute / intervalPoint);
+};
+
+WindowBattleground.prototype.setIntervalBattlePoints = function(absolute) {
+    if (absolute > 100) {
+        return 16;
+    } else if (absolute > 50) {
+        return 8;
+    }
+    return 1;
 };
 
 WindowBattleground.prototype.updateBackgroundOpacity = function() {
@@ -209,290 +403,72 @@ WindowBattleground.prototype.updateBackgroundOpacity = function() {
     }
 };
 
-WindowBattleground.prototype.isUpdateZonePoints = function() {
-    return this.isUpdateWhitePoints() || this.isUpdateBluePoints() || 
-    this.isUpdateGreenPoints() || this.isUpdateRedPoints() || 
-    this.isUpdateBlackPoints() || this.isUpdatePackPoints() || 
-    this.isUpdateHandPoints();
-};
-
-WindowBattleground.prototype.isUpdateWhitePoints = function() {
-    return this._whitePoints !== this._targetWhitePoints;
-};
-
-WindowBattleground.prototype.isUpdateBluePoints = function() {
-    return this._bluePoints !== this._targetBluePoints;
-};
-
-WindowBattleground.prototype.isUpdateGreenPoints = function() {
-    return this._greenPoints !== this._targetGreenPoints;
-};
-
-WindowBattleground.prototype.isUpdateRedPoints = function() {
-    return this._redPoints !== this._targetRedPoints;
-};
-
-WindowBattleground.prototype.isUpdateBlackPoints = function() {
-    return this._blackPoints !== this._targetBlackPoints;
-};
-
-WindowBattleground.prototype.isUpdatePackPoints = function() {
-    return this._packPoints !== this._targetPackPoints;
-};
-
-WindowBattleground.prototype.isUpdateHandPoints = function() {
-    return this._handPoints !== this._targetHandPoints;
-};
-
-WindowBattleground.prototype.isUpdateBattlePoints = function() {
-    return this.isUpdateAttackPoints() || this.isUpdateHealthPoints();
-};
-
-WindowBattleground.prototype.isUpdateAttackPoints = function() {
-    return this._attackPoints !== this._targetAttackPoints;
-};
-
-WindowBattleground.prototype.isUpdateHealthPoints = function() {
-    return this._healthPoints !== this._targetHealthPoints;
-};
-
-WindowBattleground.prototype.isUpdateMove = function() {
-    return this.isUpdateMoveX() || this.isUpdateMoveY();
-};
-
-WindowBattleground.prototype.isUpdateMoveX = function() {
-    return this.x !== this._targetX;
-};
-
-WindowBattleground.prototype.isUpdateMoveY = function() {
-    return this.y !== this._targetY;
-};
-
-WindowBattleground.prototype.setFrameWhitePoints = function() {
-    return parseInt(Math.abs(this._whitePoints - this._targetWhitePoints) / this.intervalPoints());
-};
-
-WindowBattleground.prototype.setFrameBluePoints = function() {
-    return parseInt(Math.abs(this._bluePoints - this._targetBluePoints) / this.intervalPoints());
-};
-
-WindowBattleground.prototype.setFrameGreenPoints = function() {
-    return parseInt(Math.abs(this._greenPoints - this._targetGreenPoints) / this.intervalPoints());
-};
-
-WindowBattleground.prototype.setFrameRedPoints = function() {
-    return parseInt(Math.abs(this._redPoints - this._targetRedPoints) / this.intervalPoints());
-};
-
-WindowBattleground.prototype.setFrameBlackPoints = function() {
-    return parseInt(Math.abs(this._blackPoints - this._targetBlackPoints) / this.intervalPoints());
-};
-
-WindowBattleground.prototype.setFramePackPoints = function() {
-    return parseInt(Math.abs(this._packPoints - this._targetPackPoints) / this.intervalPoints());
-};
-
-WindowBattleground.prototype.setFrameHandPoints = function() {
-    return parseInt(Math.abs(this._handPoints - this._targetHandPoints) / this.intervalPoints());
-};
-
-WindowBattleground.prototype.setFrameX = function() {
-    return parseInt(Math.abs(this.x - this._targetX) / this.intervalMove());
-};
-
-WindowBattleground.prototype.setFrameY = function() {
-    return parseInt(Math.abs(this.y - this._targetY) / this.intervalMove());
-};
-
-WindowBattleground.prototype.setFrameAttackPoints = function() {
-    let absolute = Math.abs(this._attackPoints - this._targetAttackPoints);
-    let intervalPoint = this.setintervalPoints(absolute);
-
-    return parseInt(absolute / intervalPoint);
-};
-
-WindowBattleground.prototype.setFrameHealthPoints = function() {
-    let absolute = Math.abs(this._healthPoints - this._targetHealthPoints);
-    let intervalPoint = this.setintervalPoints(absolute);
-
-    return parseInt(absolute / intervalPoint);
-};
-
-WindowBattleground.prototype.setintervalPoints = function(Absolute) {
-    if (Absolute > 100) {
-        return 16;
-    }else if (Absolute > 50) {
-        return 8;
-    }else{
-        return 1;
+WindowBattleground.prototype.updateDisplay = function() {
+    if (this._display.show) {
+        if (this._display.scale.x < 1) {
+            this._display.scale.x += 0.1;
+        }
+    } else {
+        if (this._display.scale.x > 0.1) {
+            this._display.scale.x -= 0.1;
+        }
     }
 };
 
-WindowBattleground.prototype.refreshPoints = function() {
-    this._whitePoints = this.rateWhitePoints();
-    this._bluePoints = this.rateBluePoints();
-    this._greenPoints = this.rateGreenPoints();
-    this._redPoints = this.rateRedPoints();
-    this._blackPoints = this.rateBlackPoints();
-    this._packPoints = this.ratePackPoints();
-    this._handPoints = this.rateHandPoints();
-    this.refresh();
-};
-
-WindowBattleground.prototype.refreshBattlePoints = function() {
-    this._attackPoints = this.rateAttackPoints();
-    this._healthPoints = this.rateHealthPoints();
-    this.refresh();
-};
-
-WindowBattleground.prototype.refreshMove = function() {
-    this.x = this.rateXcoord();
-    this.y = this.rateYCoord();
-};
-
-WindowBattleground.prototype.rateWhitePoints = function() {
-	if (this.isUpdateWhitePoints()) {
-        this._frame = this.setFrameWhitePoints();
-        return parseInt((this._whitePoints * (this._frame - 1) + this._targetWhitePoints) / this._frame, 10);
+WindowBattleground.prototype.reducerDelay = function() {
+    if (this.hasDelay()) {
+        this._delay--;
     }
-    return this._whitePoints;
 };
 
-WindowBattleground.prototype.rateBluePoints = function() {
-	if (this.isUpdateBluePoints()) {
-        this._frame = this.setFrameBluePoints();
-        return parseInt((this._bluePoints * (this._frame - 1) + this._targetBluePoints) / this._frame, 10);
-    }
-    return this._bluePoints;
+WindowBattleground.prototype.setPoints = function(value, min, max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
 };
 
-WindowBattleground.prototype.rateGreenPoints = function() {
-	if (this.isUpdateGreenPoints()) {
-        this._frame = this.setFrameGreenPoints();
-        return parseInt((this._greenPoints * (this._frame - 1) + this._targetGreenPoints) / this._frame, 10);
-    }
-    return this._greenPoints;
+WindowBattleground.prototype.setWhitePoints = function(points = this._colorPoints.white) {
+    this._targetColorPoints.white = this.setPoints(points, 0, 99);
 };
 
-WindowBattleground.prototype.rateRedPoints = function() {
-	if (this.isUpdateRedPoints()) {
-        this._frame = this.setFrameRedPoints();
-        return parseInt((this._redPoints * (this._frame - 1) + this._targetRedPoints) / this._frame, 10);
-    }
-    return this._redPoints;
+WindowBattleground.prototype.setBluePoints = function(points = this._colorPoints.blue) {
+    this._targetColorPoints.blue = this.setPoints(points, 0, 99);
 };
 
-WindowBattleground.prototype.rateBlackPoints = function() {
-	if (this.isUpdateBlackPoints()) {
-        this._frame = this.setFrameBlackPoints();
-        return parseInt((this._blackPoints * (this._frame - 1) + this._targetBlackPoints) / this._frame, 10);
-    }
-    return this._blackPoints;
+WindowBattleground.prototype.setGreenPoints = function(points = this._colorPoints.green) {
+    this._targetColorPoints.green = this.setPoints(points, 0, 99);
 };
 
-WindowBattleground.prototype.ratePackPoints = function() {
-	if (this.isUpdatePackPoints()) {
-        this._frame = this.setFramePackPoints();
-        return parseInt((this._packPoints * (this._frame - 1) + this._targetPackPoints) / this._frame, 10);
-    }
-    return this._packPoints;
+WindowBattleground.prototype.setRedPoints = function(points = this._colorPoints.red) {
+    this._targetColorPoints.red = this.setPoints(points, 0, 99);
 };
 
-WindowBattleground.prototype.rateHandPoints = function() {
-	if (this.isUpdateHandPoints()) {
-        this._frame = this.setFrameHandPoints();
-        return parseInt((this._handPoints * (this._frame - 1) + this._targetHandPoints) / this._frame, 10);
-    }
-    return this._handPoints;
-};
-
-WindowBattleground.prototype.rateAttackPoints = function() {
-	if (this.isUpdateAttackPoints()) {
-        this._frame = this.setFrameAttackPoints();
-        return parseInt((this._attackPoints * (this._frame - 1) + this._targetAttackPoints) / this._frame, 10);
-    }
-    return this._attackPoints;
-};
-
-WindowBattleground.prototype.rateHealthPoints = function() {
-	if (this.isUpdateHealthPoints()) {
-        this._frame = this.setFrameHealthPoints();
-        return parseInt((this._healthPoints * (this._frame - 1) + this._targetHealthPoints) / this._frame, 10);
-    }
-    return this._healthPoints;
-};
-
-WindowBattleground.prototype.rateXcoord = function() {
-	if (this.isUpdateMoveX()) {
-        this._frame = this.setFrameX();
-		return parseInt((this.x * (this._frame - 1) + this._targetX) / this._frame, 10);
-    }
-    return this.x;
-};
-
-WindowBattleground.prototype.rateYCoord = function() {
-	if (this.isUpdateMoveY()) {
-        this._frame = this.setFrameY();
-		return parseInt((this.y * (this._frame - 1) + this._targetY) / this._frame, 10);
-    }
-    return this.y;
-};
-
-WindowBattleground.prototype.setWhitePoints = function(points = this._whitePoints) {
-    if (points < 0) points = 0;
-    if (points > 99) points = 99;
-    this._targetWhitePoints = points;
-};
-
-WindowBattleground.prototype.setBluePoints = function(points = this._bluePoints) {
-    if (points < 0) points = 0;
-    if (points > 99) points = 99;
-    this._targetBluePoints = points;
-};
-
-WindowBattleground.prototype.setGreenPoints = function(points = this._greenPoints) {
-    if (points < 0) points = 0;
-    if (points > 99) points = 99;
-    this._targetGreenPoints = points;
-};
-
-WindowBattleground.prototype.setRedPoints = function(points = this._redPoints) {
-    if (points < 0) points = 0;
-    if (points > 99) points = 99;
-    this._targetRedPoints = points;
-};
-
-WindowBattleground.prototype.setBlackPoints = function(points = this._blackPoints) {
-    if (points < 0) points = 0;
-    if (points > 99) points = 99;
-    this._targetBlackPoints = points;
+WindowBattleground.prototype.setBlackPoints = function(points = this._colorPoints.black) {
+    this._targetColorPoints.black = this.setPoints(points, 0, 99);
 };
 
 WindowBattleground.prototype.setPackPoints = function(points = this._packPoints) {
-    if (points < 0) points = 0;
-    if (points > 99) points = 99;
-    this._targetPackPoints = points;
+    this._targetPackPoints = this.setPoints(points, 0, 99);
 };
 
 WindowBattleground.prototype.setHandPoints = function(points = this._handPoints) {
-    if (points < 0) points = 0;
-    if (points > 99) points = 99;
-    this._targetHandPoints = points;
+    this._targetHandPoints = this.setPoints(points, 0, 99);
 };
 
 WindowBattleground.prototype.setAttackPoints = function(points = this._attackPoints) {
-    if (points < 0) points = 0;
-    if (points > 999) points = 999;
-    this._targetAttackPoints = points;
+    this._targetAttackPoints = this.setPoints(points, 0, 999);
 };
 
 WindowBattleground.prototype.setHealthPoints = function(points = this._healthPoints) {
-    if (points < 0) points = 0;
-    if (points > 999) points = 999;
-    this._targetHealthPoints = points;
+    this._targetHealthPoints = this.setPoints(points, 0, 999);
 };
 
-WindowBattleground.prototype.positionAnimation = function(position) {
+WindowBattleground.prototype.setPositionAnimate = function(position) {
+    if (this.isPlayer()) {
+        this._spriteAnimation.y = 180;
+    }else{
+        this._spriteAnimation.y = 30;
+    }
     switch (position) {
         case 'WHITE_POINTS':
             this._spriteAnimation.x = 16 + 80;
@@ -516,15 +492,10 @@ WindowBattleground.prototype.positionAnimation = function(position) {
             this._spriteAnimation.x = 16 + (80 * 7);
             break;
         default:
-            throw new Error('The Zone does not have this position');
-    }
-    if (this._player) {
-        this._spriteAnimation.y = 180;
-    }else{
-        this._spriteAnimation.y = 30;
+            throw new Error('The Field does not have this position');
     }
 };
 
-WindowBattleground.prototype.showWinAnimation = function(index) {
+WindowBattleground.prototype.startAnimation = function(index) {
     this._spriteAnimation.startAnimation($dataAnimations[index], true, 1);
 };

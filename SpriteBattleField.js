@@ -199,13 +199,13 @@ SpriteBattlefield.prototype.refreshTexts = function () {
 };
 
 SpriteBattlefield.prototype.createOptionWindows = function () {
-    let objectYesNo = [
-        {label: 'Yes', tag: 'OPTION_CONFIRM'},
-        {label: 'No', tag: 'OPTION_CANCEL'}
+    let decisionOptions = [
+        {label: 'Yes', tag: 'OPTION_ACCEPT'},
+        {label: 'No', tag: 'OPTION_REFUSE'}
     ];
 
-    this._windowOptionLoad = new SpriteOption(0, 20, 816, objectYesNo);
-    //this._windowOptionCompile = new SpriteOption(0, 20, 816, objectYesNo);
+    this._windowOptionLoad = new SpriteOption(0, 20, 816, decisionOptions);
+    this._windowOptionCompile = new SpriteOption(0, 20, 816, decisionOptions);
     this.refreshOptionWindows();
 };
 
@@ -217,7 +217,7 @@ SpriteBattlefield.prototype.refreshOptionWindows = function () {
     this._windowOptionLoad.changePositionTitle(20, Graphics.boxHeight / 2);
     this._windowOptionLoad.changePositionOptions(20, Graphics.boxHeight / 1.7);
 
-    //this._windowOptionCompile.refreshTitle(marginLeft + 'Use a Power Card?');
+    this._windowOptionCompile.refreshTitle(marginLeft + 'Use a Power Card?');
 };
 
 SpriteBattlefield.prototype.createOtherWindows = function () {

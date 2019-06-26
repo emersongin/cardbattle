@@ -47,14 +47,14 @@ SceneCardBattle.prototype.waiting = function (wait) {
 
 SceneCardBattle.prototype.create = function () {
     Scene_Base.prototype.create.call(this);
-    this.createDisplayObjects();
+    // this.createDisplayObjects();
 
-    // this.testeTrashWindow();
-    // this.testeZoneWindow();
-    // this.testeWin();
+    // this.testeWindowTrash();
+    this.testeWindowBattlefield();
+    // this.testeWindowScore();
     // this.testeCard();
     // this.testeCollection();
-    // this.testeGameLuck();
+    // this.testeLuckyGame();
     // this.testeSpriteBattlefield();
     // this.testeWindowsOption();
 
@@ -66,8 +66,8 @@ SceneCardBattle.prototype.start = function () {
 
 SceneCardBattle.prototype.update = function () {
     Scene_Base.prototype.update.call(this);
-    this.updatePreBattle();
-    this.updateCardBattle();
+    // this.updatePreBattle();
+    // this.updateCardBattle();
 };
 
 SceneCardBattle.prototype.stop = function () {
@@ -90,150 +90,77 @@ SceneCardBattle.prototype.createSpriteset = function () {
 };
 
 SceneCardBattle.prototype.updatePreBattle = function () {
-    if (CardBattleManager.getPhase() === 'INITIALIZE') {
-        if (this._spriteset.isHideBackground() && this._spriteset.isHideOpening()) {
-            this._spriteset.showBackground();
-            this._spriteset.showOpening();
-        }
-        if (this._spriteset.isDisabledOpening() && this._spriteset.isHideChallenger()) {
-            if (this.waiting(20)) {
-                this._spriteset.showChallenger();
-            }
-        }
-        if (this._spriteset.isDisabledChallenger() && this._spriteset.isHideChooseFolder()) {
-            if (this.waiting(60)) {
-                this._spriteset.showChooseFolder();
-            }
-        }
-        if (this._spriteset.isDisabledChooseFolder()) {
-            if (this.waiting(60)) {
-                CardBattleManager.setPhase('CARD_BATTLE');
-            }
-        }
+    const scene = this;
+    const spriteset = this._spriteset;
+    const cardBattle = CardBattleManager;
+
+    if (cardBattle.isPhase('INITIALIZE')) {
+        startPreBattle();
+        startChallenger();
+        startChooseFolder();
+        endPreBattle();
     }
+
+    function startPreBattle () {
+        if (spriteset.isHideBackground() && spriteset.isHideOpening()) {
+            spriteset.showBackground();
+            spriteset.showOpening();
+        }
+    };
+
+    function startChallenger () {
+        if (spriteset.isDisabledOpening() && spriteset.isHideChallenger()) {
+            if (scene.waiting(20)) {
+                spriteset.showChallenger();
+            }
+        }
+    };
+
+    function startChooseFolder () {
+        if (spriteset.isDisabledChallenger() && spriteset.isHideChooseFolder()) {
+            if (scene.waiting(60)) {
+                spriteset.showChooseFolder();
+            }
+        }
+    };
+
+    function endPreBattle () {
+        if (spriteset.isDisabledChooseFolder()) {
+            if (scene.waiting(60)) {
+                cardBattle.setPhase('CARD_BATTLE');
+            }
+        }
+    };
 };
 
 SceneCardBattle.prototype.updateCardBattle = function () {
-    switch (CardBattleManager.getPhase()) {
+    const scene = this;
+    const spriteset = this._spriteset;
+    const cardBattle = CardBattleManager;
+
+    switch (cardBattle.getPhase()) {
         case 'CARD_BATTLE':
-            if (CardBattleManager.getPlayerWins() < 2 && CardBattleManager.getEnemyWins() < 2) {
-                CardBattleManager.setPhase('START_PHASE');
-            } else {
-                CardBattleManager.setPhase('END_PHASE');
-            }
+            nextSet();
             break;
         case 'START_PHASE':
-            if (this._spriteset.isHideBattlefield()) {
-                this._spriteset.showBattlefield();
-            };
-
-            if (this._spriteset.isHideWindowStartPhase()) {
-                this._spriteset.openWindowStartPhase();
-            };
-
-            if (this._spriteset.isDisableWindowStartPhase() && this._spriteset.isHideLuckyGame()) {
-                if (this.waiting(60)) {
-                    this._spriteset.showLuckyGame();
-                }
-            }
-
-            if (this._spriteset.isDisabledLuckyGame()) {
-                CardBattleManager.setPlayerFirst(this._spriteset.luckGameResult());
-                CardBattleManager.createGameCardCollections();
-                CardBattleManager.setPhase('DRAW_PHASE');
-            }
+            showBattlefield();
+            showWindowStartPhase();
+            startLuckyGame();
+            endLuckyGame();
             break;
         case 'DRAW_PHASE':
-            if (this._spriteset.isHideWindowDrawPhase()) {
-                if (this.waiting(60)) {
-                    this._spriteset.openWindowDrawPhase();
-                }
-            };
-            if (this._spriteset.isDisableWindowDrawPhase()) {
-                if (this._spriteset.IsMoveOutBackgrounds()) {
-                    if (this.waiting(60)) {
-                        this._spriteset.moveInPlayerBattlefield();
-                        this._spriteset.moveInEnemyBattlefield();
-                        this.setStatus('DRAW_REFRESH_CARDS');
-                    }
-                }
-            }
-            if (this._spriteset.stopMoveCards() && this._spriteset.IsMoveInBackgrounds() && this.currentStatus('DRAW_REFRESH_CARDS')) {
-                if (this.times(6)) {
-                    CardBattleManager.drawCardPlayer(1);
-                    CardBattleManager.drawCardEnemy(1);
-                    this._spriteset.addAndRefreshSpriteCardPlayer(this.indexTimes());
-                    this._spriteset.addAndRefreshSpriteCardEnemy(this.indexTimes());
-                    this._spriteset.showHandCardsPlayer(this.indexTimes());
-                    this._spriteset.showHandCardsEnemy(this.indexTimes());
-                    this._spriteset.refreshPlayerBattleField();
-                    this._spriteset.refreshEnemyBattleField();
-                } else {
-                    this.setStatus('DRAW_SHOW_PLAYER_CARDS');
-                }
-            }
-            if (this._spriteset.stopMoveCards() && this.currentStatus('DRAW_SHOW_PLAYER_CARDS')) {
-                if (this.times(6)) {
-                    this._spriteset.playerHandCardsToTurn(this.indexTimes());
-                } else {
-                    this.setStatus('DRAW_ADD_COLORS');
-                }
-            }
-            if (this._spriteset.stopMoveCards() && this.currentStatus('DRAW_ADD_COLORS')) {
-                if (this.times(6)) {
-                    this._spriteset.addPlayerColor(this.indexTimes());
-                    this._spriteset.addEnemyColor(this.indexTimes());
-                    this._spriteset.refreshPlayerBattleField();
-                    this._spriteset.refreshEnemyBattleField();
-                } else {
-                    this.setStatus('DRAW_CLOSE_CARDS');
-                    
-                }
-            }
-            if (this._spriteset.stopMoveCards() && this.currentStatus('DRAW_CLOSE_CARDS')) {
-                if (this.waiting(120)) {
-                    this._spriteset.moveOutPlayerBattlefield();
-                    this._spriteset.moveOutEnemyBattlefield();
-                    this._spriteset.closeHandCardsPlayer();
-                    this._spriteset.closeHandCardsEnemy();
-                    CardBattleManager.setPhase('LOAD_PHASE');
-                }
-            }
+            showWindowDrawPhase();
+            moveBattleFieldAndSetDrawCards();
+            drawCards();
+            showCards();
+            addColors();
+            closeCardsAndBattlefield();
             break;
         case 'LOAD_PHASE':
-            if (this._spriteset.isHideWindowLoadPhase()) {
-                if (this.waiting(60)) {
-                    this._spriteset.openWindowLoadPhase();
-                }
-            };
-            if (this._spriteset.isDisableWindowLoadPhase()) {
-                if (this._spriteset.IsMoveOutBackgrounds()) {
-                    if (this.waiting(60)) {
-                        this._spriteset.moveInPlayerBattlefield();
-                        this._spriteset.moveInEnemyBattlefield();
-                        this.setStatus('LOAD_BEGIN');
-                    }
-                }
-            }
-            if (this._spriteset.IsMoveInBackgrounds() && this.currentStatus('LOAD_BEGIN')) {
-                if (this._spriteset.isOpenAlertLoadWindow()) {
-                    if (this.waiting(120)) {
-                        this._spriteset.closeAlertLoadWindow();
-                        this.setStatus('LOAD_POWERCARD_PLAYER');
-                    }
-                } else {
-                    this._spriteset.openAlertLoadWindow();
-                }
-                
-            }
-            if (this.currentStatus('LOAD_POWERCARD_PLAYER')) {
-                if (this.waiting(60)) {
-                    this._spriteset.openOptionLoadWindow();
-                    this._spriteset.setHandlerLoadWindow('OPTION_CONFIRM', this.testeSelect.bind(this, 0));
-                    this._spriteset.setHandlerLoadWindow('OPTION_CANCEL', this.testeSelect.bind(this, 1));
-                    CardBattleManager.setPhase('SUMMON_PHASE');
-                }
-            }
+            showWindowLoadPhase();
+            moveBattleFieldAndSetLoad();
+            beginLoadPhase();
+            openWindowPlayerLoadPhase();
             break;
         case 'SUMMON_PHASE':
 
@@ -250,16 +177,169 @@ SceneCardBattle.prototype.updateCardBattle = function () {
         default:
             break;
     }
+
+    function nextSet () {
+        if (cardBattle.getPlayerWins() < 2 && cardBattle.getEnemyWins() < 2) {
+            cardBattle.setPhase('START_PHASE');
+        } else {
+            cardBattle.setPhase('END_PHASE');
+        }
+    };
+
+    function showBattlefield () {
+        if (spriteset.isHideBattlefield()) {
+            spriteset.showBattlefield();
+        };
+    };
+
+    function showWindowStartPhase () {
+        if (spriteset.isHideWindowStartPhase()) {
+            spriteset.openWindowStartPhase();
+        };
+    };
+
+    function startLuckyGame() {
+        if (spriteset.isDisableWindowStartPhase() && spriteset.isHideLuckyGame()) {
+            if (scene.waiting(60)) {
+                spriteset.showLuckyGame();
+            }
+        }
+    };
+
+    function endLuckyGame () {
+        if (spriteset.isDisabledLuckyGame()) {
+            cardBattle.setPlayerFirst(spriteset.luckyGameResult());
+            cardBattle.createGameCardCollections();
+            cardBattle.setPhase('DRAW_PHASE');
+        }
+    };
+
+    function showWindowDrawPhase () {
+        if (spriteset.isHideWindowDrawPhase()) {
+            if (scene.waiting(60)) {
+                spriteset.openWindowDrawPhase();
+            }
+        };
+    };
+
+    function moveBattleFieldAndSetDrawCards () {
+        if (spriteset.isDisableWindowDrawPhase() && spriteset.IsMoveOutBackgrounds()) {
+            if (scene.waiting(60)) {
+                spriteset.moveInPlayerBattlefield();
+                spriteset.moveInEnemyBattlefield();
+                scene.setStatus('DRAW_REFRESH_CARDS');
+            }
+        }
+    };
+
+    function drawCards () {
+        if (spriteset.stopMoveCards() && spriteset.IsMoveInBackgrounds() && 
+        scene.currentStatus('DRAW_REFRESH_CARDS')) {
+
+            if (scene.times(6)) {
+                cardBattle.drawCardPlayer(1);
+                cardBattle.drawCardEnemy(1);
+                spriteset.addAndRefreshSpriteCardPlayer(scene.indexTimes());
+                spriteset.addAndRefreshSpriteCardEnemy(scene.indexTimes());
+                spriteset.showHandCardsPlayer(scene.indexTimes());
+                spriteset.showHandCardsEnemy(scene.indexTimes());
+                spriteset.refreshPlayerBattleField();
+                spriteset.refreshEnemyBattleField();
+            } else {
+                scene.setStatus('DRAW_SHOW_PLAYER_CARDS');
+            }
+        }
+    };
+
+    function showCards () {
+        if (spriteset.stopMoveCards() && scene.currentStatus('DRAW_SHOW_PLAYER_CARDS')) {
+            if (scene.times(6)) {
+                spriteset.playerHandCardsToTurn(scene.indexTimes());
+            } else {
+                scene.setStatus('DRAW_ADD_COLORS');
+            }
+        }
+    };
+
+    function addColors () {
+        if (spriteset.stopMoveCards() && scene.currentStatus('DRAW_ADD_COLORS')) {
+            if (scene.times(6)) {
+                spriteset.addPlayerColor(scene.indexTimes());
+                spriteset.addEnemyColor(scene.indexTimes());
+                spriteset.refreshPlayerBattleField();
+                spriteset.refreshEnemyBattleField();
+            } else {
+                scene.setStatus('DRAW_CLOSE_CARDS');
+                
+            }
+        }
+    };
+
+    function closeCardsAndBattlefield () {
+        if (spriteset.stopMoveCards() && scene.currentStatus('DRAW_CLOSE_CARDS')) {
+            if (scene.waiting(120)) {
+                spriteset.moveOutPlayerBattlefield();
+                spriteset.moveOutEnemyBattlefield();
+                spriteset.closeHandCardsPlayer();
+                spriteset.closeHandCardsEnemy();
+                cardBattle.setPhase('LOAD_PHASE');
+            }
+        }
+    };
+
+    function showWindowLoadPhase () {
+        if (spriteset.isHideWindowLoadPhase()) {
+            if (scene.waiting(60)) {
+                spriteset.openWindowLoadPhase();
+            }
+        };
+    };
+
+    function moveBattleFieldAndSetLoad () {
+        if (spriteset.isDisableWindowLoadPhase() && spriteset.IsMoveOutBackgrounds()) {
+            if (scene.waiting(60)) {
+                spriteset.moveInPlayerBattlefield();
+                spriteset.moveInEnemyBattlefield();
+                scene.setStatus('LOAD_BEGIN');
+            }
+        }
+    };
+
+    function beginLoadPhase () {
+        if (spriteset.IsMoveInBackgrounds() && scene.currentStatus('LOAD_BEGIN')) {
+            if (spriteset.isOpenAlertLoadWindow()) {
+                if (scene.waiting(120)) {
+                    spriteset.closeAlertLoadWindow();
+                    scene.setStatus('LOAD_POWERCARD_PLAYER');
+                }
+            } else {
+                spriteset.openAlertLoadWindow();
+            }
+            
+        }
+    };
+
+    function openWindowPlayerLoadPhase () {
+        if (scene.currentStatus('LOAD_POWERCARD_PLAYER')) {
+            if (scene.waiting(60)) {
+                spriteset.openOptionLoadWindow();
+                spriteset.setHandlerLoadWindow('OPTION_ACCEPT', loadingPhaseOptions.bind(scene, true));
+                spriteset.setHandlerLoadWindow('OPTION_REFUSE', loadingPhaseOptions.bind(scene, false));
+                cardBattle.setPhase('SUMMON_PHASE');
+            }
+        }
+    };
+
+    function loadingPhaseOptions (choice) {
+        if (choice) {
+            console.log('Yes');
+        } else {
+            console.log('No');
+        }
+        this._spriteset.closeOptionLoadWindow();
+    };
 };
 
-SceneCardBattle.prototype.testeSelect = function (index) {
-    if (index) {
-        console.log('No');
-    } else {
-        console.log('Yes');
-    }
-    this._spriteset.closeOptionLoadWindow();
-};
 
 // SceneCardBattle.prototype.testeWindowsOption = function () {
 //     this.window = new SpriteOption(0, 20, 816, [
@@ -328,7 +408,7 @@ SceneCardBattle.prototype.testeSelect = function (index) {
 //     this._Battlefield.moveInEnemyScore();
 // };
 
-// SceneCardBattle.prototype.testeGameLuck = function () {
+// SceneCardBattle.prototype.testeLuckyGame = function () {
 //     this._gameLuck = new SpriteGameLuck();
 //     this._gameLuck.visible = true;
 //     this.addChild(this._gameLuck);
@@ -396,7 +476,7 @@ SceneCardBattle.prototype.testeSelect = function (index) {
     
 // };
 
-// SceneCardBattle.prototype.testeWin = function () {
+// SceneCardBattle.prototype.testeWindowScore = function () {
 //     this.windowWinPlayer = new WindowWin(true);
 //     this.windowWinEnemy = new WindowWin();
 
@@ -415,31 +495,32 @@ SceneCardBattle.prototype.testeSelect = function (index) {
     
 // }
 
-// SceneCardBattle.prototype.testeZoneWindow = function () {
-//     this.windowZone = new WindowZone(true);
-//     this.windowZone2 = new WindowZone();
+SceneCardBattle.prototype.testeWindowBattlefield = function () {
+    this.windowZone = new WindowBattleground({ player: true });
+    this.windowZone2 = new WindowBattleground({ player: false });
 
-//     this.addChild(this.windowZone);
-//     this.addChild(this.windowZone2);
+    this.addChild(this.windowZone);
+    this.addChild(this.windowZone2);
 
-//     this.windowZone.initialPosition();
-//     this.windowZone2.initialPosition();
+    this.windowZone.initialPosition();
+    this.windowZone2.initialPosition();
+    this.windowZone.moveIn();
+    this.windowZone2.moveIn();    
 
-//     this.windowZone.open();
-//     this.windowZone2.open();
+    if (this.windowZone.IsMoveIn()) {
+        this.windowZone.showDisplay();
+        this.windowZone2.showDisplay();
+        this.windowZone.setHandPoints(5555);
+    }
 
-//     this.windowZone.moveIn();
-//     this.windowZone2.moveIn();
-
-//     this.windowZone.setPackPoints(10);
-//     this.windowZone2.setPackPoints(10);
-
-//     this.windowZone.positionAnimation('RED_POINTS');
-//     this.windowZone.showWinAnimation();
+    this.windowZone.setPackPoints(10);
+    this.windowZone2.setPackPoints(10);
+    this.windowZone.setPositionAnimate('WHITE_POINTS');
+    this.windowZone.startAnimation(2);
     
-// }
+}
 
-// SceneCardBattle.prototype.testeTrashWindow = function () {
+// SceneCardBattle.prototype.testeWindowTrash = function () {
 //     this.windowTrashPlayer = new WindowTrash(true);
 //     this.windowTrashEnemy = new WindowTrash();
 
