@@ -7,22 +7,22 @@ SpriteCollection.prototype.constructor = SpriteCollection;
 
 SpriteCollection.prototype.initialize = function () {
     Sprite.prototype.initialize.call(this);
-    this._cardCollection = [];
-    this._spriteCollection = [];
-    this._actionCollection  = [];
+    this._cards = [];
+    this._sprites = [];
+    this._actions  = [];
     this.createLayers();
 };
 
 SpriteCollection.prototype.createLayers = function () {
-    this._lowerLayer = new Sprite();
-    this._highestLayer = new Sprite();
-    this.addChildAt(this._lowerLayer, 0);
-    this.addChildAt(this._highestLayer, 1);
+    this._lowLayer = new Sprite();
+    this._highLayer = new Sprite();
+    this.addChildAt(this._lowLayer, 0);
+    this.addChildAt(this._highLayer, 1);
 };
 
 SpriteCollection.prototype.clearCollections = function () {
-    this._cardCollection = [];
-    this._spriteCollection = [];
+    this._cards = [];
+    this._sprites = [];
 };
 
 SpriteCollection.prototype.refreshCollections = function (GameCardCollection) {
@@ -35,106 +35,129 @@ SpriteCollection.prototype.refreshCollections = function (GameCardCollection) {
 };
 
 SpriteCollection.prototype.addCard = function (GameCard) {
-    this._cardCollection.push(GameCard);
+    this._cards.push(GameCard);
 };
 
 SpriteCollection.prototype.addSprite = function (GameCard) {
-    this._spriteCollection.push(new SpriteCard(GameCard));
+    this._sprites.push(new SpriteCard(GameCard));
 };
 
 SpriteCollection.prototype.addChildren = function () {
-    this._spriteCollection.forEach(SpriteCard => {
+    this._sprites.forEach(SpriteCard => {
         this.addChild(SpriteCard);
     });
 };
 
-SpriteCollection.prototype.addChildIndex = function (index) {
-    this.addChild(this._spriteCollection[index]);
-};
-
-SpriteCollection.prototype.hasActions = function () {
-    return this._actionCollection.length;
-}
-
-SpriteCollection.prototype.voidActions = function () {
-    return !this._actionCollection.length;
-}
-
 SpriteCollection.prototype.removeChildren = function () {
-    this._spriteCollection.forEach(SpriteCard => {
+    this._sprites.forEach(SpriteCard => {
         this.removeChild(SpriteCard);
     });
 };
 
-SpriteCollection.prototype.highChild = function (index) {
+SpriteCollection.prototype.addChildIndex = function (index) {
+    this.addChild(this._sprites[index]);
+};
+
+SpriteCollection.prototype.removeChildIndex = function (index) {
+    this.removeChild(this._sprites[index]);
+};
+
+SpriteCollection.prototype.tallChild = function (index) {
     this.removeChildren();
 
-    this._spriteCollection.forEach((SpriteCard, indexChild) => {
-        if (index === indexChild) {
-            this.addChildUp(SpriteCard);
+    this._sprites.forEach(SpriteCard => {
+        if (this._sprites[index] === SpriteCard) {
+            this.addChildToFront(SpriteCard);
         } else {
             this.addChildToBack(SpriteCard);
         }
     });
 };
 
-SpriteCollection.prototype.addChildUp = function (child) {
-    let layerIndex = this.children.indexOf(this._highestLayer);
-    this.addChildAt(child, layerIndex + 1);
+SpriteCollection.prototype.addChildToFront = function (SpriteCard) {
+    let indexHigh = this.children.indexOf(this._highLayer);
+    this.addChildAt(SpriteCard, indexHigh + 1);
 };
 
-SpriteCollection.prototype.addChildToBack = function (child) {
-    let layerIndex = this.children.indexOf(this._lowerLayer);
-    this.addChildAt(child, layerIndex + 1);
+SpriteCollection.prototype.addChildToBack = function (SpriteCard) {
+    let indexLow = this.children.indexOf(this._lowLayer);
+    this.addChildAt(SpriteCard, indexLow + 1);
 };
 
-SpriteCollection.prototype.hasFramesCollection = function () {
-    let activeMovementove = false;
+SpriteCollection.prototype.hasActions = function () {
+    return this._actions.length;
+}
 
-    this._spriteCollection.forEach((SpriteCard, index) => {
-        let child = this.selectChild(index);
+SpriteCollection.prototype.voidActions = function () {
+    return !this._actions.length;
+}
+
+SpriteCollection.prototype.busyCollection = function () {
+    let busy = false;
+
+    this._sprites.forEach(SpriteCard => {
+        let indexChild = this.children.indexOf(SpriteCard);
+        let child = this.children[indexChild];
 
         if (child) {
-            if (child.hasSequence() || child.hasFrameMove()) {
-                activeMovementove = true;
+            if (child.hasSequence() || child.itsMoving()) {
+                return busy = true;
             };
         }
     });
-
-    return activeMovementove;
+    return busy;
 };
 
-SpriteCollection.prototype.voidFramesCollection = function () {
-    return !this.hasFramesCollection();
+SpriteCollection.prototype.noWaitingCollection = function () {
+    return !this.busyCollection();
 };
 
 SpriteCollection.prototype.addActions = function (actions) {
-    if (Array.isArray(actions) === false) {
+    if (Array.isArray(actions)) {
+        this._actions.push(actions);
+    } else {
         if (actions) {
             actions = [actions];
         }else{
             actions = [];
         }
+
+        this._actions.push(actions);
     }
-    
-    this._actionCollection.push(actions);
+};
+
+SpriteCollection.prototype.update = function () {
+    Sprite.prototype.update.call(this);
+    this.updateActions();
 };
 
 SpriteCollection.prototype.updateActions = function () {
-    if (this.voidFramesCollection() && this.hasActions()) {
-        this.actionMove(this._actionCollection.shift());
+    if (this.hasActions() && this.noWaitingCollection()) {
+        this.toMove(this._actions.shift());
     }
 };
 
-SpriteCollection.prototype.actionMove = function (actions) {
-    actions.forEach(Action => {
+SpriteCollection.prototype.toMove = function (Actions) {
+    Actions.forEach(Action => {
         this.selectChild(Action.index).setActions(Action.moves);
     });
 };
 
 SpriteCollection.prototype.selectChild = function (index) {
-    let indexOfChild = this.children.indexOf(this._spriteCollection[index]);
+    let indexOfChild = this.children.indexOf(this._sprites[index]);
     return this.children[indexOfChild];
+};
+
+SpriteCollection.prototype.isSelected = function (index) {
+    return this.selectChild(index).isSelected();
+};
+
+SpriteCollection.prototype.isUnselect = function (index) {
+    return this.selectChild(index).isUnselect();
+};
+
+SpriteCollection.prototype.isClosed = function (index) {
+    return this.selectChild(index).isClose();
 };
 
 SpriteCollection.prototype.positionHand = function (index) {
@@ -162,7 +185,7 @@ SpriteCollection.prototype.moveField = function (index) {
     return {
         index,
         moves: [
-            {type: 'MOVE_FIELD', index, frame: 6}
+            {type: 'MOVE_FIELD', index, frame: 10}
         ]
     };
 };
@@ -172,9 +195,9 @@ SpriteCollection.prototype.moveAttack = function (index, target) {
         index,
         moves: [
             {type: 'PLUS', times: 2, frame: 20},
-            {type: 'CONFIRM'},
+            {type: 'TAKE'},
             {type: 'LESS', times: 2, frame: 10},
-            {type: 'UNCONFIRM'},
+            {type: 'UNTAKE'},
             {type: 'MOVE_ATTACK', frame: 3, target}
         ]
     };
@@ -240,45 +263,20 @@ SpriteCollection.prototype.disabled = function (index) {
     };
 };
 
-SpriteCollection.prototype.isLight = function (index) {
-    return this.selectChild(index).isLight();
-};
-
-SpriteCollection.prototype.isUnlit = function (index) {
-    return this.selectChild(index).isUnlit();
-};
-
-SpriteCollection.prototype.isClosed = function (index) {
-    return this.selectChild(index).isClose();
-};
-
-SpriteCollection.prototype.light = function (index) {
-    return {
-        index,
-        moves: [
-            {type: 'LIGHT'},
-            {type: 'MOVE_UP', times: 1, frame: 4}
-        ]
-    };
-};
-
-SpriteCollection.prototype.unlit = function (index) {
-    return {
-        index,
-        moves: [
-            {type: 'UNLIT'},
-            {type: 'MOVE_DOWN', times: 1, frame: 4}
-        ]
-    };
-};
-
 SpriteCollection.prototype.select = function (index) {
     return {
         index,
         moves: [
-            {type: 'ANIMATION', index: 121, frame: 4},
-            {type: 'SELECT'},
-            {type: 'REFRESH'}
+            {type: 'SELECT'}
+        ]
+    };
+};
+
+SpriteCollection.prototype.up = function (index) {
+    return {
+        index,
+        moves: [
+            {type: 'MOVE_UP', times: 1, frame: 4}
         ]
     };
 };
@@ -287,20 +285,49 @@ SpriteCollection.prototype.unselect = function (index) {
     return {
         index,
         moves: [
+            {type: 'UNSELECT'}
+        ]
+    };
+};
+
+SpriteCollection.prototype.down = function (index) {
+    return {
+        index,
+        moves: [
+            {type: 'MOVE_DOWN', times: 1, frame: 4}
+        ]
+    };
+};
+
+SpriteCollection.prototype.like = function (index) {
+    return {
+        index,
+        moves: [
             {type: 'ANIMATION', index: 121, frame: 4},
-            {type: 'UNSELECT'},
+            {type: 'LIKE'},
             {type: 'REFRESH'}
         ]
     };
 };
 
-SpriteCollection.prototype.confirm = function (index) {
+SpriteCollection.prototype.unlike = function (index) {
     return {
         index,
         moves: [
-            {type: 'UNLIT'},
+            {type: 'ANIMATION', index: 121, frame: 4},
+            {type: 'UNLIKE'},
+            {type: 'REFRESH'}
+        ]
+    };
+};
+
+SpriteCollection.prototype.take = function (index) {
+    return {
+        index,
+        moves: [
             {type: 'UNSELECT'},
-            {type: 'CONFIRM'}
+            {type: 'UNLIKE'},
+            {type: 'TAKE'}
         ]
     };
 };
@@ -315,12 +342,12 @@ SpriteCollection.prototype.react = function (index) {
     };
 };
 
-SpriteCollection.prototype.effect = function (index) {
+SpriteCollection.prototype.triggered = function (index) {
     return {
         index,
         moves: [
             {type: 'CLOSE', index, frame: 10},
-            {type: 'EFFECT'},
+            {type: 'TRIGGERED'},
             {type: 'REFRESH'},
             {type: 'OPEN', index, frame: 10}
         ]
@@ -425,9 +452,4 @@ SpriteCollection.prototype.waitMoment = function (index, wait) {
             {type: 'WAIT', frame: wait}
         ] 
     };
-};
-
-SpriteCollection.prototype.update = function () {
-    Sprite.prototype.update.call(this);
-    this.updateActions();
 };

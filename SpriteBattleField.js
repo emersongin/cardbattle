@@ -365,35 +365,35 @@ SpriteBattlefield.prototype.hide = function () {
     this.visible = false;
 };
 
-SpriteBattlefield.prototype.IsMoveInPlayerBackground = function () {
+SpriteBattlefield.prototype.IsMoveInPlayerBattleground = function () {
     return this._playerBattleground.IsMoveIn();
 };
 
-SpriteBattlefield.prototype.IsMoveOutPlayerBackground = function () {
+SpriteBattlefield.prototype.IsMoveOutPlayerBattleground = function () {
     return this._playerBattleground.IsMoveOut();
 };
 
-SpriteBattlefield.prototype.IsMoveInEnemyBackground = function () {
+SpriteBattlefield.prototype.IsMoveInEnemyBattleground = function () {
     return this._enemyBattleground.IsMoveIn();
 };
 
-SpriteBattlefield.prototype.IsMoveOutEnemyBackground = function () {
+SpriteBattlefield.prototype.IsMoveOutEnemyBattleground = function () {
     return this._enemyBattleground.IsMoveOut();
 };
 
-SpriteBattlefield.prototype.moveInPlayerBackground = function () {
+SpriteBattlefield.prototype.moveInPlayerBattleground = function () {
     this._playerBattleground.moveIn();
 };
 
-SpriteBattlefield.prototype.moveOutPlayerBackground = function () {
+SpriteBattlefield.prototype.moveOutPlayerBattleground = function () {
     this._playerBattleground.moveOut();
 };
 
-SpriteBattlefield.prototype.moveInEnemyBackground = function () {
+SpriteBattlefield.prototype.moveInEnemyBattleground= function () {
     this._enemyBattleground.moveIn();
 };
 
-SpriteBattlefield.prototype.moveOutEnemyBackground = function () {
+SpriteBattlefield.prototype.moveOutEnemyBattleground= function () {
     this._enemyBattleground.moveOut();
 };
 
@@ -572,11 +572,27 @@ SpriteBattlefield.prototype.refreshEnemyBattlefieldPoints = function () {
 };
 
 SpriteBattlefield.prototype.stopMovePlayerSpriteCollection = function () {
-    return this._playerSpriteCollection.voidFramesCollection() && 
+    return this._playerSpriteCollection.noWaitingCollection() && 
     this._playerSpriteCollection.voidActions();
 };
 
 SpriteBattlefield.prototype.stopMoveEnemySpriteCollection = function () {
-    return this._enemySpriteCollection.voidFramesCollection() && 
+    return this._enemySpriteCollection.noWaitingCollection() && 
     this._enemySpriteCollection.voidActions();
+};
+
+SpriteBattlefield.prototype.showPlayerDisplayPass = function () {
+    this._playerBattleground.showDisplay();
+};
+
+SpriteBattlefield.prototype.hidePlayerDisplayPass = function () {
+    this._playerBattleground.hideDisplay();
+};
+
+SpriteBattlefield.prototype.showEnemyDisplayPass = function () {
+    this._enemyBattleground.showDisplay();
+};
+
+SpriteBattlefield.prototype.hideEnemyDisplayPass = function () {
+    this._enemyBattleground.hideDisplay();
 };

@@ -73,6 +73,10 @@ SpritesetCardBattle.prototype.openWindowLoadPhase = function () {
     this._battlefield.openWindowLoadPhase();
 };
 
+SpritesetCardBattle.prototype.openWindowSummonPhase = function () {
+    this._battlefield.openWindowSummonPhase();
+};
+
 SpritesetCardBattle.prototype.isHideBackground = function () {
     return this._background.isHidden();
 };
@@ -173,50 +177,58 @@ SpritesetCardBattle.prototype.luckyGameResult = function () {
     return this._luckyGame.getGameResult();
 };
 
-SpritesetCardBattle.prototype.IsMoveInBackgrounds = function () {
-    return this.IsMoveInPlayerBackground() && this.IsMoveInEnemyBackground();
+SpritesetCardBattle.prototype.IsMoveInBattlegrounds = function () {
+    return this.IsMoveInPlayerBattleground() && this.IsMoveInEnemyBattleground();
 };
 
-SpritesetCardBattle.prototype.IsMoveInPlayerBackground = function () {
-    return this._battlefield.IsMoveInPlayerBackground();
+SpritesetCardBattle.prototype.IsMoveInPlayerBattleground = function () {
+    return this._battlefield.IsMoveInPlayerBattleground();
 };
 
-SpritesetCardBattle.prototype.IsMoveInEnemyBackground = function () {
-    return this._battlefield.IsMoveInEnemyBackground();
+SpritesetCardBattle.prototype.IsMoveInEnemyBattleground = function () {
+    return this._battlefield.IsMoveInEnemyBattleground();
 };
 
-SpritesetCardBattle.prototype.IsMoveOutBackgrounds = function () {
-    return this.IsMoveOutPlayerBackground() && this.IsMoveOutEnemyBackground();
+SpritesetCardBattle.prototype.IsMoveOutBattlegrounds = function () {
+    return this.IsMoveOutPlayerBattleground() && this.IsMoveOutEnemyBattleground();
 };
 
-SpritesetCardBattle.prototype.IsMoveOutPlayerBackground = function () {
-    return this._battlefield.IsMoveOutPlayerBackground();
+SpritesetCardBattle.prototype.IsMoveOutPlayerBattleground = function () {
+    return this._battlefield.IsMoveOutPlayerBattleground();
 };
 
-SpritesetCardBattle.prototype.IsMoveOutEnemyBackground = function () {
-    return this._battlefield.IsMoveOutEnemyBackground();
+SpritesetCardBattle.prototype.IsMoveOutEnemyBattleground = function () {
+    return this._battlefield.IsMoveOutEnemyBattleground();
 };
 
 SpritesetCardBattle.prototype.moveInPlayerBattlefield = function () {
-    this._battlefield.moveInPlayerBackground();
+    this._battlefield.moveInPlayerBattleground();
     this._battlefield.moveInPlayerScore();
     this._battlefield.moveInPlayerTrash();
 };
 
+SpritesetCardBattle.prototype.moveInPlayerBattleground = function () {
+    this._battlefield.moveInPlayerBattleground();
+};
+
 SpritesetCardBattle.prototype.moveInEnemyBattlefield = function () {
-    this._battlefield.moveInEnemyBackground();
+    this._battlefield.moveInEnemyBattleground();
     this._battlefield.moveInEnemyScore();
     this._battlefield.moveInEnemyTrash();
 };
 
+SpritesetCardBattle.prototype.moveInEnemyBattleground = function () {
+    this._battlefield.moveInEnemyBattleground();
+};
+
 SpritesetCardBattle.prototype.moveOutPlayerBattlefield = function () {
-    this._battlefield.moveOutPlayerBackground();
+    this._battlefield.moveOutPlayerBattleground();
     this._battlefield.moveOutPlayerScore();
     this._battlefield.moveOutPlayerTrash();
 };
 
 SpritesetCardBattle.prototype.moveOutEnemyBattlefield = function () {
-    this._battlefield.moveOutEnemyBackground();
+    this._battlefield.moveOutEnemyBattleground();
     this._battlefield.moveOutEnemyScore();
     this._battlefield.moveOutEnemyTrash();
 };
@@ -333,4 +345,20 @@ SpritesetCardBattle.prototype.closeOptionLoadWindow = function () {
 
 SpritesetCardBattle.prototype.setHandlerLoadWindow = function (tag, link) {
     this._battlefield.setHandlerLoadWindow(tag, link);
+};
+
+SpritesetCardBattle.prototype.showPlayerDisplayPass = function () {
+    this._battlefield.showPlayerDisplayPass();
+};
+
+SpritesetCardBattle.prototype.hidePlayerDisplayPass = function () {
+    this._battlefield.hidePlayerDisplayPass();
+};
+
+SpritesetCardBattle.prototype.showEnemyDisplayPass = function () {
+    this._battlefield.showEnemyDisplayPass();
+};
+
+SpritesetCardBattle.prototype.hideEnemyDisplayPass = function () {
+    this._battlefield.hideEnemyDisplayPass();
 };

@@ -38,6 +38,12 @@ WindowBattleground.prototype.setAttributes = function() {
     this._targetHandPoints = 0;
     this._colorPoints = new GameFolderColor();
     this._targetColorPoints = new GameFolderColor();
+    this.definePackPoints();
+};
+
+WindowBattleground.prototype.definePackPoints = function() {
+    this._packPoints = 40;
+    this._targetPackPoints = 40;
 };
 
 WindowBattleground.prototype.setConfig = function() {

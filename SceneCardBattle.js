@@ -50,10 +50,10 @@ SceneCardBattle.prototype.create = function () {
     // this.createDisplayObjects();
 
     // this.testeWindowTrash();
-    this.testeWindowBattlefield();
+    // this.testeWindowBattlefield();
     // this.testeWindowScore();
     // this.testeCard();
-    // this.testeCollection();
+    this.testeCollection();
     // this.testeLuckyGame();
     // this.testeSpriteBattlefield();
     // this.testeWindowsOption();
@@ -160,10 +160,12 @@ SceneCardBattle.prototype.updateCardBattle = function () {
             showWindowLoadPhase();
             moveBattleFieldAndSetLoad();
             beginLoadPhase();
+            loadPhaseControl();
             openWindowPlayerLoadPhase();
             break;
         case 'SUMMON_PHASE':
-
+            showWindowSummonPhase();
+            selectBattleCards();
             break;
         case 'COMPILE_PHASE':
 
@@ -223,7 +225,7 @@ SceneCardBattle.prototype.updateCardBattle = function () {
     };
 
     function moveBattleFieldAndSetDrawCards () {
-        if (spriteset.isDisableWindowDrawPhase() && spriteset.IsMoveOutBackgrounds()) {
+        if (spriteset.isDisableWindowDrawPhase() && spriteset.IsMoveOutBattlegrounds()) {
             if (scene.waiting(60)) {
                 spriteset.moveInPlayerBattlefield();
                 spriteset.moveInEnemyBattlefield();
@@ -233,7 +235,7 @@ SceneCardBattle.prototype.updateCardBattle = function () {
     };
 
     function drawCards () {
-        if (spriteset.stopMoveCards() && spriteset.IsMoveInBackgrounds() && 
+        if (spriteset.stopMoveCards() && spriteset.IsMoveInBattlegrounds() && 
         scene.currentStatus('DRAW_REFRESH_CARDS')) {
 
             if (scene.times(6)) {
@@ -296,7 +298,7 @@ SceneCardBattle.prototype.updateCardBattle = function () {
     };
 
     function moveBattleFieldAndSetLoad () {
-        if (spriteset.isDisableWindowLoadPhase() && spriteset.IsMoveOutBackgrounds()) {
+        if (spriteset.isDisableWindowLoadPhase() && spriteset.IsMoveOutBattlegrounds()) {
             if (scene.waiting(60)) {
                 spriteset.moveInPlayerBattlefield();
                 spriteset.moveInEnemyBattlefield();
@@ -306,11 +308,11 @@ SceneCardBattle.prototype.updateCardBattle = function () {
     };
 
     function beginLoadPhase () {
-        if (spriteset.IsMoveInBackgrounds() && scene.currentStatus('LOAD_BEGIN')) {
+        if (spriteset.IsMoveInBattlegrounds() && scene.currentStatus('LOAD_BEGIN')) {
             if (spriteset.isOpenAlertLoadWindow()) {
                 if (scene.waiting(120)) {
                     spriteset.closeAlertLoadWindow();
-                    scene.setStatus('LOAD_POWERCARD_PLAYER');
+                    scene.setStatus('LOAD_CONTROL');
                 }
             } else {
                 spriteset.openAlertLoadWindow();
@@ -319,13 +321,37 @@ SceneCardBattle.prototype.updateCardBattle = function () {
         }
     };
 
+    function loadPhaseControl () {
+        if (scene.currentStatus('LOAD_CONTROL')) {
+            if (spriteset.IsMoveOutBattlegrounds()) {
+                spriteset.moveInPlayerBattlefield();
+                spriteset.moveInEnemyBattlefield();
+            }
+            if (scene.waiting(60)) {
+                if (CardBattleManager.getPlayerPass() && CardBattleManager.getEnemyPass()) {
+                    spriteset.moveOutPlayerBattlefield();
+                    spriteset.moveOutEnemyBattlefield();
+                    cardBattle.setPhase('SUMMON_PHASE');
+                } else {
+                    if (CardBattleManager.getPlayerFirst()) {
+                        CardBattleManager.setPlayerFirst(false);
+                        scene.setStatus('LOAD_POWERCARD_PLAYER');
+                    } else {
+                        CardBattleManager.setPlayerFirst(true);
+                        CardBattleManager.setEnemyPass(true);
+                        spriteset.showEnemyDisplayPass();
+                    }
+                }
+            }
+        }
+    };
+
     function openWindowPlayerLoadPhase () {
         if (scene.currentStatus('LOAD_POWERCARD_PLAYER')) {
-            if (scene.waiting(60)) {
+            if (scene.waiting(30)) {
                 spriteset.openOptionLoadWindow();
                 spriteset.setHandlerLoadWindow('OPTION_ACCEPT', loadingPhaseOptions.bind(scene, true));
                 spriteset.setHandlerLoadWindow('OPTION_REFUSE', loadingPhaseOptions.bind(scene, false));
-                cardBattle.setPhase('SUMMON_PHASE');
             }
         }
     };
@@ -334,9 +360,28 @@ SceneCardBattle.prototype.updateCardBattle = function () {
         if (choice) {
             console.log('Yes');
         } else {
-            console.log('No');
+            CardBattleManager.setPlayerPass(true);
+            spriteset.showPlayerDisplayPass();
+            scene.setStatus('LOAD_CONTROL');
         }
         this._spriteset.closeOptionLoadWindow();
+    };
+
+    function showWindowSummonPhase () {
+        if (spriteset.isHideWindowSummonPhase()) {
+            if (scene.waiting(60)) {
+                spriteset.openWindowSummonPhase();
+            }
+        };
+    };
+
+    function selectBattleCards () {
+        if (spriteset.isDisableWindowSummonPhase() && spriteset.IsMoveOutBattlegrounds()) {
+            if (scene.waiting(60)) {
+                cardBattle.setPhase('selectBattleCards');
+                spriteset.moveInPlayerBattleground();
+            }
+        }
     };
 };
 
@@ -399,7 +444,7 @@ SceneCardBattle.prototype.updateCardBattle = function () {
 //     this._Battlefield.openWindowCompilePhase();
 //     this._Battlefield.openWindowBattlePhase();
 
-//     this._Battlefield.moveInPlayerBackground();
+//     this._Battlefield.moveInPlayerBattleground();
 //     this._Battlefield.moveInPlayerTrash();
 //     this._Battlefield.moveInPlayerScore();
 
@@ -416,65 +461,27 @@ SceneCardBattle.prototype.updateCardBattle = function () {
 //     this._gameLuck.openCards();
 // };
 
-// SceneCardBattle.prototype.testeCollection = function () {
-//     this._testeColection = new SpriteCollection();
-//     this._testeColection.x = Graphics.boxWidth / 16;
-//     this._testeColection.y = Graphics.boxHeight / 2;
+SceneCardBattle.prototype.testeCollection = function () {
+    this._testeColection = new SpriteHandlerCollection();
+    this._testeColection.x = Graphics.boxWidth / 16;
+    this._testeColection.y = Graphics.boxHeight / 2;
 
-//     let GameCardCollection = [];
-//     for (let index = 0; index < 6; index++) {
-//         GameCardCollection.push(new GameCard(3));
-//     }
-//     this.addChild(this._testeColection);
+    let GameCardCollection = [];
+    let actions = [];
+
+    for (let index = 0; index < 6; index++) {
+        GameCardCollection.push(new GameCard(3));
+    }
+    this.addChild(this._testeColection);
     
-//     this._testeColection.refreshCollection(GameCardCollection);
-//     this._testeColection.addChildren();
+    this._testeColection.refreshCollections(GameCardCollection);
+    this._testeColection.addChildren();
 
-//     GameCardCollection.forEach((GameCard, index) => {
-//         this._testeColection.positionCollection(index);
-//         this._testeColection.waitMoment(index, index * 8);
-//         this._testeColection.toTurn(index);
+    this._testeColection.showCollection({min: 1, max: 6});
+    this._testeColection.activeSelection();
 
-//         this._testeColection.positionHand(index);
-//         this._testeColection.moveField(index);
 
-//         this._testeColection.toTurn(index);
-//         this._testeColection.flash(index);
-//         this._testeColection.close(index);
-
-//         this._testeColection.effect(index);
-//         this._testeColection.block(index);
-
-//         this._testeColection.activeEffect(index);
-
-//         this._testeColection.toDestroy(index);
-
-//         this._testeColection.light(index);
-//         this._testeColection.unlit(index);
-
-//         this._testeColection.select(index);
-//         this._testeColection.unselect(index);
-//         this._testeColection.confirm(index);
-
-//         this._testeColection.react(index);
-
-//         this._testeColection.powerUp(index);
-//         this._testeColection.powerDown(index);
-        
-//         this._testeColection.disabled(index);
-//         this._testeColection.enabled(index);
-
-//         this._testeColection.moveAttack(index, 6);
-//         this._testeColection.moveBattleField(index);
-
-//         this._testeColection.damager(index);
-
-//         this._testeColection.setAttack(index, 90);
-//         this._testeColection.setHealth(index, -90);
-
-//     });
-    
-// };
+};''            
 
 // SceneCardBattle.prototype.testeWindowScore = function () {
 //     this.windowWinPlayer = new WindowWin(true);
@@ -495,30 +502,30 @@ SceneCardBattle.prototype.updateCardBattle = function () {
     
 // }
 
-SceneCardBattle.prototype.testeWindowBattlefield = function () {
-    this.windowZone = new WindowBattleground({ player: true });
-    this.windowZone2 = new WindowBattleground({ player: false });
+// SceneCardBattle.prototype.testeWindowBattlefield = function () {
+//     this.windowZone = new WindowBattleground({ player: true });
+//     this.windowZone2 = new WindowBattleground({ player: false });
 
-    this.addChild(this.windowZone);
-    this.addChild(this.windowZone2);
+//     this.addChild(this.windowZone);
+//     this.addChild(this.windowZone2);
 
-    this.windowZone.initialPosition();
-    this.windowZone2.initialPosition();
-    this.windowZone.moveIn();
-    this.windowZone2.moveIn();    
+//     this.windowZone.initialPosition();
+//     this.windowZone2.initialPosition();
+//     this.windowZone.moveIn();
+//     this.windowZone2.moveIn();    
 
-    if (this.windowZone.IsMoveIn()) {
-        this.windowZone.showDisplay();
-        this.windowZone2.showDisplay();
-        this.windowZone.setHandPoints(5555);
-    }
+//     if (this.windowZone.IsMoveIn()) {
+//         this.windowZone.showDisplay();
+//         this.windowZone2.showDisplay();
+//         this.windowZone.setHandPoints(5555);
+//     }
 
-    this.windowZone.setPackPoints(10);
-    this.windowZone2.setPackPoints(10);
-    this.windowZone.setPositionAnimate('WHITE_POINTS');
-    this.windowZone.startAnimation(2);
+//     this.windowZone.setPackPoints(10);
+//     this.windowZone2.setPackPoints(10);
+//     this.windowZone.setPositionAnimate('WHITE_POINTS');
+//     this.windowZone.startAnimation(2);
     
-}
+// }
 
 // SceneCardBattle.prototype.testeWindowTrash = function () {
 //     this.windowTrashPlayer = new WindowTrash(true);

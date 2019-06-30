@@ -16,6 +16,7 @@ GameDuelist.prototype.initialize = function (Duelist) {
     this._hand = [];
     this._trash = [];
     this._pack = [];
+    this._pass  = false;
     this._wins = 0;
 };
 
@@ -65,6 +66,14 @@ GameDuelist.prototype.getFieldCollection = function () {
 
 GameDuelist.prototype.getColors = function () {
     return this._colors;
+};
+
+GameDuelist.prototype.getPass = function () {
+    return this._pass;
+};
+
+GameDuelist.prototype.setPass = function (pass) {
+    this._pass = pass;
 };
 
 GameDuelist.prototype.createPackCollection = function () {

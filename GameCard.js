@@ -4,20 +4,31 @@ function GameCard() {
 
 GameCard.prototype.constructor = GameCard;
 
-GameCard.prototype.initialize = function (ID) {
-    let card = $dataCards[ID];
+GameCard.prototype.initialize = function (id) {
+    let {
+        name, 
+        description, 
+        attackPoints, 
+        healthPoints,
+        type,
+        effect,
+        color,
+        cost,
+        filename
+    } = $dataCards[id];
     
-    this._id = ID;
-    this._name = card.name;
-    this._description = card.description;
-    this._attackPoint = card.attackPoint;
-    this._healthPoint = card.healthPoint;
-    this._type = card.type;
-    this._effect = card.effect;
-    this._color = card.color;
-    this._cost = card.cost;
-    this._filename = card.filename;
-    this._player = true;
+    this._id = id;
+    this._name = name;
+    this._description = description;
+    this._attackPoints = attackPoints;
+    this._healthPoints = healthPoints;
+    this._type = type;
+    this._effect = effect;
+    this._color = color;
+    this._cost = cost;
+    this._filename = filename;
+
+    this._player = false;
     this._active = true;
 };
 
@@ -33,20 +44,12 @@ GameCard.prototype.getDescription = function () {
     return this._description;
 };
 
-GameCard.prototype.getAttackPoint = function () {
-    return this._attackPoint;
+GameCard.prototype.getAttackPoints = function () {
+    return this._attackPoints;
 };
 
-GameCard.prototype.setAttackPoint = function (attack) {
-    return this._attackPoint = attack;
-};
-
-GameCard.prototype.getHealthPoint = function () {
-    return this._healthPoint;
-};
-
-GameCard.prototype.setHealthPoint = function (health) {
-    return this._healthPoint = health;
+GameCard.prototype.getHealthPoints = function () {
+    return this._healthPoints;
 };
 
 GameCard.prototype.getType = function () {
@@ -67,6 +70,14 @@ GameCard.prototype.getCost = function () {
 
 GameCard.prototype.getFilename = function () {
     return this._filename;
+};
+
+GameCard.prototype.setAttackPoints = function (points) {
+    return this._attackPoints = points;
+};
+
+GameCard.prototype.setHealthPoint = function (points) {
+    return this._healthPoints = points;
 };
 
 GameCard.prototype.isPlayer = function () {

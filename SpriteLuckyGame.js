@@ -80,7 +80,7 @@ SpriteLuckyGame.prototype.hide = function () {
 
 SpriteLuckyGame.prototype.stopMove = function () {
     return this._SpriteCollection.voidActions() && 
-    this._SpriteCollection.voidFramesCollection();
+    this._SpriteCollection.noWaitingCollection();
 };
 
 SpriteLuckyGame.prototype.getIndexSelector = function () {
@@ -100,7 +100,7 @@ SpriteLuckyGame.prototype.setLastIndexSelector = function (index) {
 };
 
 SpriteLuckyGame.prototype.getGameResult = function () {
-    this._gameResult;
+    return this._gameResult;
 };
 
 SpriteLuckyGame.prototype.setGameResult = function (result) {
@@ -186,8 +186,8 @@ SpriteLuckyGame.prototype.touchChild = function () {
 
 SpriteLuckyGame.prototype.isTouchSpriteChild = function (index) {
     let child = this._SpriteCollection.selectChild(index);
-    let childX = this.targetTouchX.call(child, TouchInput.x);
-    let childY = this.targetTouchY.call(child, TouchInput.y);
+    let childX = this.targetTouch.call(child, TouchInput.x, 'x');
+    let childY = this.targetTouch.call(child, TouchInput.y, 'y');
     let delimiterX = 104;
     let delimiterY = 120;
 
@@ -195,25 +195,13 @@ SpriteLuckyGame.prototype.isTouchSpriteChild = function (index) {
     (childY >= 0 && childY <= delimiterY);
 };
 
-SpriteLuckyGame.prototype.targetTouchX = function (touchInputX) {
+SpriteHandlerCollection.prototype.targetTouch = function (touchInput, prop) {
     let node = this;
-
     while (node) {
-        touchInputX -= node.x;
+        touchInput -= node[prop];
         node = node.parent;
     }
-
-    return touchInputX;
-};
-
-SpriteLuckyGame.prototype.targetTouchY = function (touchInputY) {
-    let node = this;
-
-    while (node) {
-        touchInputY -= node.y;
-        node = node.parent;
-    }
-    return touchInputY;
+    return touchInput;
 };
 
 SpriteLuckyGame.prototype.updateCardCursor = function () {
@@ -229,17 +217,17 @@ SpriteLuckyGame.prototype.updateCardSelect = function () {
 
     this._GameCardCollection.forEach((GameCard, index) => {
         if (index === this.getIndexSelector()) {
-            if (collection.isUnlit(index)) {
-                actions.push(collection.light(index));
+            if (collection.isUnselect(index)) {
+                actions.push(collection.select(index));
             }
         } else {
-            if (collection.isLight(index)) {
-                actions.push(collection.unlit(index));
+            if (collection.isSelected(index)) {
+                actions.push(collection.unselect(index));
             }
         }
     });
     collection.addActions(actions);
-    this._SpriteCollection.highChild(this.getIndexSelector());
+    this._SpriteCollection.tallChild(this.getIndexSelector());
 };
 
 SpriteLuckyGame.prototype.updateGame = function () {
@@ -247,9 +235,13 @@ SpriteLuckyGame.prototype.updateGame = function () {
         let index = this.getIndexSelector();
 
         this.closeMoviment();
+
         if (this._GameCardCollection[index].getID() === 1) {
             this.setGameResult(true);
+        } else {
+            this.setGameResult(false);
         }
+        
         this.gameOff();
     }
 };
@@ -262,12 +254,12 @@ SpriteLuckyGame.prototype.updateEndGame = function () {
 
 SpriteLuckyGame.prototype.collectionEndMove = function () {
     let collection = this._SpriteCollection;
-    return collection.voidActions() && collection.voidFramesCollection();
+    return collection.voidActions() && collection.noWaitingCollection();
 };
 
 SpriteLuckyGame.prototype.touchTurnCard = function () {
     let index = this.getIndexSelector();
-    return this._SpriteCollection.isLight(index) && this.isTouchSpriteChild(index);
+    return this._SpriteCollection.isLiked(index) && this.isTouchSpriteChild(index);
 };
 
 SpriteLuckyGame.prototype.closeMoviment = function () {

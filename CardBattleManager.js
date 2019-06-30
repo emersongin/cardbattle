@@ -177,3 +177,19 @@ CardBattleManager.getPlayerHandLength = function () {
 CardBattleManager.getEnemyHandLength = function () {
     return this._enemy.getHandLength();
 };
+
+CardBattleManager.getPlayerPass = function () {
+    return this._player.getPass();
+};
+
+CardBattleManager.getEnemyPass = function () {
+    return this._enemy.getPass();
+};
+
+CardBattleManager.setPlayerPass = function (pass) {
+    return this._player.setPass(pass);
+};
+
+CardBattleManager.setEnemyPass = function (pass) {
+    return this._enemy.setPass(pass);
+};
