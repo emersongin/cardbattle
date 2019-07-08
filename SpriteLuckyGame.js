@@ -195,7 +195,7 @@ SpriteLuckyGame.prototype.isTouchSpriteChild = function (index) {
     (childY >= 0 && childY <= delimiterY);
 };
 
-SpriteHandlerCollection.prototype.targetTouch = function (touchInput, prop) {
+SpriteLuckyGame.prototype.targetTouch = function (touchInput, prop) {
     let node = this;
     while (node) {
         touchInput -= node[prop];
@@ -218,10 +218,12 @@ SpriteLuckyGame.prototype.updateCardSelect = function () {
     this._GameCardCollection.forEach((GameCard, index) => {
         if (index === this.getIndexSelector()) {
             if (collection.isUnselect(index)) {
+                actions.push(collection.up(index));
                 actions.push(collection.select(index));
             }
         } else {
             if (collection.isSelected(index)) {
+                actions.push(collection.down(index));
                 actions.push(collection.unselect(index));
             }
         }
@@ -259,7 +261,7 @@ SpriteLuckyGame.prototype.collectionEndMove = function () {
 
 SpriteLuckyGame.prototype.touchTurnCard = function () {
     let index = this.getIndexSelector();
-    return this._SpriteCollection.isLiked(index) && this.isTouchSpriteChild(index);
+    return this._SpriteCollection.isSelected(index) && this.isTouchSpriteChild(index);
 };
 
 SpriteLuckyGame.prototype.closeMoviment = function () {

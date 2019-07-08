@@ -148,12 +148,28 @@ SpriteCollection.prototype.selectChild = function (index) {
     return this.children[indexOfChild];
 };
 
+SpriteCollection.prototype.isEnabled = function (index) {
+    return this.selectChild(index).isEnabled();
+};
+
+SpriteCollection.prototype.isDisabled = function (index) {
+    return this.selectChild(index).isDisabled();
+};
+
 SpriteCollection.prototype.isSelected = function (index) {
     return this.selectChild(index).isSelected();
 };
 
 SpriteCollection.prototype.isUnselect = function (index) {
     return this.selectChild(index).isUnselect();
+};
+
+SpriteCollection.prototype.isLiked = function (index) {
+    return this.selectChild(index).isLiked();
+};
+
+SpriteCollection.prototype.isUnlike = function (index) {
+    return this.selectChild(index).isUnlike();
 };
 
 SpriteCollection.prototype.isClosed = function (index) {

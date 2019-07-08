@@ -46,7 +46,7 @@ SpriteCard.prototype.setConfig = function () {
     this._sequence = [];
     this._framePoints = 0;
     this._frameMovement = 0;
-    this._flashDelay = 0;
+    this._count = 0;
     this._openness = false;
     this.scale.x = 0;
 };
@@ -350,7 +350,7 @@ SpriteCard.prototype.drawEnable = function () {
     if (this.isEnabled()) {
         this._background.setColorTone([0, 0, 0, 0]);
     } else {
-        this._background.setColorTone([0, 0, 0, 125]);
+        this._background.setColorTone([-100, -100, -100, 0]);
     }
 };
 
@@ -401,32 +401,40 @@ SpriteCard.prototype.updatePoints = function () {
 
 SpriteCard.prototype.updateChoice = function () {
     if (this.isSelected() && this.isOpen()) {
-        this._selectBorder.opacity = 200;
-        this._flashDelay++
-        if (this._flashDelay > 20) {
-            this._selectBorder.startAnimation($dataAnimations[122]);
-            this._flashDelay = 0;
+        let par = this._count;
+
+        this._selectBorder.opacity = 255;
+        this._selectBorder.setColorTone([par, par, par, 0]);
+
+        if (this._count > 100) {
+            this._count = -200;
         }
+
+        this._count += 32;
     } else {
         if (this._selectBorder.opacity || this.isUntake()) {
             this._selectBorder.opacity = 0;
-            this._flashDelay = 0;
+            this._count = 0;
         }
     }
 };
 
 SpriteCard.prototype.updateConfirm = function () {
     if (this.isTaked() && this.isOpen()) {
-        this._takeBorder.opacity = 200;
-        this._flashDelay++
-        if (this._flashDelay > 20) {
-            this._takeBorder.startAnimation($dataAnimations[122]);
-            this._flashDelay = 0;
+        let par = this._count;
+
+        this._takeBorder.opacity = 255;
+        this._takeBorder.setColorTone([par, par, par, 0]);
+
+        if (this._count > 100) {
+            this._count = -200;
         }
+
+        this._count += 32;
     } else {
         if (this._takeBorder.opacity || this.isUnselect()) {
             this._takeBorder.opacity = 0;
-            this._flashDelay = 0;
+            this._count = 0;
         }
     }
 };

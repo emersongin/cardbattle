@@ -41,12 +41,8 @@ CardBattleManager.getPlayerFirst = function () {
     return this._playerFirst;
 };
 
-CardBattleManager.getPlayerDuelist = function () {
-    return this._player;
-};
-
-CardBattleManager.getEnemyDuelist = function () {
-    return this._enemy;
+CardBattleManager.getDuelist = function (player) {
+    return this['_' + player];
 };
 
 CardBattleManager.getEnemyDatabase = function (ID) {
@@ -100,18 +96,14 @@ CardBattleManager.drawCards = function (Duelist) {
 
 CardBattleManager.pushPackToHand = function (amount, Duelist) {
     this.drawCards({
-        origin: Duelist.getPackCollection(),
-        destiny: Duelist.getHandCollection(),
+        origin: Duelist.getPack(),
+        destiny: Duelist.getHand(),
         amount
     });
 };
 
-CardBattleManager.drawCardPlayer = function (amount) {
-    CardBattleManager.pushPackToHand(amount, CardBattleManager.getPlayerDuelist());
-};
-
-CardBattleManager.drawCardEnemy = function (amount) {
-    CardBattleManager.pushPackToHand(amount, CardBattleManager.getEnemyDuelist());
+CardBattleManager.drawCard = function (player, amount) {
+    CardBattleManager.pushPackToHand(amount, CardBattleManager.getDuelist(player));
 };
 
 CardBattleManager.getPlayerPackCollection = function () {
@@ -146,36 +138,20 @@ CardBattleManager.getEnemyWins = function () {
     return this._enemy.getWins();
 };
 
-CardBattleManager.getPlayerColors = function () {
-    return this._player.getColors();
+CardBattleManager.getColors = function (player) {
+    return this['_' + player].getColors();
 };
 
-CardBattleManager.getEnemyColors = function () {
-    return this._enemy.getColors();
+CardBattleManager.setColors = function (player, Color) {
+    this['_' + player].setColor(Color);
 };
 
-CardBattleManager.setPlayerColors = function (Color) {
-    return this._player.setColor(Color);
+CardBattleManager.getPack = function (player) {
+    return this['_' + player].getPack();
 };
 
-CardBattleManager.setEnemyColors = function (Color) {
-    return this._enemy.setColor(Color);
-};
-
-CardBattleManager.getPlayerPackLength = function () {
-    return this._player.getPackLength();
-};
-
-CardBattleManager.getEnemyPackLength = function () {
-    return this._enemy.getPackLength();
-};
-
-CardBattleManager.getPlayerHandLength = function () {
-    return this._player.getHandLength();
-};
-
-CardBattleManager.getEnemyHandLength = function () {
-    return this._enemy.getHandLength();
+CardBattleManager.getHand = function (player) {
+    return this['_' + player].getHand();
 };
 
 CardBattleManager.getPlayerPass = function () {

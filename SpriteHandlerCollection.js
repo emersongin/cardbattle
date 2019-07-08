@@ -8,11 +8,10 @@ SpriteHandlerCollection.prototype.constructor = SpriteHandlerCollection;
 SpriteHandlerCollection.prototype.initialize = function () {
     SpriteCollection.prototype.initialize.call(this);
     this._index = 0;
-    this._lastIndex = this.getMaxIndex();
-
-
-    this._selectionActive = false;
-    this._selection = {};
+    this._lastIndex = 0;
+    this._activeSelect = false;
+    this._settings = {};
+    this._definedList = [];
 };
 
 SpriteHandlerCollection.prototype.getIndex = function () {
@@ -39,75 +38,87 @@ SpriteHandlerCollection.prototype.distinctIndex = function () {
     return this.getIndex() !== this.getLastIndex();
 };
 
-SpriteHandlerCollection.prototype.isActiveSelection = function () {
-    return this._selectionActive;
+SpriteHandlerCollection.prototype.isActiveSelect = function () {
+    return this._activeSelect;
 };
 
-SpriteHandlerCollection.prototype.activeSelection = function () {
+SpriteHandlerCollection.prototype.selectActivate = function () {
     this._lastIndex = this.getMaxIndex();
-    this._selectionActive = true;
+    this._activeSelect = true;
+    this.allowTypeChildren();
 };
 
-SpriteHandlerCollection.prototype.getSelection = function () {
-    return this._selection;
+SpriteHandlerCollection.prototype.getSettings = function () {
+    return this._settings;
 };
 
-SpriteHandlerCollection.prototype.setSelection = function (Params) {
-    this._selection = Params;
+SpriteHandlerCollection.prototype.setSettings = function (settings) {
+    this._settings = settings;
 };
 
 SpriteHandlerCollection.prototype.isRange = function (index, Range) {
     return index + 1 >= Range.min && index + 1 <= Range.max;
 };
 
-SpriteHandlerCollection.prototype.showCollection = function (Range) {
-    let actions = [];
-
-    this._cards.forEach((GameCard, index) => {
-        if (this._sprites[index] && this.isRange(index, Range)) {
-            actions.push(this.positionHand(index));
-            actions.push(this.waitMoment(index, index * 6));
-            actions.push(this.moveField(index));
-            
-        }
-    });
-
-    this.addActions(actions);
+SpriteHandlerCollection.prototype.stopMovements = function () {
+    return this.voidActions() && this.noWaitingCollection();
 };
 
 SpriteHandlerCollection.prototype.update = function () {
     SpriteCollection.prototype.update.call(this);
-    this.updateSelection();
+    this.updateSetSelection();
 };
 
-SpriteHandlerCollection.prototype.stopMove = function () {
-    return this.voidActions() && this.noWaitingCollection();
-};
-
-SpriteHandlerCollection.prototype.updateSelection = function () {
-    if (this.isActiveSelection() && this.stopMove()) {
-        this.updateCursor();
-        this.updateIndex();
+SpriteHandlerCollection.prototype.updateSetSelection = function () {
+    if (this.isActiveSelect() && this.stopMovements()) {
+        this.updateAction();
+        this.updateSet();
+        this.updateChoice();
+        this.updateEndSelect();
     }
 };
 
-SpriteHandlerCollection.prototype.updateCursor = function () {
+SpriteHandlerCollection.prototype.updateEndSelect = function () {
+    if (this._definedList.length >= this._settings.amount) {
+        this._activeSelect = false;
+    }
+};
+
+SpriteHandlerCollection.prototype.updateAction = function () {
+    this.pressLeft();
+    this.pressRight();
+    this.touching();
+};
+
+SpriteHandlerCollection.prototype.pressLeft = function () {
     if (Input.isRepeated('left') && !TouchInput.isTriggered()) {
         this.cursorMove(this.getIndex() - 1);
     }
+};
 
+SpriteHandlerCollection.prototype.pressRight = function () {
     if (Input.isRepeated('right') && !TouchInput.isTriggered()) {
         this.cursorMove(this.getIndex() + 1);
     }
+};
 
+SpriteHandlerCollection.prototype.touching = function () {
     if (TouchInput.isTriggered()) {
         this.cursorMove(this.touchChild());
-        console.log(this.touchChild())
     }
+};
 
-    if (this.distinctIndex()) {
-        SoundManager.playCursor();
-        TouchInput.clear();
+SpriteHandlerCollection.prototype.cursorMove = function (index) {
+    if (this.getMaxIndex()) {
+        if (this.isRange(index, {min: 1, max: this.getMaxIndex()})) {
+            this.setIndex(index);
+        } else {
+            if (index > 0) {
+                this.setIndex(0);
+            } else {
+                this.setIndex(this.getMaxIndex() - 1);
+            }
+        }
     }
 };
 
@@ -143,28 +154,15 @@ SpriteHandlerCollection.prototype.targetTouch = function (touchInput, prop) {
     return touchInput;
 };
 
-SpriteHandlerCollection.prototype.cursorMove = function (index) {
-    if (this.getMaxIndex()) {
-        if (this.isRange(index, {min: 1, max: this.getMaxIndex()})) {
-            this.setIndex(index);
-        } else {
-            if (index > 0) {
-                this.setIndex(0);
-            } else {
-                this.setIndex(this.getMaxIndex() - 1);
-            }
-        }
-    }
-};
-
-SpriteHandlerCollection.prototype.updateIndex = function () {
+SpriteHandlerCollection.prototype.updateSet = function () {
     if (this.distinctIndex()) {
-        this.updateSelect();
         this.setLastIndex(this.getIndex());
+        this.updateSetSelect();
+        TouchInput.clear();
     }
 };
 
-SpriteHandlerCollection.prototype.updateSelect = function () {
+SpriteHandlerCollection.prototype.updateSetSelect = function () {
     let actions = [];
 
     this._cards.forEach((GameCard, index) => {
@@ -180,6 +178,116 @@ SpriteHandlerCollection.prototype.updateSelect = function () {
             }
         }
     });
+
     this.addActions(actions);
-    this.tallChild(this.getIndex());    
+    this.tallChild(this.getIndex());
+};
+
+SpriteHandlerCollection.prototype.allowTypeChildren = function () {
+    let actions = [];
+
+    this._cards.forEach((GameCard, index) => {
+        switch (this._settings.type) {
+            case 'POWER_CARD':
+                if (GameCard.getType() === 'POWER_CARD') {
+                    actions.push(this.enabled(index));
+                } else {
+                    actions.push(this.disabled(index));
+                }
+            break;
+            default:
+            break;
+        }
+    });
+
+    this.addActions(actions);
+};
+
+SpriteHandlerCollection.prototype.updateChoice = function () {
+
+    if (Input.isTriggered('ok') || (TouchInput.isTriggered() && this.touchChildSelected())) {
+        switch (this._settings.selectType) {
+            case 'SELECT_REACT':
+                this.selectPowerCard();
+            break;
+            default:
+                // if (this.isUnlike(index)) {
+                //     this._definedList.push(index);
+                //     this.addActions(this.like(index));
+                // } else {
+                //     let indexOf = this._definedList.indexOf(index);
+                //     this._definedList.splice(indexOf, 1);
+                //     this.addActions(this.unlike(index));
+                // }
+            break;
+        }
+    }
+};
+
+SpriteHandlerCollection.prototype.touchChildSelected = function () {
+    let index = this.getIndex();
+    return this.isSelected(index) && this.isTouchSpriteChild(index);
+};
+
+SpriteHandlerCollection.prototype.selectPowerCard = function () {
+    let index = this.getIndex();
+
+    if (this.isEnabled(index)) {
+        this.addActions(this.react(index));
+        this._definedList.push(index);
+    } else {
+        //SOM DE REJEIÇÃO
+    }
+};
+
+SpriteHandlerCollection.prototype.showCollection = function (Range) {
+    let actions = [];
+
+    this._cards.forEach((GameCard, index) => {
+        if (this._sprites[index] && this.isRange(index, Range)) {
+            actions.push(this.positionHand(index));
+            actions.push(this.waitMoment(index, index * 6));
+            actions.push(this.moveField(index));
+        }
+    });
+
+    this.addActions(actions);
+};
+
+SpriteHandlerCollection.prototype.closeCollection = function (Range) {
+    let actions = [];
+
+    this._cards.forEach((GameCard, index) => {
+        if (this._sprites[index] && this.isRange(index, Range)) {
+            actions.push(this.close(index));
+        }
+    });
+
+    this.addActions(actions);
+};
+
+SpriteHandlerCollection.prototype.flashCollection = function (Range) {
+    let actions = [];
+
+    this._cards.forEach((GameCard, index) => {
+        if (this._sprites[index] && this.isRange(index, Range)) {
+            actions.push(this.waitMoment(index, index * 8));
+            actions.push(this.flash(index));
+        }
+    });
+
+    this.addActions(actions);
+};
+
+SpriteHandlerCollection.prototype.toTurnCollection = function (Range) {
+    let actions = [];
+
+    this._cards.forEach((GameCard, index) => {
+        if (this._sprites[index] && this.isRange(index, Range)) {
+            actions.push(this.waitMoment(index, index * 16));
+            actions.push(this.toTurn(index));
+        }
+    });
+
+    this.addActions(actions);
 };

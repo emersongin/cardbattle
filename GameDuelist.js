@@ -40,27 +40,19 @@ GameDuelist.prototype.getFolderCollection = function () {
     return this._folder.getCollection();
 };
 
-GameDuelist.prototype.getPackCollection = function () {
+GameDuelist.prototype.getPack = function () {
     return this._pack;
 };
 
-GameDuelist.prototype.getPackLength = function () {
-    return this._pack.length;
-};
-
-GameDuelist.prototype.getHandCollection = function () {
+GameDuelist.prototype.getHand = function () {
     return this._hand;
 };
 
-GameDuelist.prototype.getHandLength = function () {
-    return this._hand.length;
-};
-
-GameDuelist.prototype.getTrashCollection = function () {
+GameDuelist.prototype.getTrash = function () {
     return this._trash;
 };
 
-GameDuelist.prototype.getFieldCollection = function () {
+GameDuelist.prototype.getField = function () {
     return this._field;
 };
 
