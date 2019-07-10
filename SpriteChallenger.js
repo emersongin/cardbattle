@@ -83,16 +83,6 @@ SpriteChallenger.prototype.closeWindows = function () {
     this._text.close();
 };
 
-SpriteChallenger.prototype.isWindowsOpen = function () {
+SpriteChallenger.prototype.isOpenWindows = function () {
     return this._text.openness === 255 && this._title.openness === 255;
-};
-
-SpriteChallenger.prototype.update = function () {
-    Sprite.prototype.update.call(this);
-    if (this.isWindowsOpen()) {
-        if ((Input.isTriggered('ok') || TouchInput.isTriggered())) {
-            this.closeWindows();
-            this.disable();
-        }
-    }
 };

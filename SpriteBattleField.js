@@ -153,9 +153,9 @@ SpriteBattlefield.prototype.refreshTitles = function () {
 SpriteBattlefield.prototype.refreshTexts = function () {
     this._window.phase.start.refreshText('Draw Holy Sword to go first.');
     this._window.phase.draw.refreshText('6 cards will be drawn.');
-    this._window.phase.load.refreshText('Select and use a Power Card.');
+    this._window.phase.load.refreshText('Select and use a Program Card.');
     this._window.phase.summon.refreshText('Select your Battler');
-    this._window.phase.compile.refreshText('Select and use a Power Card.');
+    this._window.phase.compile.refreshText('Select and use a Program Card.');
     this._window.phase.battle.refreshText('Start Battle!');
 };
 
@@ -173,12 +173,12 @@ SpriteBattlefield.prototype.createOptionWindows = function () {
 SpriteBattlefield.prototype.refreshOptionWindows = function () {
     let marginLeft = ' ';
 
-    this._window.option.load.refreshTitle(marginLeft + 'Use a Power Card?');
+    this._window.option.load.refreshTitle(marginLeft + 'Use a Program Card?');
     this._window.option.load.resizeWidthWindows(776);
     this._window.option.load.changePositionTitle(20, Graphics.boxHeight / 2);
     this._window.option.load.changePositionOptions(20, Graphics.boxHeight / 1.7);
 
-    this._window.option.compile.refreshTitle(marginLeft + 'Use a Power Card?');
+    this._window.option.compile.refreshTitle(marginLeft + 'Use a Program Card?');
 };
 
 SpriteBattlefield.prototype.addChildren = function () {
@@ -228,6 +228,10 @@ SpriteBattlefield.prototype.isOpenWindow = function (prop) {
     return prop.openness >= 255;
 };
 
+SpriteBattlefield.prototype.isOpenWindows = function (prop) {
+    return prop.isWindowsOpen();
+};
+
 SpriteBattlefield.prototype.isHideWindow = function (prop) {
     return prop.isHidden();
 };
@@ -251,6 +255,10 @@ SpriteBattlefield.prototype.closeWindow = function (prop) {
 
 SpriteBattlefield.prototype.closeWindows = function (prop) {
     prop.closeWindows();
+};
+
+SpriteBattlefield.prototype.disable = function (prop) {
+    prop.disable();
 };
 
 SpriteBattlefield.prototype.setHandlerWindow = function (prop, tag, link) {

@@ -8,7 +8,7 @@ SpriteCard.prototype.constructor = SpriteCard;
 SpriteCard.prototype.initialize = function (GameCard) {
     Sprite.prototype.initialize.call(this);
     this._player = GameCard.isPlayer();
-    this._type = GameCard.getType();
+    this._types = GameCard.getTypes();
     this._color = GameCard.getColor();
     this._filename = GameCard.getFilename();
     this._attackPoints = GameCard.getAttackPoints();
@@ -287,6 +287,10 @@ SpriteCard.prototype.hasSequence = function () {
     return this._sequence.length;
 };
 
+SpriteCard.prototype.isExistType = function (type) {
+    return this._types.indexOf(type) > -1;
+};
+
 SpriteCard.prototype.refresh = function () {
     this._background.bitmap.clear();
     this.drawBackground();
@@ -311,17 +315,16 @@ SpriteCard.prototype.drawDisplay = function () {
     let health = this._healthPoints.padZero(2);
     
     if (this.isShow()) {
-        switch (this._type) {
-            case 'POWER_CARD':
-                this._background.bitmap.textColor = 'yellow';
-                this._background.bitmap.drawText('Power', 2, 88, 100, 30, 'center');
-                break;
-            case 'BATTLE_CARD':
-                this._background.bitmap.textColor = 'white';
-                this._background.bitmap.drawText(attack + "/" + health, 2, 88, 100, 30, 'center');
-                break;
-            default:
-                throw new Error('This Card not type');
+        if (this.isExistType('BATTLE_CARD')) {
+            this._background.bitmap.textColor = 'white';
+            this._background.bitmap.drawText(attack + "/" + health, 2, 88, 100, 30, 'center');
+        } else if (this.isExistType('PROGRAM_CARD') || 
+                    this.isExistType('LOAD_CARD') || 
+                    this.isExistType('COMPILE_CARD')) {
+            this._background.bitmap.textColor = 'yellow';
+            this._background.bitmap.drawText('《 P 》', 2, 88, 100, 30, 'center');
+        } else {
+            throw new Error('This Card not type');
         }
     }
 };
@@ -491,8 +494,8 @@ SpriteCard.prototype.toMove = function (action) {
         case 'POSITION_HAND':
             this.setPositionHand();
             break;
-        case 'POSITION_POWERFIELD':
-            this.setPositionPowerfield();
+        case 'POSITION_PROGRAM_FIELD':
+            this.setPositionProgramField();
             break;
         case 'POSITION_COLLECTION':
             this.setPositionCollection(action.index, action.length);
@@ -597,7 +600,7 @@ SpriteCard.prototype.setPositionHand = function () {
     this._targetY = 0;
 };
 
-SpriteCard.prototype.setPositionPowerfield = function () {
+SpriteCard.prototype.setPositionProgramField = function () {
     this._targetX = 658;
     this._targetY = 0;
 };

@@ -10,6 +10,7 @@ CardBattleManager.setup = function (args) {
 CardBattleManager.initMembers = function () {
     this._phase = 'INITIALIZE';
     this._playerFirst = false;
+    this._programCards = [];
 
     $gameCardPlayer.storageCards(new GameCardStored(3, 40));
     $gameCardPlayer.storageCardsFolder([
@@ -43,6 +44,10 @@ CardBattleManager.getPlayerFirst = function () {
 
 CardBattleManager.getDuelist = function (player) {
     return this['_' + player];
+};
+
+CardBattleManager.isProgramCards = function () {
+    return this._programCards.length;
 };
 
 CardBattleManager.getEnemyDatabase = function (ID) {
@@ -90,6 +95,7 @@ CardBattleManager.drawCards = function (Duelist) {
     let amount = Duelist.amount;
 
     for (let index = 0; index < amount; index++) {
+        console.log(index)
         this._player.pushToCollection(collectionOrigin, collectionDestiny);
     }
 };

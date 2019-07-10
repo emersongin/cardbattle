@@ -86,13 +86,3 @@ SpritePhase.prototype.closeWindows = function () {
 SpritePhase.prototype.isWindowsOpen = function () {
     return this._text.openness === 255 && this._title.openness === 255;
 };
-
-SpritePhase.prototype.update = function () {
-    Sprite.prototype.update.call(this);
-    if (this.isWindowsOpen()) {
-        if ((Input.isTriggered('ok') || TouchInput.isTriggered())) {
-            this.closeWindows();
-            this.disable();
-        }
-    }
-};

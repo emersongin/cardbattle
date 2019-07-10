@@ -187,16 +187,18 @@ SpriteHandlerCollection.prototype.allowTypeChildren = function () {
     let actions = [];
 
     this._cards.forEach((GameCard, index) => {
-        switch (this._settings.type) {
-            case 'POWER_CARD':
-                if (GameCard.getType() === 'POWER_CARD') {
-                    actions.push(this.enabled(index));
-                } else {
-                    actions.push(this.disabled(index));
-                }
-            break;
-            default:
-            break;
+        let enable = false;
+
+        GameCard.getTypes().forEach(type => {
+            if (type === this._settings.type) {
+                enable = true;
+            }
+        })
+
+        if (enable) {
+            actions.push(this.enabled(index));
+        } else {
+            actions.push(this.disabled(index));
         }
     });
 
@@ -208,7 +210,7 @@ SpriteHandlerCollection.prototype.updateChoice = function () {
     if (Input.isTriggered('ok') || (TouchInput.isTriggered() && this.touchChildSelected())) {
         switch (this._settings.selectType) {
             case 'SELECT_REACT':
-                this.selectPowerCard();
+                this.selectProgramCard();
             break;
             default:
                 // if (this.isUnlike(index)) {
@@ -229,7 +231,7 @@ SpriteHandlerCollection.prototype.touchChildSelected = function () {
     return this.isSelected(index) && this.isTouchSpriteChild(index);
 };
 
-SpriteHandlerCollection.prototype.selectPowerCard = function () {
+SpriteHandlerCollection.prototype.selectProgramCard = function () {
     let index = this.getIndex();
 
     if (this.isEnabled(index)) {
@@ -271,7 +273,7 @@ SpriteHandlerCollection.prototype.flashCollection = function (Range) {
 
     this._cards.forEach((GameCard, index) => {
         if (this._sprites[index] && this.isRange(index, Range)) {
-            actions.push(this.waitMoment(index, index * 8));
+            actions.push(this.waitMoment(index, 10));
             actions.push(this.flash(index));
         }
     });

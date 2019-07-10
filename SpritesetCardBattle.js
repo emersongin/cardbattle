@@ -41,9 +41,18 @@ SpritesetCardBattle.prototype.showOpening = function () {
     this._opening.show();
 };
 
+SpritesetCardBattle.prototype.isOpenWindowsChallenger = function () {
+    return this._challenger.isOpenWindows();
+};
+
 SpritesetCardBattle.prototype.showChallenger = function () {
     this._challenger.show();
     this._challenger.openWindows();
+};
+
+SpritesetCardBattle.prototype.closeChallenger = function () {
+    this._challenger.closeWindows();
+    this._challenger.disable();
 };
 
 SpritesetCardBattle.prototype.showChooseFolder = function () {
@@ -79,6 +88,42 @@ SpritesetCardBattle.prototype.openWindowPhaseLoad = function () {
 SpritesetCardBattle.prototype.openWindowPhaseSummon = function () {
     let { phaseSummon } = this._battlefield.windowProps();
     this._battlefield.openWindows(phaseSummon);
+};
+
+SpritesetCardBattle.prototype.closeWindowPhaseStart = function () {
+    let { phaseStart } = this._battlefield.windowProps();
+    this._battlefield.closeWindows(phaseStart);
+    this._battlefield.disable(phaseStart);
+};
+
+SpritesetCardBattle.prototype.closeWindowPhaseDraw = function () {
+    let { phaseDraw } = this._battlefield.windowProps();
+    this._battlefield.closeWindows(phaseDraw);
+    this._battlefield.disable(phaseDraw);
+};
+
+SpritesetCardBattle.prototype.closeWindowPhaseLoad = function () {
+    let { phaseLoad } = this._battlefield.windowProps();
+    this._battlefield.closeWindows(phaseLoad);
+    this._battlefield.disable(phaseLoad);
+};
+
+SpritesetCardBattle.prototype.closeWindowPhaseSummon = function () {
+    let { phaseSummon } = this._battlefield.windowProps();
+    this._battlefield.closeWindows(phaseSummon);
+    this._battlefield.disable(phaseSummon);
+};
+
+SpritesetCardBattle.prototype.closeWindowPhaseCompile = function () {
+    let { phaseCompile } = this._battlefield.windowProps();
+    this._battlefield.closeWindows(phaseCompile);
+    this._battlefield.disable(phaseCompile);
+};
+
+SpritesetCardBattle.prototype.closeWindowPhaseBattle = function () {
+    let { phaseBattle } = this._battlefield.windowProps();
+    this._battlefield.closeWindows(phaseBattle);
+    this._battlefield.disable(phaseBattle);
 };
 
 SpritesetCardBattle.prototype.isHideBackground = function () {
@@ -337,6 +382,36 @@ SpritesetCardBattle.prototype.stopMoveEnemyFieldCollect = function () {
     let { fieldCollection } = this._battlefield.enemyProps();
     return this._battlefield.isStopMovementCollection(fieldCollection)  
 };
+
+SpritesetCardBattle.prototype.isOpenWindowPhaseStart = function () {
+    let { phaseStart } = this._battlefield.windowProps();
+    return this._battlefield.isOpenWindows(phaseStart);
+}
+
+SpritesetCardBattle.prototype.isOpenWindowPhaseDraw = function () {
+    let { phaseDraw } = this._battlefield.windowProps();
+    return this._battlefield.isOpenWindows(phaseDraw);
+}
+
+SpritesetCardBattle.prototype.isOpenWindowPhaseLoad = function () {
+    let { phaseLoad } = this._battlefield.windowProps();
+    return this._battlefield.isOpenWindows(phaseLoad);
+}
+
+SpritesetCardBattle.prototype.isOpenWindowPhaseSummon = function () {
+    let { phaseSummon } = this._battlefield.windowProps();
+    return this._battlefield.isOpenWindows(phaseSummon);
+}
+
+SpritesetCardBattle.prototype.isOpenWindowPhaseCompile = function () {
+    let { phaseCompile } = this._battlefield.windowProps();
+    return this._battlefield.isOpenWindows(phaseCompile);
+}
+
+SpritesetCardBattle.prototype.isOpenWindowPhaseBattle = function () {
+    let { phaseBattle } = this._battlefield.windowProps();
+    return this._battlefield.isOpenWindows(phaseBattle);
+}
 
 SpritesetCardBattle.prototype.isOpenAlertLoadWindow = function () {
     let { alertLoad } = this._battlefield.windowProps();

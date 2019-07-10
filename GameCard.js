@@ -10,7 +10,7 @@ GameCard.prototype.initialize = function (id) {
         description, 
         attackPoints, 
         healthPoints,
-        type,
+        types,
         effect,
         color,
         cost,
@@ -22,7 +22,7 @@ GameCard.prototype.initialize = function (id) {
     this._description = description;
     this._attackPoints = attackPoints;
     this._healthPoints = healthPoints;
-    this._type = type;
+    this._types = types;
     this._effect = effect;
     this._color = color;
     this._cost = cost;
@@ -52,8 +52,8 @@ GameCard.prototype.getHealthPoints = function () {
     return this._healthPoints;
 };
 
-GameCard.prototype.getType = function () {
-    return this._type;
+GameCard.prototype.getTypes = function () {
+    return this._types;
 };
 
 GameCard.prototype.getEffect = function () {
