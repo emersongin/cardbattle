@@ -1,5 +1,5 @@
 # cardbattle
-projeto cardgame com Javascript
+Project card battle plugin for RPG Maker MV.
 
-## Telas
+## SreenShots
 ![alt text](/card-proto.png)
